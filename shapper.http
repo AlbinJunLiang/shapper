@@ -1,0 +1,6 @@
+@shapper_HostAddress = http://localhost:5127
+
+GET {{shapper_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
