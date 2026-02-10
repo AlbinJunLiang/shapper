@@ -63,6 +63,9 @@ builder.Services.AddScoped<EmailService>();
 
 // fin de registro de servicio de correo
 
+// Bind PayPal settings
+builder.Services.Configure<PayPalSettings>(builder.Configuration.GetSection("PayPal"));
+
 // Swagger con Bearer JWT
 builder.Services.AddSwaggerGen(c =>
 {
