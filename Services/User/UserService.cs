@@ -1,9 +1,9 @@
 using AutoMapper;
 using Shapper.DTOs;
 using Shapper.Models;
-using Shapper.Repositories;
+using Shapper.Repositories.Users;
 
-namespace Shapper.Services
+namespace Shapper.Services.Users
 {
     public class UserService : IUserService
     {

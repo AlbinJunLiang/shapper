@@ -1,6 +1,6 @@
 using Shapper.Models;
 
-namespace Shapper.Repositories
+namespace Shapper.Repositories.Users
 {
     public interface IUserRepository
     {

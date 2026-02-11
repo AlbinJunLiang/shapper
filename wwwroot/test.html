@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Decodificador de JWT</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        textarea { width: 100%; height: 80px; margin-bottom: 10px; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; }
+        button { padding: 10px 20px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h1>Decodificador de JWT</h1>
+    <p>Pega tu token JWT aquí:</p>
+    <textarea id="jwtInput" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
+    <button onclick="decodeJWT()">Decodificar</button>
+    <h2>Header:</h2>
+    <pre id="header"></pre>
+    <h2>Payload:</h2>
+    <pre id="payload"></pre>
+
+    <script>
+        function decodeJWT() {
+            const token = document.getElementById('jwtInput').value.trim();
+            if (!token) return alert("Ingresa un token JWT");
+
+            const parts = token.split('.');
+            if (parts.length !== 3) return alert("Token JWT inválido");
+
+            try {
+                const header = JSON.parse(atob(parts[0]));
+                const payload = JSON.parse(atob(parts[1]));
+
+                document.getElementById('header').textContent = JSON.stringify(header, null, 4);
+                document.getElementById('payload').textContent = JSON.stringify(payload, null, 4);
+            } catch (e) {
+                alert("Error decodificando el token: " + e.message);
+            }
+        }
+    </script>
+</body>
+</html>

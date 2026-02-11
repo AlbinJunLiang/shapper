@@ -1,4 +1,5 @@
 using AutoMapper;
+using DotNetEnv;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.EntityFrameworkCore;
@@ -7,11 +8,28 @@ using Shapper.Config;
 using Shapper.Data;
 using Shapper.Mappings;
 using Shapper.Middlewares;
-using Shapper.Repositories;
+using Shapper.Repositories.Users;
 using Shapper.Services;
+using Shapper.Services.Emails;
+using Shapper.Services.Emails.Strategies;
+using Shapper.Services.Users;
+using Shapper.Services.Verifications;
+using Shapper.Services.Verifications.Strategies;
 using Stripe;
 
+// dotnet run --environment Development
+
 var builder = WebApplication.CreateBuilder(args);
+var status = builder.Environment.IsDevelopment();
+
+if (status)
+{
+    Env.Load(); // carga .env
+    Console.WriteLine(builder.Configuration["ASPNETCORE_ENVIRONMENT"]);
+    Console.WriteLine(
+        "Stripe key = " + Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+    );
+}
 
 // =======================
 // Servicios y dependencias
@@ -61,6 +79,16 @@ builder.Services.AddScoped<BrevoEmailStrategy>();
 builder.Services.AddScoped<EmailStrategyFactory>();
 builder.Services.AddScoped<EmailService>();
 
+// 1. Registrar el servicio base de Firebase
+
+// 2. Registrar la estrategia (necesaria para que la fábrica la encuentre)
+builder.Services.AddScoped<FirebaseVerificationStrategy>();
+
+//builder.Services.AddScoped<SupabaseVerificationStrategy>();
+
+// 3. Registrar la fábrica
+builder.Services.AddScoped<VerificationStrategyFactory>();
+
 // fin de registro de servicio de correo
 
 // Bind PayPal settings
@@ -102,7 +130,22 @@ builder.Services.AddSwaggerGen(c =>
     );
 });
 
+// 1. Definir la política
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        }
+    );
+});
+
 var app = builder.Build();
+
+// 2. Usar la política (IMPORTANTE: Antes de UseAuthorization)
+app.UseCors("AllowAll");
 
 // =======================
 // Middlewares
@@ -116,7 +159,7 @@ app.UseWhen(
         || context.Request.Path.StartsWithSegments("/api/privado"),
     appBuilder =>
     {
-        appBuilder.UseMiddleware<FirebaseAuthMiddleware>();
+        appBuilder.UseMiddleware<AuthMiddleware>();
     }
 );
 

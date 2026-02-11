@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Shapper.Data;
 using Shapper.Models;
 
-namespace Shapper.Repositories
+namespace Shapper.Repositories.Users
 {
     public class UserRepository : IUserRepository
     {

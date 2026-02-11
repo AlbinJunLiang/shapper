@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using Shapper.Config;
 using Shapper.DTOs;
 
-namespace Shapper.Services
+namespace Shapper.Services.Emails.Strategies
 {
     public class SmtpEmailStrategy : IEmailStrategy
     {

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Shapper.Config;
 using Shapper.DTOs;
 
-namespace Shapper.Services
+namespace Shapper.Services.Emails.Strategies
 {
     public class BrevoEmailStrategy : IEmailStrategy
     {
@@ -28,10 +28,7 @@ namespace Shapper.Services
                 htmlContent = message.HtmlContent,
             };
 
-            var request = new HttpRequestMessage(
-                HttpMethod.Post,
-                "https://api.brevo.com/v3/smtp/email"
-            );
+            var request = new HttpRequestMessage(HttpMethod.Post, _settings.BrevoEndpoint);
 
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 

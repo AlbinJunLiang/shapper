@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Shapper.DTOs;
 using Shapper.Middlewares;
 using Shapper.Models;
-using Shapper.Services;
+using Shapper.Services.Users;
 
 namespace Shapper.Controllers
 {

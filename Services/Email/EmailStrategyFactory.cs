@@ -1,6 +1,6 @@
-using Shapper.Services;
+using Shapper.Services.Emails.Strategies;
 
-namespace Shapper.Services
+namespace Shapper.Services.Emails
 {
     public class EmailStrategyFactory
     {
