@@ -1,4 +1,5 @@
 using AutoMapper;
+using CloudinaryDotNet;
 using DotNetEnv;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
@@ -12,6 +13,7 @@ using Shapper.Repositories.Users;
 using Shapper.Services;
 using Shapper.Services.Emails;
 using Shapper.Services.Emails.Strategies;
+using Shapper.Services.ImageStorage;
 using Shapper.Services.Users;
 using Shapper.Services.Verifications;
 using Shapper.Services.Verifications.Strategies;
@@ -93,6 +95,15 @@ builder.Services.AddScoped<VerificationStrategyFactory>();
 
 // Bind PayPal settings
 builder.Services.Configure<PayPalSettings>(builder.Configuration.GetSection("PayPal"));
+
+builder.Services.AddSingleton(provider =>
+{
+    var url = builder.Configuration["Cloudinary:ImageStorageUrl"];
+
+    return new CloudinaryDotNet.Cloudinary(url);
+});
+
+builder.Services.AddScoped<IImageService, CloudinaryService>();
 
 // Swagger con Bearer JWT
 builder.Services.AddSwaggerGen(c =>

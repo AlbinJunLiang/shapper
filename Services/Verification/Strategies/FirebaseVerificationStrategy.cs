@@ -14,7 +14,7 @@ namespace Shapper.Services.Verifications.Strategies
 
         public async Task<AuthUserResultDto> VerifyTokenAsync(string token)
         {
-            var decodedToken = await _firebaseService.VerifyTokenAsync(token); // ✅ usar instancia inyectada
+            var decodedToken = await _firebaseService.VerifyTokenAsync(token);
 
             return new AuthUserResultDto
             {

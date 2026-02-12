@@ -36,9 +36,9 @@ namespace Shapper.Services.Verifications.Strategies
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = key,
-                        ValidateIssuer = false, // Supabase tiene issuers dinámicos
-                        ValidateAudience = false, // Lo validamos manualmente
-                        ValidateLifetime = false, // Lo validamos manualmente
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = false,
                     },
                     out validatedToken
                 );
