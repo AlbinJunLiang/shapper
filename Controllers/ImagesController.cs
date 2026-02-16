@@ -1,44 +1,42 @@
 using Microsoft.AspNetCore.Mvc;
 using Shapper.DTOs; // <- IMPORTANTE
-
+using Shapper.Services.ImageStorage;
 
 namespace Shapper.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class ImagesController : ControllerBase
     {
-        private readonly IWebHostEnvironment _env;
+        private readonly IImageService _imageService;
 
-        public ImagesController(IWebHostEnvironment env)
+        public ImagesController(IImageService imageService)
         {
-            _env = env;
+            _imageService = imageService;
         }
 
         [HttpPost("upload")]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> UploadImage([FromForm] UploadImagesDto Dto)
+        public async Task<IActionResult> Upload(IFormFile file)
         {
-            var file = Dto.File;
+            var (path, publicId) = await _imageService.UploadImageAsync(file);
 
-            if (file == null || file.Length == 0)
-                return BadRequest("No se envió ningún archivo.");
+            // Formamos la ruta solo si es local
+            string fullUrl = path.StartsWith("http")
+                ? path
+                : $"{Request.Scheme}://{Request.Host}/{path}";
 
-            string uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
+            return Ok(new { Url = fullUrl, PublicId = publicId });
+        }
 
-            if (!Directory.Exists(uploadsFolder))
-                Directory.CreateDirectory(uploadsFolder);
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromQuery] string publicId)
+        {
+            var deleted = await _imageService.DeleteImageAsync(publicId);
 
-            string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            if (!deleted)
+                return BadRequest("No se pudo eliminar la imagen");
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            string fileUrl = $"{Request.Scheme}://{Request.Host}/uploads/{uniqueFileName}";
-            return Ok(new { Url = fileUrl });
+            return Ok(new { Message = "image was deleted" });
         }
     }
 }

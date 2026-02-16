@@ -3,3 +3,4 @@ obj/
 appsettings.json
 albinia.json
 .env
+ngrok.exe

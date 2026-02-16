@@ -10,6 +10,7 @@ namespace Shapper.Controllers
         [HttpPost]
         public IActionResult Receive([FromBody] JsonElement payload)
         {
+            Console.WriteLine(payload);
             var eventType = payload.GetProperty("event_type").GetString();
             switch (eventType)
             {

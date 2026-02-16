@@ -14,6 +14,8 @@ using Shapper.Services;
 using Shapper.Services.Emails;
 using Shapper.Services.Emails.Strategies;
 using Shapper.Services.ImageStorage;
+using Shapper.Services.ImageStorage.Strategies;
+using Shapper.Services.Payment;
 using Shapper.Services.Users;
 using Shapper.Services.Verifications;
 using Shapper.Services.Verifications.Strategies;
@@ -96,6 +98,8 @@ builder.Services.AddScoped<VerificationStrategyFactory>();
 // Bind PayPal settings
 builder.Services.Configure<PayPalSettings>(builder.Configuration.GetSection("PayPal"));
 
+builder.Services.AddSingleton<PaymentService>(); // Singleton o Scoped según tu necesidad
+
 builder.Services.AddSingleton(provider =>
 {
     var url = builder.Configuration["Cloudinary:ImageStorageUrl"];
@@ -103,7 +107,9 @@ builder.Services.AddSingleton(provider =>
     return new CloudinaryDotNet.Cloudinary(url);
 });
 
-builder.Services.AddScoped<IImageService, CloudinaryService>();
+//builder.Services.AddScoped<IImageService, LocalImageStrategy>();
+
+builder.Services.AddScoped<IImageService, CloudinaryImageStrategy>();
 
 // Swagger con Bearer JWT
 builder.Services.AddSwaggerGen(c =>
@@ -175,6 +181,7 @@ app.UseWhen(
 );
 
 // HTTPS
+
 app.UseHttpsRedirection();
 
 // Swagger
