@@ -42,7 +42,9 @@ namespace Shapper.Middlewares
                 {
                     new Claim(ClaimTypes.NameIdentifier, userDto.UserId),
                     new Claim(ClaimTypes.Email, userDto.Email),
+                    new Claim("email_verified", userDto.EmailVerified.ToString()),
                 };
+
                 if (!string.IsNullOrEmpty(userDto.Role))
                     claims.Add(new Claim(ClaimTypes.Role, userDto.Role));
                 var providerName = factory.GetProviderName(); // O leerlo de builder.Configuration["Auth:Provider"]

@@ -1,7 +1,9 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using Shapper.DTOs;
+using Shapper.Dtos;
+using System.Text.Json;
+
 
 namespace Shapper.Services.Verifications.Strategies
 {
@@ -59,6 +61,8 @@ namespace Shapper.Services.Verifications.Strategies
                         throw new SecurityTokenExpiredException("Token expirado");
                 }
 
+                bool isVerified = GetEmailVerified(jwtToken);
+
                 // Extraer datos del usuario
                 var user = new AuthUserResultDto
                 {
@@ -67,6 +71,7 @@ namespace Shapper.Services.Verifications.Strategies
                     Role =
                         jwtToken.Claims.FirstOrDefault(c => c.Type == "role")?.Value
                         ?? "authenticated",
+                    EmailVerified = isVerified,
                 };
 
                 return Task.FromResult(user);
@@ -76,6 +81,25 @@ namespace Shapper.Services.Verifications.Strategies
                 // Puedes loguear ex.Message para depuración
                 throw new SecurityTokenException("Token inválido", ex);
             }
+        }
+
+        private bool GetEmailVerified(JwtSecurityToken jwtToken)
+        {
+            var userMetadataJson = jwtToken
+                .Claims.FirstOrDefault(c => c.Type == "user_metadata")
+                ?.Value;
+
+            if (string.IsNullOrEmpty(userMetadataJson))
+                return false;
+
+            using var doc = JsonDocument.Parse(userMetadataJson);
+
+            if (doc.RootElement.TryGetProperty("email_verified", out var emailVerified))
+            {
+                return emailVerified.GetBoolean();
+            }
+
+            return false;
         }
     }
 }

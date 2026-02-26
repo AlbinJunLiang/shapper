@@ -111,8 +111,6 @@ namespace Shapper.Services.Payment.Strategies
             return approveUrl;
         }
 
-
-
         public async Task<bool> CapturePaymentAsync(string paymentId)
         {
             try

@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Mail;
 using Microsoft.Extensions.Options;
 using Shapper.Config;
-using Shapper.DTOs;
+using Shapper.Dtos;
 
 namespace Shapper.Services.Emails.Strategies
 {

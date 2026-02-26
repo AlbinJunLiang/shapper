@@ -1,4 +1,4 @@
-using Shapper.DTOs;
+using Shapper.Dtos;
 
 namespace Shapper.Services.Emails
 {

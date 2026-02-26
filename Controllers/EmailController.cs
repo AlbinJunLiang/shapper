@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Shapper.DTOs;
+using Shapper.Dtos;
 using Shapper.Services.Emails;
 
 namespace Shapper.Controllers

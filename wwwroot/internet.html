@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Transcripción de Voz en Tiempo Real</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #final, #interim {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            min-height: 100px;
+            background-color: #f9f9f9;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+
+        #interim {
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <h1>Transcripción de Voz</h1>
+    <button id="startBtn">🎤 Iniciar</button>
+    <button id="stopBtn">⏹ Detener</button>
+
+    <h3>Texto confirmado:</h3>
+    <div id="final">Aquí aparecerá el texto confirmado...</div>
+    <h3>Lo que estás diciendo ahora:</h3>
+    <div id="interim">...</div>
+
+    <script>
+        const startBtn = document.getElementById("startBtn");
+        const stopBtn = document.getElementById("stopBtn");
+        const finalDiv = document.getElementById("final");
+        const interimDiv = document.getElementById("interim");
+
+        let recognition;
+
+        if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+
+            recognition.lang = "en-US";       // idioma español
+            recognition.interimResults = true; // resultados parciales
+            recognition.continuous = true;    // seguir escuchando mientras hablas
+
+            recognition.onresult = (event) => {
+                let interimText = "";
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalDiv.textContent += transcript + "\n"; // agregar confirmado
+                    } else {
+                        interimText += transcript; // mostrar en tiempo real
+                    }
+                }
+                interimDiv.textContent = interimText;
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Error en reconocimiento de voz:", event.error);
+            };
+
+            recognition.onend = () => {
+                console.log("Reconocimiento detenido.");
+            };
+
+        } else {
+            alert("Tu navegador no soporta reconocimiento de voz.");
+        }
+
+        startBtn.addEventListener("click", () => {
+            recognition.start();
+            console.log("Reconocimiento iniciado...");
+        });
+
+        stopBtn.addEventListener("click", () => {
+            recognition.stop();
+            console.log("Reconocimiento detenido.");
+        });
+    </script>
+</body>
+</html>

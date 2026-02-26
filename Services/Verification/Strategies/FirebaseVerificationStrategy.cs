@@ -1,5 +1,5 @@
 using FirebaseAdmin.Auth;
-using Shapper.DTOs;
+using Shapper.Dtos;
 
 namespace Shapper.Services.Verifications.Strategies
 {
@@ -19,12 +19,21 @@ namespace Shapper.Services.Verifications.Strategies
             return new AuthUserResultDto
             {
                 UserId = decodedToken.Uid,
+
                 Email = decodedToken.Claims.ContainsKey("email")
                     ? decodedToken.Claims["email"]?.ToString()!
                     : "",
+
                 Role = decodedToken.Claims.ContainsKey("role")
                     ? decodedToken.Claims["role"]?.ToString()
                     : null,
+                EmailVerified =
+                    decodedToken.Claims.ContainsKey("email_verified")
+                    && bool.TryParse(
+                        decodedToken.Claims["email_verified"]?.ToString(),
+                        out var isVerified
+                    )
+                    && isVerified,
             };
         }
     }

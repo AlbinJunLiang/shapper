@@ -24,7 +24,17 @@ namespace Shapper.Services.Payment
 
         public IPaymentStrategy GetStrategy(string provider)
         {
-            return provider.ToLower() switch
+            if (string.IsNullOrWhiteSpace(provider))
+                throw new ArgumentException("Proveedor requerido");
+
+            provider = provider.Trim().ToLower();
+
+            if (provider != "paypal" && provider != "stripe")
+            {
+                throw new NotSupportedException($"Proveedor '{provider}' no disponible");
+            }
+
+            return provider switch
             {
                 "paypal" => new PaypalPaymentStrategy(
                     Options.Create(_paypalSettings),
@@ -32,7 +42,7 @@ namespace Shapper.Services.Payment
                     _httpFactory
                 ),
                 "stripe" => new StripePayment(_config["ApiSettings:ApiServer"]),
-                _ => throw new ArgumentException("Proveedor de pago no soportado"),
+                _ => throw new ArgumentException("Proveedor no soportado"),
             };
         }
     }

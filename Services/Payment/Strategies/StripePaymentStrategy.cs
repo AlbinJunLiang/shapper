@@ -44,9 +44,9 @@ namespace Shapper.Services.Payment.Strategies
             return session.Url ?? "";
         }
 
+        // Stripe no requiere captura explícita aquí
         public Task<bool> CapturePaymentAsync(string paymentId)
         {
-            // Stripe no requiere captura explícita aquí
             return Task.FromResult(true);
         }
     }

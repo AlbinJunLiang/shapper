@@ -1,4 +1,4 @@
-namespace Shapper.DTOs
+namespace Shapper.Dtos
 {
     public class ImageUploadResult
     {

@@ -17,33 +17,63 @@ namespace Shapper.Controllers
         [HttpPost("create-payment")]
         public async Task<IActionResult> CreatePayment([FromBody] PaymentRequest request)
         {
-            // Seleccionamos la estrategia según el proveedor enviado desde el frontend
-            var strategy = _paymentService.GetStrategy(request.Provider);
+            if (request == null)
+                return BadRequest(new { error = "Request inválido" });
 
-            var getUrl = await strategy.CreatePaymentAsync(
-                request.Amount,
-                request.Description,
-                request.SuccessUrl,
-                request.CancelUrl
-            );
+            if (string.IsNullOrWhiteSpace(request.Provider))
+                return BadRequest(new { error = "Proveedor requerido" });
 
-            return Ok(new { getUrl });
+            if (request.Amount <= 0)
+                return BadRequest(new { error = "Monto inválido" });
+
+            try
+            {
+                var strategy = _paymentService.GetStrategy(request.Provider.Trim());
+
+                var getUrl = await strategy.CreatePaymentAsync(
+                    request.Amount,
+                    request.Description,
+                    request.SuccessUrl,
+                    request.CancelUrl
+                );
+
+                return Ok(new { getUrl });
+            }
+            catch (NotSupportedException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
 
-// https://slbkrp3n-5127.use2.devtunnels.ms/api/payment/capture-payment?provider=Paypal
-        [HttpGet("capture-payment")]
+        // https://slbkrp3n-5127.use2.devtunnels.ms/api/payment/capture-payment?provider=Paypal
+        [HttpPost("capture-payment")]
         public async Task<IActionResult> CapturePayment(
             [FromQuery] string provider,
             [FromQuery] string token
         )
         {
-            if (string.IsNullOrEmpty(provider) || string.IsNullOrEmpty(token))
-                return BadRequest("Datos incompletos");
+            if (string.IsNullOrWhiteSpace(provider) || string.IsNullOrWhiteSpace(token))
+                return BadRequest(new { error = "Datos incompletos" });
 
-            var strategy = _paymentService.GetStrategy(provider);
-            var success = await strategy.CapturePaymentAsync(token);
+            try
+            {
+                var strategy = _paymentService.GetStrategy(provider);
+                var success = await strategy.CapturePaymentAsync(token);
 
-            return Ok(new { success });
+                return Ok(new { success });
+            }
+            catch (NotSupportedException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { error = "Error interno procesando el pago" });
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Shapper.DTOs; // <- IMPORTANTE
+using Shapper.Dtos; // <- IMPORTANTE
 using Shapper.Services.ImageStorage;
 
 namespace Shapper.Controllers

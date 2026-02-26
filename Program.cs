@@ -1,14 +1,21 @@
+using System.Security.Claims;
+using System.Text;
 using AutoMapper;
 using CloudinaryDotNet;
 using DotNetEnv;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Shapper.Authentication;
 using Shapper.Config;
 using Shapper.Data;
 using Shapper.Mappings;
 using Shapper.Middlewares;
+using Shapper.Repositories.Roles;
 using Shapper.Repositories.Users;
 using Shapper.Services;
 using Shapper.Services.Emails;
@@ -16,6 +23,7 @@ using Shapper.Services.Emails.Strategies;
 using Shapper.Services.ImageStorage;
 using Shapper.Services.ImageStorage.Strategies;
 using Shapper.Services.Payment;
+using Shapper.Services.Roles;
 using Shapper.Services.Users;
 using Shapper.Services.Verifications;
 using Shapper.Services.Verifications.Strategies;
@@ -47,9 +55,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -86,9 +96,9 @@ builder.Services.AddScoped<EmailService>();
 // 1. Registrar el servicio base de Firebase
 
 // 2. Registrar la estrategia (necesaria para que la fábrica la encuentre)
-builder.Services.AddScoped<FirebaseVerificationStrategy>();
+// builder.Services.AddScoped<SupabaseVerificationStrategy>();
 
-//builder.Services.AddScoped<SupabaseVerificationStrategy>();
+builder.Services.AddScoped<FirebaseVerificationStrategy>();
 
 // 3. Registrar la fábrica
 builder.Services.AddScoped<VerificationStrategyFactory>();
@@ -159,6 +169,28 @@ builder.Services.AddCors(options =>
     );
 });
 
+builder
+    .Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = "Provider"; // <--- Aquí
+        options.DefaultChallengeScheme = "Provider"; // <--- Aquí
+    })
+    .AddScheme<AuthenticationSchemeOptions, ProviderAuthenticationHandler>("Provider", null);
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("EmailVerifiedOnly", policy => policy.RequireClaim("email_verified", "true"));
+    options.AddPolicy(
+        "AdminOnly",
+        policy =>
+        {
+            policy.RequireClaim(ClaimTypes.Email, "liangalbin9@gmail.com");
+        }
+    );
+});
+
 var app = builder.Build();
 
 // 2. Usar la política (IMPORTANTE: Antes de UseAuthorization)
@@ -167,18 +199,6 @@ app.UseCors("AllowAll");
 // =======================
 // Middlewares
 // =======================
-
-// Rutas protegidas con Firebase
-app.UseWhen(
-    context =>
-        context.Request.Path.StartsWithSegments("/api/Users/endpoint")
-        || context.Request.Path.StartsWithSegments("/api/admin")
-        || context.Request.Path.StartsWithSegments("/api/privado"),
-    appBuilder =>
-    {
-        appBuilder.UseMiddleware<AuthMiddleware>();
-    }
-);
 
 // HTTPS
 
@@ -212,6 +232,7 @@ app.UseWhen(
 );
 
 // Autorización (HttpContext.User si FirebaseAuthMiddleware establece ClaimsPrincipal)
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Mapear controllers
@@ -224,3 +245,6 @@ app.UseStaticFiles();
 //
 
 app.Run();
+
+// Permitir las pruebas
+public partial class Program { }

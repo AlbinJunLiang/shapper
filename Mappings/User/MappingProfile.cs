@@ -1,5 +1,5 @@
 using AutoMapper;
-using Shapper.DTOs;
+using Shapper.Dtos;
 using Shapper.Models;
 
 namespace Shapper.Mappings
@@ -8,7 +8,15 @@ namespace Shapper.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<User, UserDto>().ReverseMap();
+            // Para crear usuario
+            CreateMap<CreateUserDto, User>();
+
+            // Para responder usuario
+            CreateMap<User, UserResponseDto>();
+
+            // Roles si los tienes
+            CreateMap<Role, RoleDto>().ReverseMap();
+            CreateMap<Role, RoleResponseDto>().ReverseMap();
         }
     }
 }

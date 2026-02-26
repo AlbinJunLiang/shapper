@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
 using Shapper.Config;
-using Shapper.DTOs;
+using Shapper.Dtos;
 
 namespace Shapper.Services.Emails.Strategies
 {
