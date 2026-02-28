@@ -9,18 +9,14 @@ namespace Shapper.Services.Payment.Strategies
 {
     public class PaypalPaymentStrategy : IPaymentStrategy
     {
+        public string Name => "paypal";
+
         private readonly PayPalSettings _paypal;
-        private readonly IConfiguration _config;
         private readonly HttpClient _http;
 
-        public PaypalPaymentStrategy(
-            IOptions<PayPalSettings> paypal,
-            IConfiguration config,
-            IHttpClientFactory factory
-        )
+        public PaypalPaymentStrategy(IOptions<PayPalSettings> paypal, IHttpClientFactory factory)
         {
             _paypal = paypal.Value;
-            _config = config;
             _http = factory.CreateClient();
         }
 

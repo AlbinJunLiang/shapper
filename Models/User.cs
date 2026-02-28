@@ -29,5 +29,7 @@ namespace Shapper.Models
         // Navegación
         [ForeignKey("RoleId")]
         public Role Role { get; set; } = null!;
+
+        public Contact Contact { get; set; } = null!;
     }
 }

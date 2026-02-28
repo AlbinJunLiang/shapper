@@ -3,7 +3,6 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shapper.Dtos;
-using Shapper.Middlewares;
 using Shapper.Models;
 using Shapper.Services.Users;
 
@@ -23,6 +22,16 @@ namespace Shapper.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPaginatedUsersAsync(int page = 1, int pageSize = 10)
         {
+            if (page <= 0)
+                return BadRequest(
+                    new { success = false, message = "Page number must be greater than 0." }
+                );
+
+            if (pageSize <= 0 || pageSize > 100)
+                return BadRequest(
+                    new { success = false, message = "Page size must be between 1 and 100." }
+                );
+
             var result = await _userService.GetPaginatedUsersAsync(page, pageSize);
             return Ok(result);
         }
@@ -42,12 +51,22 @@ namespace Shapper.Controllers
             try
             {
                 var user = await _userService.CreateUserAsync(dto);
-                return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
+
+                return CreatedAtAction(
+                    nameof(Get),
+                    new { id = user.Id },
+                    new { message = "User created successfully", data = user }
+                );
             }
             catch (InvalidOperationException ex)
                 when (ex.Message.Contains("Email already registered"))
             {
-                return Conflict(ex.Message); // <-- 409 Conflict
+                return Conflict(new { message = "Email already registered", status = 409 });
+            }
+            catch (InvalidOperationException ex)
+                when (ex.Message.Contains("Default CUSTOMER role not configured"))
+            {
+                return BadRequest(new { message = "Default role not configured", status = 400 });
             }
         }
 

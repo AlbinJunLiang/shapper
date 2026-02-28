@@ -77,6 +77,38 @@ namespace Shapper.Controllers
         }
     }
 
+    /*
+    [HttpPost("capture-payment")]
+    public async Task<IActionResult> CapturePayment([FromQuery] string token)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+            return BadRequest(new { error = "Token inválido" });
+    
+        try
+        {
+            // 🔎 1. Buscar la orden en BD
+            var order = _db.Orders.FirstOrDefault(x => x.PaymentToken == token);
+    
+            if (order == null)
+                return BadRequest(new { error = "Orden no encontrada" });
+    
+            if (order.IsPaid)
+                return BadRequest(new { error = "Orden ya procesada" });
+    
+            // 🧠 2. Obtener el provider desde BD (NO del frontend)
+            var strategy = _paymentService.GetStrategy(order.Provider);
+    
+            // 💳 3. Capturar
+            var success = await strategy.CapturePaymentAsync(token);
+    
+            return Ok(new { success });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { error = "Error interno procesando el pago" });
+        }
+    }
+    */
     // Modelos de request
     public class PaymentRequest
     {

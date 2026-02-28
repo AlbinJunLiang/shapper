@@ -6,6 +6,34 @@ using Shapper.Services.Verifications;
 
 namespace Shapper.Authentication
 {
+    /// <summary>
+    /// Handles the authentication process for incoming HTTP requests using a custom Bearer token strategy.
+    ///
+    /// This method:
+    /// 1. Extracts the Authorization header from the request.
+    /// 2. Validates the Bearer token using a verification strategy.
+    /// 3. Builds a ClaimsPrincipal with user information (UserId, Email, Role, EmailVerified).
+    /// 4. Returns an AuthenticationTicket if the token is valid.
+    ///
+    /// Returns:
+    /// - AuthenticateResult.Success if the token is valid.
+    /// - AuthenticateResult.Fail if validation fails.
+    /// - AuthenticateResult.NoResult if no Authorization header is present.
+    ///
+    /// This handler integrates with ASP.NET Core authentication middleware
+    /// and enables the use of [Authorize] attributes throughout the application.
+    /// </summary>
+    /*
+    Intercepta requests HTTP protegidos
+    
+    Lee el header Authorization
+    
+    Valida el token
+    
+    Crea el ClaimsPrincipal
+    
+    Devuelve AuthenticateResult
+    */
     public class ProviderAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         private readonly VerificationStrategyFactory _factory;

@@ -21,7 +21,7 @@ namespace Shapper.Controllers
                     // - guardas en BD
                     // - marcas orden como pagada
                     // - activas servicio
-                    Console.WriteLine("PAGADOOOOOOOOOOOOOOO--------------");
+                    Console.WriteLine("PAGADOOOOOOOOOOOOOOO-------------- PAYPAYPALLLL");
                     break;
             }
 

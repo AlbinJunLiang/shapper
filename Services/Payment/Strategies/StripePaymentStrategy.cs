@@ -3,13 +3,15 @@ using Stripe.Checkout;
 
 namespace Shapper.Services.Payment.Strategies
 {
-    public class StripePayment : IPaymentStrategy
+    public class StripePaymentStrategy : IPaymentStrategy
     {
+        public string Name => "stripe";
+
         private readonly string _apiServer;
 
-        public StripePayment(string apiServer)
+        public StripePaymentStrategy(IConfiguration config)
         {
-            _apiServer = apiServer;
+            _apiServer = config["ApiSettings:ApiServer"];
         }
 
         public async Task<string> CreatePaymentAsync(

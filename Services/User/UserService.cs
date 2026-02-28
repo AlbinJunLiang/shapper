@@ -57,14 +57,14 @@ namespace Shapper.Services.Users
             var existingUser = await _userRepository.GetByEmailAsync(createUserDto.Email);
 
             if (existingUser != null)
-                throw new Exception("Email already registered");
+                throw new InvalidOperationException("Email already registered");
 
             var user = _mapper.Map<User>(createUserDto);
 
             var defaultRole = await _roleRepository.GetByNameAsync("Customer");
 
             if (defaultRole == null)
-                throw new Exception("Rol por defecto no configurado.");
+                throw new InvalidOperationException("Default role not configured.");
 
             user.RoleId = defaultRole.Id;
             user.Status = "REGISTERED";

@@ -3,7 +3,6 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shapper.Dtos;
-using Shapper.Middlewares;
 using Shapper.Models;
 using Shapper.Services.Roles;
 
@@ -38,6 +37,11 @@ namespace Shapper.Controller
         [HttpGet]
         public async Task<IActionResult> GetPaginationRoles(int page = 1, int pageSize = 10)
         {
+            if (page <= 0)
+                return BadRequest("Page number must be greater than 0.");
+
+            if (pageSize <= 0 || pageSize > 100)
+                return BadRequest("Page size must be between 1 and 100.");
             var result = await _roleService.GetPaginatedRolesAsync(page, pageSize);
             return Ok(result);
         }

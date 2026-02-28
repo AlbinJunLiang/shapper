@@ -7,43 +7,19 @@ namespace Shapper.Services.Payment
 {
     public class PaymentService
     {
-        private readonly IHttpClientFactory _httpFactory;
-        private readonly IConfiguration _config;
-        private readonly PayPalSettings _paypalSettings;
+        private readonly Dictionary<string, IPaymentStrategy> _strategies;
 
-        public PaymentService(
-            IOptions<PayPalSettings> paypalSettings,
-            IConfiguration config,
-            IHttpClientFactory factory
-        )
+        public PaymentService(IEnumerable<IPaymentStrategy> strategies)
         {
-            _paypalSettings = paypalSettings.Value;
-            _config = config;
-            _httpFactory = factory;
+            _strategies = strategies.ToDictionary(s => s.Name, StringComparer.OrdinalIgnoreCase);
         }
 
         public IPaymentStrategy GetStrategy(string provider)
         {
-            if (string.IsNullOrWhiteSpace(provider))
-                throw new ArgumentException("Proveedor requerido");
-
-            provider = provider.Trim().ToLower();
-
-            if (provider != "paypal" && provider != "stripe")
-            {
+            if (!_strategies.TryGetValue(provider, out var strategy))
                 throw new NotSupportedException($"Proveedor '{provider}' no disponible");
-            }
 
-            return provider switch
-            {
-                "paypal" => new PaypalPaymentStrategy(
-                    Options.Create(_paypalSettings),
-                    _config,
-                    _httpFactory
-                ),
-                "stripe" => new StripePayment(_config["ApiSettings:ApiServer"]),
-                _ => throw new ArgumentException("Proveedor no soportado"),
-            };
+            return strategy;
         }
     }
 }

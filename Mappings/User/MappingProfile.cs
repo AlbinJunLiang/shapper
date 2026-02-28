@@ -17,6 +17,14 @@ namespace Shapper.Mappings
             // Roles si los tienes
             CreateMap<Role, RoleDto>().ReverseMap();
             CreateMap<Role, RoleResponseDto>().ReverseMap();
+            CreateMap<Contact, ContactDto>().ReverseMap();
+            CreateMap<Contact, ContactResponseDto>().ReverseMap();
+            CreateMap<Category, CategoryDto>().ReverseMap();
+
+            CreateMap<Category, CategoryResponseDto>().ReverseMap();
+
+            CreateMap<Subcategory, SubcategoryResponseDto>().ReverseMap();
+            CreateMap<Subcategory, SubcategoryDto>().ReverseMap();
         }
     }
 }
