@@ -1,0 +1,18 @@
+using Shapper.Dtos;
+using Shapper.Models;
+
+namespace Shapper.Services.Reviews
+{
+    public interface IReviewService
+    {
+        Task<ReviewDto?> GetByIdAsync(int id);
+
+        Task<PagedResponseDto<ReviewResponseDto>> GetPaginatedAsync(int page, int pageSize);
+
+        Task<ReviewResponseDto?> CreateAsync(ReviewDto dto);
+
+        Task<ReviewResponseDto> UpdateAsync(int id, ReviewDto dto);
+
+        Task DeleteAsync(int id);
+    }
+}

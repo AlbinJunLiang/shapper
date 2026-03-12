@@ -31,5 +31,7 @@ namespace Shapper.Models
         public Role Role { get; set; } = null!;
 
         public Contact Contact { get; set; } = null!;
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
+        public ICollection<Review> Reviews { get; set; }
     }
 }

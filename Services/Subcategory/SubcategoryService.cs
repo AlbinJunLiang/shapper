@@ -27,7 +27,7 @@ namespace Shapper.Services.Subcategories
         public async Task<SubcategoryResponseDto> CreateAsync(SubcategoryDto dto)
         {
             var existingSubcategory = await _subcategoryRepository.GetByNameAsync(dto.Name);
-            var existingCategory = await _categoryRepository.GetByNameAsync(dto.Name);
+            var existingCategory = await _categoryRepository.GetByIdAsync(dto.CategoryId);
 
             if (existingCategory == null)
                 throw new InvalidOperationException("The specified category does not exist.");
@@ -48,7 +48,7 @@ namespace Shapper.Services.Subcategories
             return subcategory == null ? null : _mapper.Map<SubcategoryDto>(subcategory);
         }
 
-        public async Task<PagedResponseDto<SubcategoryDto>> GetPaginatedAsync(
+        public async Task<PagedResponseDto<SubcategoryResponseDto>> GetPaginatedAsync(
             int page,
             int pageSize
         )
@@ -62,9 +62,9 @@ namespace Shapper.Services.Subcategories
                 pageSize
             );
 
-            var mapped = _mapper.Map<List<SubcategoryDto>>(categories);
+            var mapped = _mapper.Map<List<SubcategoryResponseDto>>(categories);
 
-            return new PagedResponseDto<SubcategoryDto>
+            return new PagedResponseDto<SubcategoryResponseDto>
             {
                 TotalCount = totalCount,
                 Page = page,

@@ -36,7 +36,10 @@ namespace Shapper.Services.Categories
             return category == null ? null : _mapper.Map<CategoryDto>(category);
         }
 
-        public async Task<PagedResponseDto<CategoryDto>> GetPaginatedAsync(int page, int pageSize)
+        public async Task<PagedResponseDto<CategoryResponseDto>> GetPaginatedAsync(
+            int page,
+            int pageSize
+        )
         {
             page = page <= 0 ? 1 : page;
             pageSize = pageSize <= 0 ? 10 : pageSize;
@@ -47,9 +50,9 @@ namespace Shapper.Services.Categories
                 pageSize
             );
 
-            var mapped = _mapper.Map<List<CategoryDto>>(categories);
+            var mapped = _mapper.Map<List<CategoryResponseDto>>(categories);
 
-            return new PagedResponseDto<CategoryDto>
+            return new PagedResponseDto<CategoryResponseDto>
             {
                 TotalCount = totalCount,
                 Page = page,

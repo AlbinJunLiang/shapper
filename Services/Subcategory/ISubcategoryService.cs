@@ -7,7 +7,7 @@ namespace Shapper.Services.Subcategories
     {
         Task<SubcategoryDto?> GetByIdAsync(int id);
 
-        Task<PagedResponseDto<SubcategoryDto>> GetPaginatedAsync(int page, int pageSize);
+        Task<PagedResponseDto<SubcategoryResponseDto>> GetPaginatedAsync(int page, int pageSize);
 
         Task<SubcategoryResponseDto?> CreateAsync(SubcategoryDto dto);
 

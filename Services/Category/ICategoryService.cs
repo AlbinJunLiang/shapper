@@ -7,7 +7,7 @@ namespace Shapper.Services.Categories
     {
         Task<CategoryDto?> GetByIdAsync(int id);
 
-        Task<PagedResponseDto<CategoryDto>> GetPaginatedAsync(int page, int pageSize);
+        Task<PagedResponseDto<CategoryResponseDto>> GetPaginatedAsync(int page, int pageSize);
 
         Task<CategoryResponseDto?> CreateAsync(CategoryDto dto);
 

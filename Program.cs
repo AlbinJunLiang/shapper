@@ -13,24 +13,15 @@ using Microsoft.OpenApi.Models;
 using Shapper.Authentication;
 using Shapper.Config;
 using Shapper.Data;
+using Shapper.Extensions;
 using Shapper.Mappings;
-using Shapper.Repositories.Categories;
-using Shapper.Repositories.Contacts;
-using Shapper.Repositories.Roles;
-using Shapper.Repositories.Subcategories;
-using Shapper.Repositories.Users;
 using Shapper.Services;
-using Shapper.Services.Categories;
-using Shapper.Services.Contacts;
 using Shapper.Services.Emails;
 using Shapper.Services.Emails.Strategies;
 using Shapper.Services.ImageStorage;
 using Shapper.Services.ImageStorage.Strategies;
 using Shapper.Services.Payment;
 using Shapper.Services.Payment.Strategies;
-using Shapper.Services.Roles;
-using Shapper.Services.Subcategories;
-using Shapper.Services.Users;
 using Shapper.Services.Verifications;
 using Shapper.Services.Verifications.Strategies;
 using Stripe;
@@ -59,19 +50,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
-// Repositories
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<IContactRepository, ContactRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
-
-// Services
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IRoleService, RoleService>();
-builder.Services.AddScoped<IContactService, ContactService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<ISubcategoryService, SubcategoryService>();
+builder.Services.AddApplicationServices();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
