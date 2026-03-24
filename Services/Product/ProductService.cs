@@ -38,10 +38,10 @@ namespace Shapper.Services.Products
             return _mapper.Map<ProductResponseDto>(product);
         }
 
-        public async Task<ProductDto?> GetByIdAsync(int id)
+        public async Task<ProductStoreView2Dto?> GetByIdAsync(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
-            return product == null ? null : _mapper.Map<ProductDto>(product);
+            return product == null ? null : _mapper.Map<ProductStoreView2Dto>(product);
         }
 
         public async Task<PagedResponseDto<ProductResponseDto>> GetPaginatedAsync(
@@ -69,7 +69,8 @@ namespace Shapper.Services.Products
 
         public async Task<PagedResponseDto<ProductStoreViewDto>> GetProductsStoreViewAsync(
             int page,
-            int pageSize
+            int pageSize,
+            bool onlyFeatured
         )
         {
             page = page <= 0 ? 1 : page;
@@ -78,7 +79,8 @@ namespace Shapper.Services.Products
 
             var (products, totalCount) = await _productRepository.GetProductsStoreViewAsync(
                 page,
-                pageSize
+                pageSize,
+                onlyFeatured
             );
 
             var mapped = _mapper.Map<List<ProductStoreViewDto>>(products);
@@ -90,6 +92,41 @@ namespace Shapper.Services.Products
                 PageSize = pageSize,
                 TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
                 Data = mapped,
+            };
+        }
+
+        public async Task<List<ProductStoreViewDto>> SearchProductsAsync(
+            string searchTerm,
+            int count = 5
+        )
+        {
+            var products = await _productRepository.SearchProductsAsync(searchTerm, count);
+            return _mapper.Map<List<ProductStoreViewDto>>(products);
+        }
+
+        public async Task<PagedResponseDto<ProductStoreViewDto>> GetFilteredProductsAsync(
+            ProductFilterDto filter,
+            int page,
+            int pageSize
+        )
+        {
+            page = page <= 0 ? 1 : page;
+            pageSize = pageSize <= 0 ? 10 : pageSize;
+            pageSize = pageSize > 100 ? 100 : pageSize;
+
+            var (products, totalCount) = await _productRepository.GetFilteredProductsAsync(
+                filter,
+                page,
+                pageSize
+            );
+
+            return new PagedResponseDto<ProductStoreViewDto>
+            {
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
+                Data = products,
             };
         }
 

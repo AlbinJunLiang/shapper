@@ -3,7 +3,6 @@ namespace Shapper.Dtos
     public class FeaturedProductDto
     {
         public int ProductId { get; set; }
-        public string Description { get; set; }
         public int DisplayedOrder { get; set; }
     }
 
@@ -11,7 +10,6 @@ namespace Shapper.Dtos
     {
         public int Id { get; set; }
         public int ProductId { get; set; }
-        public string Description { get; set; }
         public int DisplayedOrder { get; set; }
     }
 }

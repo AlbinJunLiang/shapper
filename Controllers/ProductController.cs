@@ -55,13 +55,70 @@ namespace Shapper.Controller
         }
 
         [HttpGet("store")]
-        public async Task<IActionResult> GetStoreProductsAsync(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> GetStoreProductsAsync(
+            int page = 1,
+            int pageSize = 10,
+            bool? featured = false
+        )
         {
             var validation = ValidatePagination(page, pageSize);
             if (validation != null)
                 return validation;
 
-            var result = await _productService.GetProductsStoreViewAsync(page, pageSize);
+            var result = await _productService.GetProductsStoreViewAsync(
+                page,
+                pageSize,
+                featured == true
+            );
+            return Ok(result);
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchProducts(
+            [FromQuery] string term,
+            [FromQuery] int count = 5
+        )
+        {
+            if (count <= 0 || count > 100) // Añadí count <= 0 por seguridad
+                return BadRequest(
+                    new { success = false, message = "Count must be between 1 and 100." }
+                );
+
+            // 2. Validar que el término no sea nulo o vacío
+            if (string.IsNullOrWhiteSpace(term))
+                return BadRequest("Search term is required.");
+
+            if (term.Length > 100)
+                return BadRequest("Search term cannot exceed 100 characters.");
+
+            // 4. Ejecutar búsqueda
+            var products = await _productService.SearchProductsAsync(term, count);
+            return Ok(products);
+        }
+
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetFilteredProducts(
+            [FromQuery] int? categoryId,
+            [FromQuery] int? subcategoryId,
+            [FromQuery] double? minPrice,
+            [FromQuery] double? maxPrice,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10
+        )
+        {
+            var validation = ValidatePagination(page, pageSize);
+            if (validation != null)
+                return validation;
+
+            var filter = new ProductFilterDto
+            {
+                CategoryId = categoryId,
+                SubcategoryId = subcategoryId,
+                MinPrice = minPrice,
+                MaxPrice = maxPrice,
+            };
+
+            var result = await _productService.GetFilteredProductsAsync(filter, page, pageSize);
             return Ok(result);
         }
 

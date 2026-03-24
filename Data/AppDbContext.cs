@@ -44,6 +44,7 @@ namespace Shapper.Data
             modelBuilder.Entity<OrderPayment>().Property(op => op.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Review>().Property(r => r.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<StoreInformation>().Property(s => s.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Location>().Property(l => l.Id).ValueGeneratedOnAdd();
 
             /*StoreInformation Model*/
             modelBuilder

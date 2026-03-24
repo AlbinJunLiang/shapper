@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Shapper.Data;
 using Shapper.Dtos;
+using Shapper.Enums;
+using Shapper.Mappings;
 using Shapper.Models;
 
 namespace Shapper.Repositories.Products
@@ -20,7 +22,13 @@ namespace Shapper.Repositories.Products
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Product?> GetByIdAsync(int id) => await _context.Products.FindAsync(id);
+        public async Task<Product?> GetByIdAsync(int id)
+        {
+            return await _context
+                .Products.Include(p => p.Subcategory) // Carga la entidad Subcategory
+                .Include(p => p.ProductImages) // Carga la lista de Images
+                .FirstOrDefaultAsync(p => p.Id == id); // FindAsync no permite Includes, usamos FirstOrDefaultAsync
+        }
 
         public async Task<Product?> GetByNameAsync(string name)
         {
@@ -61,12 +69,21 @@ namespace Shapper.Repositories.Products
             return (products, totalCount);
         }
 
-        public async Task<(
-            List<ProductStoreViewDto> Products,
-            int TotalCount
-        )> GetProductsStoreViewAsync(int page, int pageSize)
+        /**
+        * @ ProductStoreViewDto
+        Endpoint de acceso público para la tienda
+        */
+        public async Task<(List<ProductStoreViewDto>, int)> GetProductsStoreViewAsync(
+            int page,
+            int pageSize,
+            bool onlyFeatured = false
+        )
         {
-            var baseQuery = _context.Products.AsNoTracking().Where(p => p.Status == "ACTIVE");
+            var baseQuery = _context
+                .Products.AsNoTracking()
+                .Where(p => p.Status == ProductStatus.ACTIVE.ToString());
+            if (onlyFeatured)
+                baseQuery = baseQuery.Where(p => p.FeaturedProduct != null);
 
             var totalCount = await baseQuery.CountAsync();
 
@@ -74,26 +91,35 @@ namespace Shapper.Repositories.Products
                 .OrderBy(p => p.Name)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .Select(p => new ProductStoreViewDto
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Description = p.Description,
-                    Price = p.Price,
-                    Discount = p.Discount,
-                    TaxAmount = p.TaxAmount,
-                    NewPrice = (p.Price * (1 - p.Discount / 100)) * (1 + p.TaxAmount / 100), // $(P \cdot (1 - D)) \cdot (1 + T)$
-                    Quantity = p.Quantity,
-                    Details = p.Details,
-                    Status = p.Status,
-                    SubcategoryName = p.Subcategory.Name,
-                    Images = p
-                        .ProductImages.Select(i => new ProductImageDto { ImageUrl = i.ImageUrl })
-                        .ToList(),
-                })
+                .Select(MappingProduct.ToStoreViewDto)
                 .ToListAsync();
 
             return (products, totalCount);
+        }
+
+        public async Task<List<ProductStoreViewDto>> SearchProductsAsync(
+            string searchTerm,
+            int count = 5
+        )
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                return new List<ProductStoreViewDto>();
+
+            var terms = searchTerm.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var query = _context
+                .Products.AsNoTracking()
+                .Where(p => p.Status == ProductStatus.ACTIVE.ToString());
+
+            foreach (var term in terms)
+            {
+                query = query.Where(p => p.Name.Contains(term) || p.Description.Contains(term));
+            }
+
+            return await query
+                .OrderBy(p => p.Name)
+                .Take(count)
+                .Select(MappingProduct.ToStoreViewDto)
+                .ToListAsync();
         }
 
         public async Task<Product> UpdateAsync(Product product)
@@ -101,6 +127,41 @@ namespace Shapper.Repositories.Products
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
             return product;
+        }
+
+        public async Task<(
+            List<ProductStoreViewDto> Products,
+            int TotalCount
+        )> GetFilteredProductsAsync(ProductFilterDto filter, int page, int pageSize)
+        {
+            var query = _context
+                .Products.AsNoTracking()
+                .Where(p => p.Status == ProductStatus.ACTIVE.ToString());
+
+            if (filter.SubcategoryId.HasValue && filter.SubcategoryId.Value > 0)
+            {
+                query = query.Where(p => p.SubcategoryId == filter.SubcategoryId.Value);
+            }
+            else if (filter.CategoryId.HasValue && filter.CategoryId.Value > 0)
+            {
+                query = query.Where(p => p.Subcategory.CategoryId == filter.CategoryId.Value);
+            }
+
+            if (filter.MinPrice.HasValue)
+                query = query.Where(p => p.Price >= filter.MinPrice.Value);
+            if (filter.MaxPrice.HasValue)
+                query = query.Where(p => p.Price <= filter.MaxPrice.Value);
+
+            var totalCount = await query.CountAsync();
+
+            var products = await query
+                .OrderBy(p => p.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(MappingProduct.ToStoreViewDto)
+                .ToListAsync();
+
+            return (products, totalCount);
         }
 
         public async Task DeleteAsync(Product product)

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using Shapper.Enums;
 using Shapper.Validators;
 
 namespace Shapper.Dtos
@@ -30,7 +32,10 @@ namespace Shapper.Dtos
         public string Details { get; set; }
 
         [Required(ErrorMessage = "Status is required.")]
-        [MaxLength(50, ErrorMessage = "Status cannot exceed 50 characters.")]
+        [EnumDataType(
+            typeof(ProductStatus),
+            ErrorMessage = "Status must be: ACTIVE, INACTIVE, or DISCONTINUED."
+        )]
         public string Status { get; set; } = "ACTIVE";
 
         [Required(ErrorMessage = "Subcategory is required.")]
@@ -58,7 +63,7 @@ namespace Shapper.Dtos
         public string Status { get; set; }
 
         public int SubcategoryId { get; set; } // FK clara
-        public List<ProductImageDto> Images { get; set; }
+        public List<ProductImageDto> Images { get; set; } = new List<ProductImageDto>();
     }
 
     public class ProductStoreViewDto
@@ -83,6 +88,31 @@ namespace Shapper.Dtos
         public string Status { get; set; }
 
         public string SubcategoryName { get; set; }
-        public List<ProductImageDto> Images { get; set; }
+        public List<ProductImageDto> Images { get; set; } = new List<ProductImageDto>();
+    }
+
+    public class ProductStoreView2Dto
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public double Price { get; set; } = 0;
+
+        public double Discount { get; set; } = 0;
+
+        public double TaxAmount { get; set; }
+
+        public double NewPrice { get; set; }
+        public int Quantity { get; set; } = 0;
+
+        public string Details { get; set; }
+
+        public string Status { get; set; }
+
+        public string SubcategoryName { get; set; }
+        public List<ProductImageDto2> Images { get; set; } = new List<ProductImageDto2>();
     }
 }

@@ -4,10 +4,19 @@ namespace Shapper.Services.Products
 {
     public interface IProductService
     {
-        Task<ProductDto?> GetByIdAsync(int id);
+        Task<ProductStoreView2Dto?> GetByIdAsync(int id);
 
         Task<PagedResponseDto<ProductResponseDto>> GetPaginatedAsync(int page, int pageSize);
         Task<PagedResponseDto<ProductStoreViewDto>> GetProductsStoreViewAsync(
+            int page,
+            int pageSize,
+            bool onlyFeatured
+        );
+
+        Task<List<ProductStoreViewDto>> SearchProductsAsync(string searchTerm, int count = 5);
+
+        Task<PagedResponseDto<ProductStoreViewDto>> GetFilteredProductsAsync(
+            ProductFilterDto filter,
             int page,
             int pageSize
         );

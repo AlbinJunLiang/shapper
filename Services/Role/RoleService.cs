@@ -68,12 +68,13 @@ namespace Shapper.Services.Roles
         public async Task<RoleResponseDto> UpdateRoleAsync(int id, RoleDto roleDto)
         {
             var existingRole = await _roleRepository.GetByIdAsync(id);
-
-            if (existingRole != null && (existingRole.Name != roleDto.Name))
-                throw new InvalidOperationException("Role name already exists.");
-
             if (existingRole == null)
                 throw new KeyNotFoundException("Role not found");
+
+            // Check if another role already has the new name
+            var otherRole = await _roleRepository.GetByNameAsync(roleDto.Name);
+            if (otherRole != null && otherRole.Id != id)
+                throw new InvalidOperationException("Role name already exists.");
 
             existingRole.Name = roleDto.Name;
             existingRole.Description = roleDto.Description;

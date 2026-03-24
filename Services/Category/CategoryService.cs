@@ -19,8 +19,10 @@ namespace Shapper.Services.Categories
         public async Task<CategoryResponseDto> CreateAsync(CategoryDto dto)
         {
             var existingCategory = await _categoryRepository.GetByNameAsync(dto.Name);
+            dto.Name = dto.Name?.Trim();
 
-            if (existingCategory != null)
+            var otherCategory = await _categoryRepository.GetByNameAsync(dto.Name);
+            if (otherCategory != null)
                 throw new InvalidOperationException("Category name already exists.");
 
             var category = _mapper.Map<Category>(dto);
@@ -62,14 +64,21 @@ namespace Shapper.Services.Categories
             };
         }
 
+        public async Task<CategoriesWithGlobalPriceRangeDto> GetCategoriesWithGlobalPriceRangeAsync()
+        {
+            return await _categoryRepository.GetCategoriesWithGlobalPriceRangeAsync();
+        }
+
         public async Task<CategoryResponseDto> UpdateAsync(int id, CategoryDto dto)
         {
             var existingCategory = await _categoryRepository.GetByIdAsync(id);
+            dto.Name = dto.Name?.Trim();
 
             if (existingCategory == null)
                 throw new InvalidOperationException("Category not found.");
 
-            if (existingCategory.Name == dto.Name)
+            var otherCategory = await _categoryRepository.GetByNameAsync(dto.Name);
+            if (otherCategory != null)
                 throw new InvalidOperationException("Category name already exists.");
 
             existingCategory.Name = dto.Name;

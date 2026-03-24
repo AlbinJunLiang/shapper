@@ -22,4 +22,18 @@ namespace Shapper.Dtos
         public string Description { get; set; }
         public string ImageUrl { get; set; }
     }
+
+    public class CategoryWithSubcategoriesDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public List<SubcategoryResponse2Dto> Subcategories { get; set; }
+    }
+
+    public class CategoriesWithGlobalPriceRangeDto
+    {
+        public double? GlobalMinPrice { get; set; }
+        public double? GlobalMaxPrice { get; set; }
+        public List<CategoryWithSubcategoriesDto> Categories { get; set; }
+    }
 }

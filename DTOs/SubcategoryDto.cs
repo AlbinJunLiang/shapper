@@ -25,4 +25,10 @@ namespace Shapper.Dtos
         public string ImageUrl { get; set; }
         public int CategoryId { get; set; }
     }
+
+    public class SubcategoryResponse2Dto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
 }

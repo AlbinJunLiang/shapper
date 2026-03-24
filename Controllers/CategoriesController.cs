@@ -1,4 +1,4 @@
-using System.Security.Claims; // <-- necesario para Claim, ClaimTypes, ClaimsIdentity, ClaimsPrincipal
+using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -57,6 +57,13 @@ namespace Shapper.Controller
                 );
 
             var result = await _categoryService.GetPaginatedAsync(page, pageSize);
+            return Ok(result);
+        }
+
+        [HttpGet("with-price-range")]
+        public async Task<IActionResult> GetCategoriesWithGlobalPriceRange()
+        {
+            var result = await _categoryService.GetCategoriesWithGlobalPriceRangeAsync();
             return Ok(result);
         }
 

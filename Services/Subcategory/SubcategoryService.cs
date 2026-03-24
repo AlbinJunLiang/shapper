@@ -28,11 +28,13 @@ namespace Shapper.Services.Subcategories
         {
             var existingSubcategory = await _subcategoryRepository.GetByNameAsync(dto.Name);
             var existingCategory = await _categoryRepository.GetByIdAsync(dto.CategoryId);
+            dto.Name = dto.Name?.Trim();
 
             if (existingCategory == null)
                 throw new InvalidOperationException("The specified category does not exist.");
 
-            if (existingSubcategory != null)
+            var otherSubcategory = await _subcategoryRepository.GetByNameAsync(dto.Name);
+            if (otherSubcategory != null)
                 throw new InvalidOperationException("Subcategory name already exists.");
 
             var subcategory = _mapper.Map<Subcategory>(dto);
@@ -77,11 +79,13 @@ namespace Shapper.Services.Subcategories
         public async Task<SubcategoryResponseDto> UpdateAsync(int id, SubcategoryDto dto)
         {
             var existingSubcategory = await _subcategoryRepository.GetByIdAsync(id);
+            dto.Name = dto.Name?.Trim();
 
             if (existingSubcategory == null)
                 throw new InvalidOperationException("Subcategory not found.");
 
-            if (existingSubcategory.Name == dto.Name)
+            var otherSubcategory = await _subcategoryRepository.GetByNameAsync(dto.Name);
+            if (otherSubcategory != null)
                 throw new InvalidOperationException("Subcategory name already exists.");
 
             existingSubcategory.Name = dto.Name;

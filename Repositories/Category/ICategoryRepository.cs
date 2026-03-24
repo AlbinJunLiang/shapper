@@ -1,3 +1,4 @@
+using Shapper.Dtos;
 using Shapper.Models;
 
 namespace Shapper.Repositories.Categories
@@ -6,6 +7,7 @@ namespace Shapper.Repositories.Categories
     {
         Task<Category> GetByIdAsync(int id);
         Task<Category> GetByNameAsync(string name);
+        Task<CategoriesWithGlobalPriceRangeDto> GetCategoriesWithGlobalPriceRangeAsync();
 
         Task<(List<Category> Categories, int TotalCount)> GetPaginatedAsync(int page, int pageSize);
         Task AddAsync(Category category);

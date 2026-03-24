@@ -14,6 +14,15 @@ namespace Shapper.Repositories.Products
 
         Task<(List<ProductStoreViewDto> Products, int TotalCount)> GetProductsStoreViewAsync(
             int page,
+            int pageSize,
+            bool onlyFeatured
+        );
+
+        Task<List<ProductStoreViewDto>> SearchProductsAsync(string searchTerm, int count = 5);
+
+        Task<(List<ProductStoreViewDto> Products, int TotalCount)> GetFilteredProductsAsync(
+            ProductFilterDto filter,
+            int page,
             int pageSize
         );
 

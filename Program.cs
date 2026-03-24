@@ -2,7 +2,6 @@ using System.Security.Claims;
 using System.Text;
 using AutoMapper;
 using CloudinaryDotNet;
-using DotNetEnv;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication;
@@ -31,14 +30,7 @@ using Stripe;
 var builder = WebApplication.CreateBuilder(args);
 var status = builder.Environment.IsDevelopment();
 
-if (status)
-{
-    Env.Load(); // carga .env
-    Console.WriteLine(builder.Configuration["ASPNETCORE_ENVIRONMENT"]);
-    Console.WriteLine(
-        "Stripe key = " + Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
-    );
-}
+
 
 // =======================
 // Servicios y dependencias
@@ -53,6 +45,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddApplicationServices();
 
 // AutoMapper
+//builder.Services.AddAutoMapper(cfg => { }, typeof(MappingProfile).Assembly);
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));

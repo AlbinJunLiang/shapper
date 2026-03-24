@@ -8,13 +8,8 @@ namespace Shapper.Mappings
     {
         public MappingProfile()
         {
-            // Para crear usuario
             CreateMap<CreateUserDto, User>();
-
-            // Para responder usuario
             CreateMap<User, UserResponseDto>();
-
-            // Roles si los tienes
             CreateMap<Role, RoleDto>().ReverseMap();
             CreateMap<Role, RoleResponseDto>().ReverseMap();
             CreateMap<Contact, ContactDto>().ReverseMap();
@@ -28,6 +23,13 @@ namespace Shapper.Mappings
 
             CreateMap<Product, ProductResponseDto>().ReverseMap();
             CreateMap<Product, ProductStoreViewDto>().ReverseMap();
+            CreateMap<Product, ProductFilterDto>().ReverseMap();
+
+            CreateMap<ProductImage, ProductImageDto2>();
+            CreateMap<Product, ProductStoreView2Dto>()
+                // Si en el DTO la propiedad se llama 'Images' pero en la BD 'ProductImages'
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.ProductImages));
+            // Si el DTO tiene 'ProductImages' y la BD también, la línea de arriba NO es necesaria
 
             CreateMap<Product, ProductDto>().ReverseMap();
 

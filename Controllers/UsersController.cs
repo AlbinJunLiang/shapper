@@ -64,7 +64,7 @@ namespace Shapper.Controllers
                 return Conflict(new { message = "Email already registered", status = 409 });
             }
             catch (InvalidOperationException ex)
-                when (ex.Message.Contains("Default CUSTOMER role not configured"))
+                when (ex.Message.Contains("Default role not configured."))
             {
                 return BadRequest(new { message = "Default role not configured", status = 400 });
             }
