@@ -98,12 +98,12 @@ namespace Shapper.Controller
 
         [HttpGet("filter")]
         public async Task<IActionResult> GetFilteredProducts(
-            [FromQuery] int? categoryId,
-            [FromQuery] int? subcategoryId,
+            [FromQuery] List<int>? categoryIds,
+            [FromQuery] List<int>? subcategoryIds,
             [FromQuery] double? minPrice,
             [FromQuery] double? maxPrice,
             [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10
+            [FromQuery] int pageSize = 8
         )
         {
             var validation = ValidatePagination(page, pageSize);
@@ -112,8 +112,8 @@ namespace Shapper.Controller
 
             var filter = new ProductFilterDto
             {
-                CategoryId = categoryId,
-                SubcategoryId = subcategoryId,
+                CategoryIds = categoryIds,
+                SubcategoryIds = subcategoryIds,
                 MinPrice = minPrice,
                 MaxPrice = maxPrice,
             };

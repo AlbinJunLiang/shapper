@@ -27,6 +27,7 @@ namespace Shapper.Dtos
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public bool Completed { get; set; } = false;
         public List<SubcategoryResponse2Dto> Subcategories { get; set; }
     }
 

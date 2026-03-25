@@ -138,17 +138,18 @@ namespace Shapper.Repositories.Products
                 .Products.AsNoTracking()
                 .Where(p => p.Status == ProductStatus.ACTIVE.ToString());
 
-            if (filter.SubcategoryId.HasValue && filter.SubcategoryId.Value > 0)
+            if (filter.SubcategoryIds != null && filter.SubcategoryIds.Any())
             {
-                query = query.Where(p => p.SubcategoryId == filter.SubcategoryId.Value);
+                query = query.Where(p => filter.SubcategoryIds.Contains(p.SubcategoryId));
             }
-            else if (filter.CategoryId.HasValue && filter.CategoryId.Value > 0)
+            else if (filter.CategoryIds != null && filter.CategoryIds.Any())
             {
-                query = query.Where(p => p.Subcategory.CategoryId == filter.CategoryId.Value);
+                query = query.Where(p => filter.CategoryIds.Contains(p.Subcategory.CategoryId));
             }
 
             if (filter.MinPrice.HasValue)
                 query = query.Where(p => p.Price >= filter.MinPrice.Value);
+
             if (filter.MaxPrice.HasValue)
                 query = query.Where(p => p.Price <= filter.MaxPrice.Value);
 
