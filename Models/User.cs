@@ -26,11 +26,16 @@ namespace Shapper.Models
 
         public string Status { get; set; } = string.Empty;
 
+        [StringLength(300, ErrorMessage = "The address cannot exceed 10 characters.")]
+        public string Address { get; set; } = string.Empty;
+
+        [StringLength(15, ErrorMessage = "The phone number cannot exceed 15 characters.")]
+        public string PhoneNumber { get; set; } = string.Empty;
+
         // Navegación
         [ForeignKey("RoleId")]
         public Role Role { get; set; } = null!;
 
-        public Contact Contact { get; set; } = null!;
         public ICollection<Order> Orders { get; set; } = new List<Order>();
         public ICollection<Review> Reviews { get; set; }
     }

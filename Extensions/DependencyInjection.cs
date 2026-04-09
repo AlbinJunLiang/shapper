@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using Shapper.Repositories.Categories;
-using Shapper.Repositories.Contacts;
 using Shapper.Repositories.Faqs;
 using Shapper.Repositories.FeaturedProducts;
 using Shapper.Repositories.Locations;
@@ -13,7 +12,6 @@ using Shapper.Repositories.StoreInformations;
 using Shapper.Repositories.Subcategories;
 using Shapper.Repositories.Users;
 using Shapper.Services.Categories;
-using Shapper.Services.Contacts;
 using Shapper.Services.Faqs;
 using Shapper.Services.FeaturedProducts;
 using Shapper.Services.Locations;
@@ -35,7 +33,6 @@ namespace Shapper.Extensions
             // Repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
-            services.AddScoped<IContactRepository, ContactRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
@@ -50,7 +47,6 @@ namespace Shapper.Extensions
             // Services
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
-            services.AddScoped<IContactService, ContactService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISubcategoryService, SubcategoryService>();
             services.AddScoped<IProductService, ProductService>();

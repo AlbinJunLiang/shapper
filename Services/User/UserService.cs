@@ -29,6 +29,12 @@ namespace Shapper.Services.Users
             return user == null ? null : _mapper.Map<UserResponseDto>(user);
         }
 
+        public async Task<UserResponseDto?> GetByEmailAsync(string email)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+            return user == null ? null : _mapper.Map<UserResponseDto>(user);
+        }
+
         public async Task<PagedResponseDto<UserResponseDto>> GetPaginatedUsersAsync(
             int page,
             int pageSize
@@ -52,31 +58,43 @@ namespace Shapper.Services.Users
             };
         }
 
-        public async Task<UserResponseDto> CreateUserAsync(CreateUserDto createUserDto)
+        public async Task<(UserResponseDto User, bool IsNew)> UpsertUserAsync(
+            CreateUserDto createUserDto
+        )
         {
+            // 1. Buscar si el usuario ya existe por email
             var existingUser = await _userRepository.GetByEmailAsync(createUserDto.Email);
 
             if (existingUser != null)
-                throw new InvalidOperationException("Email already registered");
+            {
+                // 2. Lógica de "Despertar" o Actualizar Status:
+                // Si el usuario existe pero el status que viene es diferente (ej. pasó de "REGISTERED" a "VERIFIED")
+                if (existingUser.Status != createUserDto.Status)
+                {
+                    existingUser.Status = createUserDto.Status;
 
+                    // También podrías actualizar Nombre/Apellido si detectas cambios
+                    existingUser.Name = createUserDto.Name;
+                    existingUser.LastName = createUserDto.LastName;
+
+                    await _userRepository.UpdateAsync(existingUser);
+                }
+
+                return (_mapper.Map<UserResponseDto>(existingUser), false);
+            }
+
+            // 3. Si no existe, creación normal
             var user = _mapper.Map<User>(createUserDto);
-
             var defaultRole = await _roleRepository.GetByNameAsync("Customer");
 
             if (defaultRole == null)
                 throw new InvalidOperationException("Default role not configured.");
 
             user.RoleId = defaultRole.Id;
-            user.Status = "REGISTERED";
 
             await _userRepository.AddAsync(user);
 
-            return _mapper.Map<UserResponseDto>(user);
-        }
-
-        public async Task<User?> GetByEmailAsync(string email)
-        {
-            return await _userRepository.GetByEmailAsync(email);
+            return (_mapper.Map<UserResponseDto>(user), true);
         }
 
         public async Task<UserResponseDto> UpdateUserAsync(string email, UpdateUserDto dto)
@@ -90,6 +108,12 @@ namespace Shapper.Services.Users
 
             if (!string.IsNullOrEmpty(dto.LastName))
                 user.LastName = dto.LastName;
+                
+            if (!string.IsNullOrEmpty(dto.PhoneNumber))
+                user.PhoneNumber = dto.PhoneNumber;
+
+            if (!string.IsNullOrEmpty(dto.Address))
+                user.Address = dto.Address;
 
             if (dto.RoleId > 0)
                 user.RoleId = dto.RoleId;

@@ -10,8 +10,7 @@ namespace Shapper.Services.Products
     {
         private readonly IProductRepository _productRepository;
         private readonly ISubcategoryRepository _subcategoryRepository;
-
-        private readonly IMapper _mapper;
+        private readonly IMapper _mapper; // ✅ Mapper SOLO en el servicio
 
         public ProductService(
             IProductRepository productRepository,
@@ -24,23 +23,12 @@ namespace Shapper.Services.Products
             _mapper = mapper;
         }
 
-        public async Task<ProductResponseDto> CreateAsync(ProductDto dto)
-        {
-            var existingSubcategory = await _subcategoryRepository.GetByIdAsync(dto.SubcategoryId);
-
-            if (existingSubcategory == null)
-                throw new InvalidOperationException("The specified subcategory does not exist.");
-
-            var product = _mapper.Map<Product>(dto);
-
-            await _productRepository.AddAsync(product);
-
-            return _mapper.Map<ProductResponseDto>(product);
-        }
-
         public async Task<ProductStoreView2Dto?> GetByIdAsync(int id)
         {
+            // 1. Obtener entidad del repositorio
             var product = await _productRepository.GetByIdAsync(id);
+
+            // 2. Mapear a DTO en el servicio
             return product == null ? null : _mapper.Map<ProductStoreView2Dto>(product);
         }
 
@@ -53,9 +41,11 @@ namespace Shapper.Services.Products
             pageSize = pageSize <= 0 ? 10 : pageSize;
             pageSize = pageSize > 100 ? 100 : pageSize;
 
+            // 1. Obtener entidades del repositorio
             var (products, totalCount) = await _productRepository.GetPaginatedAsync(page, pageSize);
 
-            var mapped = _mapper.Map<List<ProductResponseDto>>(products);
+            // 2. Mapear a DTOs en el servicio
+            var mappedProducts = _mapper.Map<List<ProductResponseDto>>(products);
 
             return new PagedResponseDto<ProductResponseDto>
             {
@@ -63,7 +53,7 @@ namespace Shapper.Services.Products
                 Page = page,
                 PageSize = pageSize,
                 TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
-                Data = mapped,
+                Data = mappedProducts,
             };
         }
 
@@ -77,13 +67,15 @@ namespace Shapper.Services.Products
             pageSize = pageSize <= 0 ? 10 : pageSize;
             pageSize = pageSize > 100 ? 100 : pageSize;
 
+            // 1. Obtener entidades del repositorio
             var (products, totalCount) = await _productRepository.GetProductsStoreViewAsync(
                 page,
                 pageSize,
                 onlyFeatured
             );
 
-            var mapped = _mapper.Map<List<ProductStoreViewDto>>(products);
+            // 2. Mapear a DTOs en el servicio
+            var mappedProducts = _mapper.Map<List<ProductStoreViewDto>>(products);
 
             return new PagedResponseDto<ProductStoreViewDto>
             {
@@ -91,7 +83,7 @@ namespace Shapper.Services.Products
                 Page = page,
                 PageSize = pageSize,
                 TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
-                Data = mapped,
+                Data = mappedProducts,
             };
         }
 
@@ -100,7 +92,13 @@ namespace Shapper.Services.Products
             int count = 5
         )
         {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+                return new List<ProductStoreViewDto>();
+
+            // 1. Obtener entidades del repositorio
             var products = await _productRepository.SearchProductsAsync(searchTerm, count);
+
+            // 2. Mapear a DTOs en el servicio
             return _mapper.Map<List<ProductStoreViewDto>>(products);
         }
 
@@ -114,11 +112,15 @@ namespace Shapper.Services.Products
             pageSize = pageSize <= 0 ? 10 : pageSize;
             pageSize = pageSize > 100 ? 100 : pageSize;
 
+            // 1. Obtener entidades del repositorio
             var (products, totalCount) = await _productRepository.GetFilteredProductsAsync(
                 filter,
                 page,
                 pageSize
             );
+
+            // 2. Mapear a DTOs en el servicio
+            var mappedProducts = _mapper.Map<List<ProductStoreViewDto>>(products);
 
             return new PagedResponseDto<ProductStoreViewDto>
             {
@@ -126,8 +128,29 @@ namespace Shapper.Services.Products
                 Page = page,
                 PageSize = pageSize,
                 TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
-                Data = products,
+                Data = mappedProducts,
             };
+        }
+
+        public async Task<ProductResponseDto?> CreateAsync(ProductDto dto)
+        {
+            var existingSubcategory = await _subcategoryRepository.GetByIdAsync(dto.SubcategoryId);
+            if (existingSubcategory == null)
+                throw new InvalidOperationException("The specified subcategory does not exist.");
+
+            var existingProduct = await _productRepository.GetByNameAsync(dto.Name);
+            if (existingProduct != null)
+                throw new InvalidOperationException("A product with this name already exists.");
+
+            // Mapear DTO a entidad
+            var product = _mapper.Map<Product>(dto);
+            await _productRepository.AddAsync(product);
+
+            // Obtener la entidad creada con sus relaciones
+            var createdProduct = await _productRepository.GetByIdAsync(product.Id);
+
+            // Mapear entidad a DTO de respuesta
+            return _mapper.Map<ProductResponseDto>(createdProduct);
         }
 
         public async Task<ProductResponseDto> UpdateAsync(int id, ProductDto dto)
@@ -137,15 +160,15 @@ namespace Shapper.Services.Products
             if (existingProduct == null)
                 throw new InvalidOperationException("Product not found.");
 
-            if (existingProduct.Id != id && existingProduct.Name == dto.Name)
+            var otherProduct = await _productRepository.GetByNameAsync(dto.Name);
+            if (otherProduct != null && otherProduct.Id != id)
                 throw new InvalidOperationException("Product name already exists.");
 
-            // Mapear dto → entidad existente
+            // Mapear DTO a entidad existente
             _mapper.Map(dto, existingProduct);
-
             await _productRepository.UpdateAsync(existingProduct);
 
-            // Mapear entidad → response
+            // Mapear entidad actualizada a DTO de respuesta
             return _mapper.Map<ProductResponseDto>(existingProduct);
         }
 

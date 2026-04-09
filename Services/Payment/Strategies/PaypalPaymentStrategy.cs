@@ -27,7 +27,6 @@ namespace Shapper.Services.Payment.Strategies
             string cancelUrl
         )
         {
-            // 1️⃣ Obtener token
             var tokenRequest = new HttpRequestMessage(
                 HttpMethod.Post,
                 $"{_paypal.Api}/v1/oauth2/token"

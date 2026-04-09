@@ -50,35 +50,6 @@ namespace shapper.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Shapper.Models.Contact", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Contacts");
-                });
-
             modelBuilder.Entity("Shapper.Models.Faq", b =>
                 {
                     b.Property<int>("Id")
@@ -118,9 +89,6 @@ namespace shapper.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Description")
-                        .HasColumnType("int");
 
                     b.Property<int>("DisplayedOrder")
                         .HasColumnType("int");
@@ -493,6 +461,11 @@ namespace shapper.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -513,6 +486,11 @@ namespace shapper.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
@@ -528,17 +506,6 @@ namespace shapper.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Shapper.Models.Contact", b =>
-                {
-                    b.HasOne("Shapper.Models.User", "User")
-                        .WithOne("Contact")
-                        .HasForeignKey("Shapper.Models.Contact", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Shapper.Models.FeaturedProduct", b =>
@@ -703,9 +670,6 @@ namespace shapper.Migrations
 
             modelBuilder.Entity("Shapper.Models.User", b =>
                 {
-                    b.Navigation("Contact")
-                        .IsRequired();
-
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");

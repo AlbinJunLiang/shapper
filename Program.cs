@@ -30,8 +30,6 @@ using Stripe;
 var builder = WebApplication.CreateBuilder(args);
 var status = builder.Environment.IsDevelopment();
 
-
-
 // =======================
 // Servicios y dependencias
 // =======================
@@ -155,6 +153,7 @@ builder.Services.AddCors(options =>
         }
     );
 });
+
 
 builder
     .Services.AddAuthentication(options =>

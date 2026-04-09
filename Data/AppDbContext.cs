@@ -10,7 +10,6 @@ namespace Shapper.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<Contact> Contacts { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Subcategory> Subcategories { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -30,7 +29,6 @@ namespace Shapper.Data
 
             // Configurar PK autogenerada
             modelBuilder.Entity<User>().Property(u => u.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<Contact>().Property(c => c.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Role>().Property(r => r.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Category>().Property(c => c.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Subcategory>().Property(s => s.Id).ValueGeneratedOnAdd();
@@ -158,13 +156,6 @@ namespace Shapper.Data
                 .OnDelete(DeleteBehavior.Restrict);
             // Restrict evita que se elimine un Role si existen Users asociados.
             // Esto protege la integridad referencial y evita eliminaciones accidentales
-
-            modelBuilder
-                .Entity<User>()
-                .HasOne(u => u.Contact)
-                .WithOne(c => c.User)
-                .HasForeignKey<Contact>(c => c.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

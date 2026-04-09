@@ -2,6 +2,7 @@ using System.Security.Claims; // <-- necesario para Claim, ClaimTypes, ClaimsIde
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Shapper.Dtos;
 using Shapper.Models;
 using Shapper.Services.Reviews;
@@ -27,10 +28,26 @@ namespace Shapper.Controller
                 var review = await _reviewService.CreateAsync(dto);
                 return Ok(review);
             }
-            catch (InvalidOperationException ex)
-                when (ex.Message.Contains("The specified subcategory does not exist."))
+            catch (InvalidOperationException ex) when (ex.Message.Contains("does not exist"))
+            {
+                // Handles both User and Product not found
+                return NotFound(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("already reviewed"))
             {
                 return Conflict(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+                when (ex.Message.Contains("rating must be between"))
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(
+                    500,
+                    new { message = "An internal error occurred while creating the review." }
+                );
             }
         }
 
@@ -60,9 +77,45 @@ namespace Shapper.Controller
             return Ok(result);
         }
 
+        [HttpGet("filter")] // Agregamos :int para evitar conflictos de ruta
+        public async Task<IActionResult> GetFilteredReviews(
+            [FromQuery, BindRequired] int productId, // Obligatorio desde el Query
+            [FromQuery] int? userId = 0,
+            [FromQuery] string? sortBy = "recent",
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10
+        )
+        {
+            if (page <= 0 || pageSize <= 0)
+                return BadRequest(
+                    new { success = false, message = "Invalid pagination parameters." }
+                );
+
+            // Optional: Manual validation if BindRequired doesn't trigger a 400 automatically
+            if (productId <= 0)
+            {
+                return BadRequest(
+                    new { message = "ProductId is required and must be greater than 0." }
+                );
+            }
+
+            // Si quieres ver TODAS las reseñas del producto sin filtrar por usuario,
+            // asegúrate de que userId llegue como null en la URL.
+            var filter = new ReviewFilterDto
+            {
+                ProductId = productId,
+                UserId = userId,
+                SortBy = sortBy,
+            };
+
+            var result = await _reviewService.GetFilteredReviewsAsync(filter, page, pageSize);
+            return Ok(result);
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] ReviewDto dto)
         {
+            // 1. Validación de anotaciones de datos (Data Annotations)
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -70,19 +123,27 @@ namespace Shapper.Controller
             {
                 var review = await _reviewService.UpdateAsync(id, dto);
 
+                // Retornamos el objeto actualizado para que Angular refresque la lista
                 return Ok(new { message = "Review updated successfully", data = review });
             }
             catch (InvalidOperationException ex)
             {
+                // 2. Manejo de excepciones de lógica de negocio
                 return ex.Message switch
                 {
                     "Review not found." => NotFound(new { message = ex.Message, status = 404 }),
-                    "Review name already exists." => Conflict(
-                        new { message = ex.Message, status = 409 }
-                    ),
 
-                    _ => StatusCode(500, new { message = "Internal server error." }),
+                    // Captura errores de rango de estrellas o validaciones del Service
+                    string msg when msg.Contains("rating") => BadRequest(new { message = msg }),
+
+                    // El '_' es el default, y DEBE llevar coma después de cada brazo del switch
+                    _ => StatusCode(500, new { message = "An error occurred in the service." }),
                 };
+            }
+            catch (Exception)
+            {
+                // 3. Captura de errores inesperados (Base de datos, conexión, etc.)
+                return StatusCode(500, new { message = "Internal server error." });
             }
         }
 

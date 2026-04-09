@@ -7,9 +7,12 @@ namespace Shapper.Services.Users
     {
         Task<UserResponseDto?> GetUserByIdAsync(int id);
         Task<PagedResponseDto<UserResponseDto>> GetPaginatedUsersAsync(int page, int pageSize);
-        Task<UserResponseDto> CreateUserAsync(CreateUserDto dto);
+
+        // DEJA SOLO ESTA LINEA:
+        Task<(UserResponseDto User, bool IsNew)> UpsertUserAsync(CreateUserDto createUserDto);
         Task<UserResponseDto> UpdateUserAsync(string email, UpdateUserDto dto);
-        Task<User?> GetByEmailAsync(string email);
+
+        Task<UserResponseDto?> GetByEmailAsync(string email);
         Task DeleteUserAsync(int id);
     }
 }

@@ -8,7 +8,11 @@ namespace Shapper.Services.Reviews
         Task<ReviewDto?> GetByIdAsync(int id);
 
         Task<PagedResponseDto<ReviewResponseDto>> GetPaginatedAsync(int page, int pageSize);
-
+        Task<ReviewFilterResponseDto> GetFilteredReviewsAsync(
+            ReviewFilterDto filter,
+            int page,
+            int pageSize
+        );
         Task<ReviewResponseDto?> CreateAsync(ReviewDto dto);
 
         Task<ReviewResponseDto> UpdateAsync(int id, ReviewDto dto);

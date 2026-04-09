@@ -13,6 +13,11 @@ namespace Shapper.Repositories.Users
             _context = context;
         }
 
+        public async Task<bool> UserExistsAsync(int userId)
+        {
+            return await _context.Users.AnyAsync(u => u.Id == userId);
+        }
+
         public async Task<User?> GetByIdAsync(int id) => await _context.Users.FindAsync(id);
 
         public async Task<(List<User> Users, int TotalCount)> GetPaginatedAsync(
