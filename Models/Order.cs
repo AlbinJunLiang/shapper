@@ -8,7 +8,7 @@ namespace Shapper.Models
         public int CustomerId { get; set; }
         public string Status { get; set; }
         public DateTime CreatedAt { get; set; }
-
+        
         // Navegacion
         public User Customer { get; set; }
         public ICollection<OrderDetail> OrderDetails { get; set; }

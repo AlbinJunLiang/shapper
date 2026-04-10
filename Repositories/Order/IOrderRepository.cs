@@ -9,5 +9,7 @@ namespace Shapper.Repositories.Orders
         Task AddAsync(Order order);
         Task<Order> UpdateAsync(Order order);
         Task DeleteAsync(Order order);
+
+        Task<Dictionary<int, Product>> GetProductsByIdsAsync(List<int> productIds);
     }
 }

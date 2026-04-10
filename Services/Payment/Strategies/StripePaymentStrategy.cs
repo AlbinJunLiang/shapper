@@ -35,7 +35,14 @@ namespace Shapper.Services.Payment.Strategies
                         {
                             Currency = "usd",
                             UnitAmount = (long)(amount * 100),
-                            ProductData = new() { Name = description },
+                            ProductData = new()
+                            {
+                                Name = description,
+                                Images = new List<string>
+                                {
+                                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSA3bBrEkkpRDeIeigN95qw-25Eq8kVoRlEDw&s", // 👈 aquí
+                                },
+                            },
                         },
                     },
                 },

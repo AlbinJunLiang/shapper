@@ -14,5 +14,6 @@ namespace Shapper.Services.Orders
         Task<OrderResponseDto> UpdateAsync(int id, OrderDto dto);
 
         Task DeleteAsync(int id);
+        Task<CartResponseDto> ValidateAndCalculateAsync(List<CartItemDto> items);
     }
 }

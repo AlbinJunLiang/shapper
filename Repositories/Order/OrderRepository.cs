@@ -51,5 +51,12 @@ namespace Shapper.Repositories.Orders
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Dictionary<int, Product>> GetProductsByIdsAsync(List<int> productIds)
+        {
+            return await _context
+                .Products.Where(p => productIds.Contains(p.Id))
+                .ToDictionaryAsync(p => p.Id);
+        }
     }
 }

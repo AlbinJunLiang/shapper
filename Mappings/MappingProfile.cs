@@ -79,11 +79,8 @@ namespace Shapper.Mappings
             CreateMap<Review, ReviewResponseDto>().ReverseMap();
             CreateMap<Review, ReviewDto>().ReverseMap();
             CreateMap<Review, ReviewResponse2Dto>()
-                // 1. Forzamos el nombre desde el objeto User
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.User.Name))
-                // 2. Forzamos el apellido desde el objeto User
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.User.LastName))
-                // 3. El resto se mapea solo porque se llaman igual
                 .ReverseMap();
             CreateMap<StoreInformation, StoreInformationResponseDto>().ReverseMap();
             CreateMap<StoreInformation, StoreInformationDto>().ReverseMap();

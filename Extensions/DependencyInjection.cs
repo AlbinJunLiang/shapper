@@ -5,6 +5,7 @@ using Shapper.Repositories.FeaturedProducts;
 using Shapper.Repositories.Locations;
 using Shapper.Repositories.OrderDetails;
 using Shapper.Repositories.OrderPayments;
+using Shapper.Repositories.Orders;
 using Shapper.Repositories.Products;
 using Shapper.Repositories.Reviews;
 using Shapper.Repositories.Roles;
@@ -17,6 +18,7 @@ using Shapper.Services.FeaturedProducts;
 using Shapper.Services.Locations;
 using Shapper.Services.OrderDetails;
 using Shapper.Services.OrderPayments;
+using Shapper.Services.Orders;
 using Shapper.Services.Products;
 using Shapper.Services.Reviews;
 using Shapper.Services.Roles;
@@ -40,6 +42,8 @@ namespace Shapper.Extensions
             services.AddScoped<IFaqRepository, FaqRepository>();
             services.AddScoped<IFeaturedProductRepository, FeaturedProductRepository>();
             services.AddScoped<IOrderPaymentRepository, OrderPaymentRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IStoreInformationRepository, StoreInformationRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
@@ -54,6 +58,8 @@ namespace Shapper.Extensions
             services.AddScoped<IFaqService, FaqService>();
             services.AddScoped<IFeaturedProductService, FeaturedProductService>();
             services.AddScoped<IOrderPaymentService, OrderPaymentService>();
+            services.AddScoped<IOrderService, OrderService>();
+
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IStoreInformationService, StoreInformationService>();
             services.AddScoped<ILocationService, LocationService>();
