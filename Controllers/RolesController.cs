@@ -3,6 +3,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shapper.Dtos;
+using Shapper.Dtos.Roles;
 using Shapper.Models;
 using Shapper.Services.Roles;
 

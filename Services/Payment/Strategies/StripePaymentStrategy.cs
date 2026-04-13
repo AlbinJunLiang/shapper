@@ -1,3 +1,4 @@
+using Shapper.Dtos.Orders;
 using Shapper.Services.Payment;
 using Stripe.Checkout;
 
@@ -7,44 +8,41 @@ namespace Shapper.Services.Payment.Strategies
     {
         public string Name => "stripe";
 
-        private readonly string _apiServer;
-
-        public StripePaymentStrategy(IConfiguration config)
-        {
-            _apiServer = config["ApiSettings:ApiServer"];
-        }
-
         public async Task<string> CreatePaymentAsync(
-            decimal amount,
-            string description,
             string successUrl,
-            string cancelUrl
+            string cancelUrl,
+            OrderResponseDto orderResponse
         )
         {
+            var lineItems = orderResponse
+                .Details.Select(detail => new SessionLineItemOptions
+                {
+                    Quantity = detail.RequestedQuantity,
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        Currency = "usd",
+                        UnitAmount = (long)Math.Round(detail.FinalPrice * 100),
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = detail.ProductName,
+                            Description = detail.Description,
+                            Images = string.IsNullOrWhiteSpace(detail.ProductImageUrl)
+                                ? null
+                                : new List<string> { detail.ProductImageUrl },
+                        },
+                    },
+                })
+                .ToList();
+
             var options = new SessionCreateOptions
             {
                 Mode = "payment",
                 SuccessUrl = successUrl,
                 CancelUrl = cancelUrl,
-                LineItems = new List<SessionLineItemOptions>
+                LineItems = lineItems,
+                Metadata = new Dictionary<string, string>
                 {
-                    new()
-                    {
-                        Quantity = 1,
-                        PriceData = new()
-                        {
-                            Currency = "usd",
-                            UnitAmount = (long)(amount * 100),
-                            ProductData = new()
-                            {
-                                Name = description,
-                                Images = new List<string>
-                                {
-                                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSA3bBrEkkpRDeIeigN95qw-25Eq8kVoRlEDw&s", // 👈 aquí
-                                },
-                            },
-                        },
-                    },
+                    { "OrderReference", orderResponse.OrderReference },
                 },
             };
 
@@ -53,7 +51,6 @@ namespace Shapper.Services.Payment.Strategies
             return session.Url ?? "";
         }
 
-        // Stripe no requiere captura explícita aquí
         public Task<bool> CapturePaymentAsync(string paymentId)
         {
             return Task.FromResult(true);

@@ -8,6 +8,8 @@ namespace Shapper.Models
         public int Quantity { get; set; }
         public double Price { get; set; }
         public double Subtotal { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
 
         //Navegación
         public Order Order { get; set; }

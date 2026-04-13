@@ -1,5 +1,6 @@
 using AutoMapper;
 using Shapper.Dtos;
+using Shapper.Dtos.Reviews;
 using Shapper.Models;
 using Shapper.Repositories.Reviews;
 

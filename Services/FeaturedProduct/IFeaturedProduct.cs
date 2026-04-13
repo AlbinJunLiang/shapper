@@ -1,5 +1,7 @@
 using Shapper.Dtos;
+using Shapper.Dtos.FeaturedProducts;
 using Shapper.Models;
+
 
 namespace Shapper.Services.FeaturedProducts
 {

@@ -13,12 +13,14 @@ using Shapper.Repositories.StoreInformations;
 using Shapper.Repositories.Subcategories;
 using Shapper.Repositories.Users;
 using Shapper.Services.Categories;
+using Shapper.Services.Checkouts;
 using Shapper.Services.Faqs;
 using Shapper.Services.FeaturedProducts;
 using Shapper.Services.Locations;
 using Shapper.Services.OrderDetails;
 using Shapper.Services.OrderPayments;
 using Shapper.Services.Orders;
+using Shapper.Services.PaymentWebhooks;
 using Shapper.Services.Products;
 using Shapper.Services.Reviews;
 using Shapper.Services.Roles;
@@ -63,6 +65,9 @@ namespace Shapper.Extensions
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IStoreInformationService, StoreInformationService>();
             services.AddScoped<ILocationService, LocationService>();
+
+            services.AddScoped<ICheckoutService, CheckoutService>();
+            services.AddScoped<IPaymentWebhookService, PaymentWebhookService>();
 
             return services;
         }

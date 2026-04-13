@@ -1,4 +1,5 @@
 using Shapper.Dtos;
+using Shapper.Dtos.Subcategories;
 using Shapper.Models;
 
 namespace Shapper.Services.Subcategories

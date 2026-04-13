@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Shapper.Dtos;
+using Shapper.Dtos.Subcategories;
 using Shapper.Models;
 using Shapper.Services.Subcategories;
 
@@ -29,7 +29,7 @@ namespace Shapper.Controller
             {
                 return Conflict(new { message = ex.Message });
             }
-              catch (InvalidOperationException ex)
+            catch (InvalidOperationException ex)
                 when (ex.Message.Contains("The specified category does not exist."))
             {
                 return Conflict(new { message = ex.Message });

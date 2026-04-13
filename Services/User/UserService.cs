@@ -1,5 +1,6 @@
 using AutoMapper;
 using Shapper.Dtos;
+using Shapper.Dtos.Users;
 using Shapper.Models;
 using Shapper.Repositories.Roles;
 using Shapper.Repositories.Users;
@@ -108,7 +109,7 @@ namespace Shapper.Services.Users
 
             if (!string.IsNullOrEmpty(dto.LastName))
                 user.LastName = dto.LastName;
-                
+
             if (!string.IsNullOrEmpty(dto.PhoneNumber))
                 user.PhoneNumber = dto.PhoneNumber;
 

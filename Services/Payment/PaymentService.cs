@@ -17,8 +17,7 @@ namespace Shapper.Services.Payment
         public IPaymentStrategy GetStrategy(string provider)
         {
             if (!_strategies.TryGetValue(provider, out var strategy))
-                throw new NotSupportedException($"Proveedor '{provider}' no disponible");
-
+                throw new NotSupportedException($"Payment provider '{provider}' is not supported.");
             return strategy;
         }
     }

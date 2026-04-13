@@ -3,7 +3,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Shapper.Dtos;
+using Shapper.Dtos.Reviews;
 using Shapper.Models;
 using Shapper.Services.Reviews;
 

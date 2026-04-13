@@ -1,4 +1,6 @@
 using Shapper.Dtos;
+using Shapper.Dtos.OrderDetails;
+using Shapper.Dtos.Orders;
 using Shapper.Models;
 
 namespace Shapper.Services.Orders
@@ -8,12 +10,12 @@ namespace Shapper.Services.Orders
         Task<OrderDto?> GetByIdAsync(int id);
 
         Task<PagedResponseDto<OrderResponseDto>> GetPaginatedAsync(int page, int pageSize);
+        Task<OrderResponseDto?> GetByReferenceAsync(string reference);
 
-        Task<OrderResponseDto?> CreateAsync(OrderDto dto);
+        Task<OrderResponseDto?> CreateAsync(CreateOrderDto dto);
 
         Task<OrderResponseDto> UpdateAsync(int id, OrderDto dto);
 
         Task DeleteAsync(int id);
-        Task<CartResponseDto> ValidateAndCalculateAsync(List<CartItemDto> items);
     }
 }

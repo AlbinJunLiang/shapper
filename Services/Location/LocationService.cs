@@ -2,6 +2,8 @@ using AutoMapper;
 using Shapper.Dtos;
 using Shapper.Models;
 using Shapper.Repositories.Locations;
+using Shapper.Dtos.Locations;
+
 
 namespace Shapper.Services.Locations
 {

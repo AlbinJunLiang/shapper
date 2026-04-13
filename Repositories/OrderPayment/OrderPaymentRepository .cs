@@ -17,11 +17,17 @@ namespace Shapper.Repositories.OrderPayments
         public async Task AddAsync(OrderPayment orderPayment)
         {
             _context.OrderPayments.Add(orderPayment);
-            await _context.SaveChangesAsync();
         }
 
         public async Task<OrderPayment?> GetByIdAsync(int id) =>
             await _context.OrderPayments.FindAsync(id);
+
+        public async Task<OrderPayment?> GetByTransactionReferenceAsync(string transactionReference)
+        {
+            return await _context.OrderPayments.FirstOrDefaultAsync(p =>
+                p.TransactionReference == transactionReference
+            );
+        }
 
         public async Task<(List<OrderPayment> OrderPayments, int TotalCount)> GetPaginatedAsync(
             int page,
@@ -51,6 +57,11 @@ namespace Shapper.Repositories.OrderPayments
         public async Task DeleteAsync(OrderPayment orderPayment)
         {
             _context.OrderPayments.Remove(orderPayment);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SaveChangesAsync()
+        {
             await _context.SaveChangesAsync();
         }
     }

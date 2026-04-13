@@ -41,7 +41,26 @@ namespace Shapper.Controllers
             switch (stripeEvent.Type)
             {
                 case "checkout.session.completed":
-                    Console.WriteLine("Pago completado ✅");
+                    var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
+                    if (session.PaymentStatus == "paid")
+                    {
+                        string paymentIntentId = session.PaymentIntentId;
+                        Console.WriteLine($"Pago completado {session.PaymentStatus}");
+                        Console.WriteLine($"Stripe Payment Intent ID (PaidId): {paymentIntentId}");
+                        if (session.Metadata.TryGetValue("OrderReference", out var orderReference))
+                        {
+                            Console.WriteLine($"Pago completado para la orden: {orderReference}");
+
+                            // Ahora puedes llamar a tu servicio para actualizar la orden en Shapper
+                            // await _orderService.UpdateStatusToPaidAsync(orderReference);
+                        }
+                        else
+                        {
+                            Console.WriteLine(
+                                "La sesión de Stripe no contiene la referencia de la orden."
+                            );
+                        }
+                    }
                     break;
 
                 default:

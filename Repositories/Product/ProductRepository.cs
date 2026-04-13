@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Shapper.Data;
-using Shapper.Dtos;
+using Shapper.Dtos.Products;
 using Shapper.Enums;
 using Shapper.Models;
 
@@ -20,7 +20,6 @@ namespace Shapper.Repositories.Products
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
         }
-        
 
         public async Task<Product?> GetByIdAsync(int id)
         {

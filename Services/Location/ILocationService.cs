@@ -1,5 +1,7 @@
 using Shapper.Dtos;
 using Shapper.Models;
+using Shapper.Dtos.Locations;
+
 
 namespace Shapper.Services.Locations
 {

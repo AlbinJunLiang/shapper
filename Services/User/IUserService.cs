@@ -1,4 +1,5 @@
 using Shapper.Dtos;
+using Shapper.Dtos.Users;
 using Shapper.Models;
 
 namespace Shapper.Services.Users
@@ -6,6 +7,7 @@ namespace Shapper.Services.Users
     public interface IUserService
     {
         Task<UserResponseDto?> GetUserByIdAsync(int id);
+
         Task<PagedResponseDto<UserResponseDto>> GetPaginatedUsersAsync(int page, int pageSize);
 
         // DEJA SOLO ESTA LINEA:

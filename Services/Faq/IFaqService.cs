@@ -1,4 +1,5 @@
 using Shapper.Dtos;
+using Shapper.Dtos.Faqs;
 using Shapper.Models;
 
 namespace Shapper.Services.Faqs

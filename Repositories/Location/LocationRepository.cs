@@ -1,7 +1,5 @@
-
-        using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Shapper.Data;
-using Shapper.Dtos;
 using Shapper.Models;
 
 namespace Shapper.Repositories.Locations
@@ -21,8 +19,7 @@ namespace Shapper.Repositories.Locations
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Location?> GetByIdAsync(int id) =>
-            await _context.Locations.FindAsync(id);
+        public async Task<Location?> GetByIdAsync(int id) => await _context.Locations.FindAsync(id);
 
         public async Task<(List<Location> Locations, int TotalCount)> GetPaginatedAsync(
             int page,
@@ -56,5 +53,3 @@ namespace Shapper.Repositories.Locations
         }
     }
 }
-
-        

@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Shapper.Data;
+using Shapper.Dtos.Categories;
+using Shapper.Dtos.Subcategories;
 using Shapper.Enums;
 using Shapper.Models;
-using Shapper.Dtos;
-
 
 namespace Shapper.Repositories.Categories
 {

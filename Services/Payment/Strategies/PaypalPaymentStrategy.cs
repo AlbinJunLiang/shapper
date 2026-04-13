@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
 using Shapper.Config;
+using Shapper.Dtos.Orders;
 
 namespace Shapper.Services.Payment.Strategies
 {
@@ -21,120 +22,153 @@ namespace Shapper.Services.Payment.Strategies
         }
 
         public async Task<string> CreatePaymentAsync(
-            decimal amount,
-            string description,
             string successUrl,
-            string cancelUrl
+            string cancelUrl,
+            OrderResponseDto orderResponse
         )
         {
-            var tokenRequest = new HttpRequestMessage(
+            var accessToken = await GetAccessTokenAsync();
+
+            var order = BuildOrder(successUrl, cancelUrl, orderResponse);
+
+            var responseJson = await SendRequestAsync(
                 HttpMethod.Post,
-                $"{_paypal.Api}/v1/oauth2/token"
+                $"{_paypal.Api}/v2/checkout/orders",
+                accessToken,
+                order
             );
 
-            tokenRequest.Headers.Authorization = new AuthenticationHeaderValue(
-                "Basic",
-                Convert.ToBase64String(
-                    Encoding.UTF8.GetBytes($"{_paypal.ClientId}:{_paypal.Secret}")
-                )
-            );
-
-            tokenRequest.Content = new StringContent(
-                "grant_type=client_credentials",
-                Encoding.UTF8,
-                "application/x-www-form-urlencoded"
-            );
-
-            var tokenResponse = await _http.SendAsync(tokenRequest);
-            var tokenJson = await tokenResponse.Content.ReadAsStringAsync();
-            var accessToken = JsonDocument
-                .Parse(tokenJson)
-                .RootElement.GetProperty("access_token")
-                .GetString();
-
-            // 2️⃣ Crear orden
-            var order = new
-            {
-                intent = "CAPTURE",
-                purchase_units = new[]
-                {
-                    new
-                    {
-                        amount = new
-                        {
-                            currency_code = "USD",
-                            value = amount.ToString("F2", CultureInfo.InvariantCulture),
-                        },
-                    },
-                },
-                application_context = new
-                {
-                    brand_name = "mycompany.com",
-                    landing_page = "NO_PREFERENCE",
-                    user_action = "PAY_NOW",
-                    return_url = successUrl,
-                    cancel_url = cancelUrl,
-                },
-            };
-
-            var orderRequest = new HttpRequestMessage(
-                HttpMethod.Post,
-                $"{_paypal.Api}/v2/checkout/orders"
-            );
-
-            orderRequest.Headers.Authorization = new AuthenticationHeaderValue(
-                "Bearer",
-                accessToken
-            );
-            orderRequest.Content = new StringContent(
-                JsonSerializer.Serialize(order),
-                Encoding.UTF8,
-                "application/json"
-            );
-
-            var response = await _http.SendAsync(orderRequest);
-            var resultJson = await response.Content.ReadAsStringAsync();
-            var doc = JsonDocument.Parse(resultJson);
-
-            var approveUrl = doc
-                .RootElement.GetProperty("links")
-                .EnumerateArray()
-                .First(x => x.GetProperty("rel").GetString() == "approve")
-                .GetProperty("href")
-                .GetString();
-
-            return approveUrl;
+            return ExtractApproveUrl(responseJson);
         }
 
         public async Task<bool> CapturePaymentAsync(string paymentId)
         {
             try
             {
-                var request = new HttpRequestMessage(
+                var accessToken = await GetAccessTokenAsync();
+
+                var response = await SendRawRequestAsync(
                     HttpMethod.Post,
-                    $"{_paypal.Api}/v2/checkout/orders/{paymentId}/capture"
+                    $"{_paypal.Api}/v2/checkout/orders/{paymentId}/capture",
+                    accessToken,
+                    "{}"
                 );
 
-                // Basic Auth
-                request.Headers.Authorization = new AuthenticationHeaderValue(
-                    "Basic",
-                    Convert.ToBase64String(
-                        Encoding.UTF8.GetBytes($"{_paypal.ClientId}:{_paypal.Secret}")
-                    )
-                );
-
-                // Body vacío obligatorio
-                request.Content = new StringContent("{}", Encoding.UTF8, "application/json");
-
-                var response = await _http.SendAsync(request);
-
-                // Devuelve true si status code 200 o 201
                 return response.IsSuccessStatusCode;
             }
             catch
             {
                 return false;
             }
+        }
+
+        private async Task<string> GetAccessTokenAsync()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{_paypal.Api}/v1/oauth2/token");
+
+            request.Headers.Authorization = new AuthenticationHeaderValue(
+                "Basic",
+                Convert.ToBase64String(
+                    Encoding.UTF8.GetBytes($"{_paypal.ClientId}:{_paypal.Secret}")
+                )
+            );
+
+            request.Content = new StringContent(
+                "grant_type=client_credentials",
+                Encoding.UTF8,
+                "application/x-www-form-urlencoded"
+            );
+
+            var response = await _http.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            return JsonDocument.Parse(json).RootElement.GetProperty("access_token").GetString()!;
+        }
+
+        private object BuildOrder(
+            string successUrl,
+            string cancelUrl,
+            OrderResponseDto orderResponse
+        )
+        {
+            return new
+            {
+                intent = "CAPTURE",
+                purchase_units = new[]
+                {
+                    new
+                    {
+                        custom_id = orderResponse.OrderReference,
+                        amount = new
+                        {
+                            currency_code = "USD",
+                            value = orderResponse.Total.ToString(
+                                "F2",
+                                CultureInfo.InvariantCulture
+                            ),
+                        },
+                    },
+                },
+                application_context = new
+                {
+                    brand_name = orderResponse.CompanyName ?? "",
+                    landing_page = "NO_PREFERENCE",
+                    user_action = "PAY_NOW",
+                    return_url = successUrl,
+                    cancel_url = cancelUrl,
+                },
+            };
+        }
+
+        private async Task<string> SendRequestAsync(
+            HttpMethod method,
+            string url,
+            string accessToken,
+            object body
+        )
+        {
+            var request = new HttpRequestMessage(method, url);
+
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            request.Content = new StringContent(
+                JsonSerializer.Serialize(body),
+                Encoding.UTF8,
+                "application/json"
+            );
+
+            var response = await _http.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        private async Task<HttpResponseMessage> SendRawRequestAsync(
+            HttpMethod method,
+            string url,
+            string accessToken,
+            string body
+        )
+        {
+            var request = new HttpRequestMessage(method, url);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+
+            return await _http.SendAsync(request);
+        }
+
+        private string ExtractApproveUrl(string json)
+        {
+            var doc = JsonDocument.Parse(json);
+
+            return doc
+                .RootElement.GetProperty("links")
+                .EnumerateArray()
+                .First(x => x.GetProperty("rel").GetString() == "approve")
+                .GetProperty("href")
+                .GetString()!;
         }
     }
 }

@@ -1,4 +1,5 @@
 using Shapper.Dtos;
+using Shapper.Dtos.Products;
 
 namespace Shapper.Services.Products
 {

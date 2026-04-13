@@ -21,6 +21,7 @@ using Shapper.Services.ImageStorage;
 using Shapper.Services.ImageStorage.Strategies;
 using Shapper.Services.Payment;
 using Shapper.Services.Payment.Strategies;
+using Shapper.Services.PaymentUrlValidators;
 using Shapper.Services.Verifications;
 using Shapper.Services.Verifications.Strategies;
 using Stripe;
@@ -46,8 +47,6 @@ builder.Services.AddApplicationServices();
 //builder.Services.AddAutoMapper(cfg => { }, typeof(MappingProfile).Assembly);
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
-
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
@@ -66,6 +65,11 @@ builder.Services.AddSingleton<FirebaseService>(sp => new FirebaseService(firebas
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
 builder.Services.Configure<BrevoSettings>(builder.Configuration.GetSection("Brevo"));
+
+builder.Services.Configure<UrlSettings>(builder.Configuration.GetSection(UrlSettings.SectionName));
+
+// También puedes registrar tu validador como Singleton
+builder.Services.AddSingleton<IPaymentUrlValidator, PaymentUrlValidator>();
 
 // Servicio de correo
 builder.Services.AddScoped<SmtpEmailStrategy>();
@@ -153,7 +157,6 @@ builder.Services.AddCors(options =>
         }
     );
 });
-
 
 builder
     .Services.AddAuthentication(options =>

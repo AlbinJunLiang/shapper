@@ -16,12 +16,19 @@ namespace Shapper.Controllers
             {
                 case "PAYMENT.CAPTURE.COMPLETED":
                     var captureId = payload.GetProperty("resource").GetProperty("id").GetString();
+                    var CustomId = payload
+                        .GetProperty("resource")
+                        .GetProperty("custom_id")
+                        .GetString();
 
+                    Console.WriteLine("PAGADOOOOOOOOOOOOOOO-------------- ID " + captureId);
                     // ✅ Aquí:
                     // - guardas en BD
                     // - marcas orden como pagada
                     // - activas servicio
-                    Console.WriteLine("PAGADOOOOOOOOOOOOOOO-------------- PAYPAYPALLLL");
+                    Console.WriteLine(
+                        "PAGADOOOOOOOOOOOOOOO-------------- PAYPAYPALLLL " + CustomId
+                    );
                     break;
             }
 

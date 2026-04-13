@@ -1,5 +1,7 @@
 using AutoMapper;
 using Shapper.Dtos;
+using Shapper.Dtos.OrderDetails;
+
 using Shapper.Models;
 using Shapper.Repositories.OrderDetails;
 

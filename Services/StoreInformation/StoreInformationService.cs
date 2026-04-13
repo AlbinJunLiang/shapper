@@ -1,6 +1,6 @@
-
-        using AutoMapper;
+using AutoMapper;
 using Shapper.Dtos;
+using Shapper.Dtos.StoreInformations;
 using Shapper.Models;
 using Shapper.Repositories.StoreInformations;
 
@@ -11,7 +11,10 @@ namespace Shapper.Services.StoreInformations
         private readonly IStoreInformationRepository _storeInformationRepository;
         private readonly IMapper _mapper;
 
-        public StoreInformationService(IStoreInformationRepository storeInformationRepository, IMapper mapper)
+        public StoreInformationService(
+            IStoreInformationRepository storeInformationRepository,
+            IMapper mapper
+        )
         {
             _storeInformationRepository = storeInformationRepository;
             _mapper = mapper;
@@ -21,14 +24,14 @@ namespace Shapper.Services.StoreInformations
         {
             var category = _mapper.Map<StoreInformation>(dto);
 
-            await  _storeInformationRepository.AddAsync(category);
+            await _storeInformationRepository.AddAsync(category);
 
             return _mapper.Map<StoreInformationResponseDto>(category);
         }
 
         public async Task<StoreInformationDto?> GetByIdAsync(int id)
         {
-            var category = await  _storeInformationRepository.GetByIdAsync(id);
+            var category = await _storeInformationRepository.GetByIdAsync(id);
             return category == null ? null : _mapper.Map<StoreInformationDto>(category);
         }
 
@@ -41,10 +44,8 @@ namespace Shapper.Services.StoreInformations
             pageSize = pageSize <= 0 ? 10 : pageSize;
             pageSize = pageSize > 100 ? 100 : pageSize;
 
-            var (StoreInformations, totalCount) = await  _storeInformationRepository.GetPaginatedAsync(
-                page,
-                pageSize
-            );
+            var (StoreInformations, totalCount) =
+                await _storeInformationRepository.GetPaginatedAsync(page, pageSize);
 
             var mapped = _mapper.Map<List<StoreInformationResponseDto>>(StoreInformations);
 
@@ -60,27 +61,25 @@ namespace Shapper.Services.StoreInformations
 
         public async Task<StoreInformationResponseDto> UpdateAsync(int id, StoreInformationDto dto)
         {
-            var existingOrder = await  _storeInformationRepository.GetByIdAsync(id);
+            var existingOrder = await _storeInformationRepository.GetByIdAsync(id);
 
             if (existingOrder == null)
                 throw new InvalidOperationException("StoreInformation not found.");
             _mapper.Map(dto, existingOrder);
 
-            await  _storeInformationRepository.UpdateAsync(existingOrder);
+            await _storeInformationRepository.UpdateAsync(existingOrder);
             // Mapear entidad → response
             return _mapper.Map<StoreInformationResponseDto>(existingOrder);
         }
 
         public async Task DeleteAsync(int id)
         {
-            var category = await  _storeInformationRepository.GetByIdAsync(id);
+            var category = await _storeInformationRepository.GetByIdAsync(id);
 
             if (category == null)
                 throw new InvalidOperationException("StoreInformation not found.");
 
-            await  _storeInformationRepository.DeleteAsync(category);
+            await _storeInformationRepository.DeleteAsync(category);
         }
     }
 }
-
-        

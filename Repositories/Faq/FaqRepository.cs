@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Shapper.Data;
-using Shapper.Dtos;
+using Shapper.Dtos.Faqs;
 using Shapper.Models;
 
 namespace Shapper.Repositories.Faqs

@@ -1,4 +1,5 @@
 using Shapper.Dtos;
+using Shapper.Dtos.StoreInformations;
 using Shapper.Models;
 
 namespace Shapper.Services.StoreInformations

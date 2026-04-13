@@ -1,4 +1,4 @@
-using Shapper.Dtos;
+using Shapper.Dtos.Products;
 using Shapper.Models;
 
 namespace Shapper.Repositories.Products
@@ -7,7 +7,7 @@ namespace Shapper.Repositories.Products
     {
         Task<Product?> GetByIdAsync(int id);
         Task<Product?> GetByNameAsync(string name);
-        
+
         Task<(List<Product> Products, int TotalCount)> GetPaginatedAsync(int page, int pageSize);
         Task<(List<Product> Products, int TotalCount)> GetProductsStoreViewAsync(
             int page,

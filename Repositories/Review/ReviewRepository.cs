@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Shapper.Data;
 using Shapper.Dtos;
+using Shapper.Dtos.Reviews;
 using Shapper.Enums;
 using Shapper.Models;
 

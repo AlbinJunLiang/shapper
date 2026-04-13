@@ -1,4 +1,5 @@
 using Shapper.Dtos;
+using Shapper.Dtos.Reviews;
 using Shapper.Models;
 
 namespace Shapper.Services.Reviews

@@ -1,9 +1,9 @@
-
-        using System.Security.Claims; // <-- necesario para Claim, ClaimTypes, ClaimsIdentity, ClaimsPrincipal
+using System.Security.Claims; // <-- necesario para Claim, ClaimTypes, ClaimsIdentity, ClaimsPrincipal
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shapper.Dtos;
+using Shapper.Dtos.OrderPayments;
 using Shapper.Models;
 using Shapper.Services.OrderPayments;
 
@@ -21,7 +21,7 @@ namespace Shapper.Controller
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(OrderPaymentDto dto)
+        public async Task<IActionResult> Create(ConfirmPaymentDto dto)
         {
             try
             {
@@ -71,7 +71,9 @@ namespace Shapper.Controller
             {
                 var orderPayment = await _orderPaymentService.UpdateAsync(id, dto);
 
-                return Ok(new { message = "OrderPayment updated successfully", data = orderPayment });
+                return Ok(
+                    new { message = "OrderPayment updated successfully", data = orderPayment }
+                );
             }
             catch (InvalidOperationException ex)
             {
@@ -108,6 +110,3 @@ namespace Shapper.Controller
         }
     }
 }
-
-
-        

@@ -6,7 +6,7 @@ namespace Shapper.Repositories.OrderDetails
     public interface IOrderDetailRepository
     {
         Task<OrderDetail> GetByIdAsync(int id);
-        Task<(List<OrderDetail>OrderDetails, int TotalCount)> GetPaginatedAsync(
+        Task<(List<OrderDetail> OrderDetails, int TotalCount)> GetPaginatedAsync(
             int page,
             int pageSize
         );

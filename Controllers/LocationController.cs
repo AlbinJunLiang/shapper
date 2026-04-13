@@ -2,7 +2,7 @@ using System.Security.Claims; // <-- necesario para Claim, ClaimTypes, ClaimsIde
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shapper.Dtos;
+using Shapper.Dtos.Locations;
 using Shapper.Models;
 using Shapper.Services.Locations;
 

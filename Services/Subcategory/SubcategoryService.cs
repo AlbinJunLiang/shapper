@@ -1,5 +1,6 @@
 using AutoMapper;
 using Shapper.Dtos;
+using Shapper.Dtos.Subcategories;
 using Shapper.Models;
 using Shapper.Repositories.Categories;
 using Shapper.Repositories.Subcategories;

@@ -16,10 +16,17 @@ namespace Shapper.Repositories.Orders
         public async Task AddAsync(Order order)
         {
             _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
         }
 
         public async Task<Order?> GetByIdAsync(int id) => await _context.Orders.FindAsync(id);
+
+        public async Task<Order?> GetByReferenceAsync(string reference)
+        {
+            return await _context
+                .Orders.Include(o => o.OrderDetails)
+                .ThenInclude(d => d.Product)
+                .FirstOrDefaultAsync(o => o.OrderReference == reference);
+        }
 
         public async Task<(List<Order> Orders, int TotalCount)> GetPaginatedAsync(
             int page,
@@ -42,7 +49,6 @@ namespace Shapper.Repositories.Orders
         public async Task<Order> UpdateAsync(Order order)
         {
             _context.Orders.Update(order);
-            await _context.SaveChangesAsync();
             return order;
         }
 
@@ -57,6 +63,11 @@ namespace Shapper.Repositories.Orders
             return await _context
                 .Products.Where(p => productIds.Contains(p.Id))
                 .ToDictionaryAsync(p => p.Id);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -1,5 +1,19 @@
 using AutoMapper;
 using Shapper.Dtos;
+using Shapper.Dtos.Categories;
+using Shapper.Dtos.Faqs;
+using Shapper.Dtos.FeaturedProducts;
+using Shapper.Dtos.Locations;
+using Shapper.Dtos.OrderDetails;
+using Shapper.Dtos.OrderPayments;
+using Shapper.Dtos.Orders;
+using Shapper.Dtos.ProductImages;
+using Shapper.Dtos.Products;
+using Shapper.Dtos.Reviews;
+using Shapper.Dtos.Roles;
+using Shapper.Dtos.StoreInformations;
+using Shapper.Dtos.Subcategories;
+using Shapper.Dtos.Users;
 using Shapper.Models;
 
 namespace Shapper.Mappings

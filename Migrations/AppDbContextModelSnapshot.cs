@@ -148,8 +148,11 @@ namespace shapper.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int?>("CustomerId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ExtraData")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrderReference")
                         .IsRequired()
@@ -177,6 +180,10 @@ namespace shapper.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
@@ -188,6 +195,10 @@ namespace shapper.Migrations
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Subtotal")
                         .HasColumnType("float");
@@ -523,9 +534,7 @@ namespace shapper.Migrations
                 {
                     b.HasOne("Shapper.Models.User", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomerId");
 
                     b.Navigation("Customer");
                 });

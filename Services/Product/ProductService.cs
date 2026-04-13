@@ -1,5 +1,6 @@
 using AutoMapper;
 using Shapper.Dtos;
+using Shapper.Dtos.Products;
 using Shapper.Models;
 using Shapper.Repositories.Products;
 using Shapper.Repositories.Subcategories;
@@ -10,7 +11,7 @@ namespace Shapper.Services.Products
     {
         private readonly IProductRepository _productRepository;
         private readonly ISubcategoryRepository _subcategoryRepository;
-        private readonly IMapper _mapper; // ✅ Mapper SOLO en el servicio
+        private readonly IMapper _mapper;
 
         public ProductService(
             IProductRepository productRepository,

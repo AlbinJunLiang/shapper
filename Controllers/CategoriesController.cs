@@ -2,7 +2,7 @@ using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shapper.Dtos;
+using Shapper.Dtos.Categories;
 using Shapper.Models;
 using Shapper.Services.Categories;
 

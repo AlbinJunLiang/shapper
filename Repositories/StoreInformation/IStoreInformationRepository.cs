@@ -1,4 +1,3 @@
-using Shapper.Dtos;
 using Shapper.Models;
 
 namespace Shapper.Repositories.StoreInformations

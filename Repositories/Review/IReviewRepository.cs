@@ -1,4 +1,5 @@
 using Shapper.Dtos;
+using Shapper.Dtos.Reviews;
 using Shapper.Models;
 
 namespace Shapper.Repositories.Reviews
@@ -11,7 +12,11 @@ namespace Shapper.Repositories.Reviews
         Task<bool> ReviewExistsAsync(int productId, int userId);
 
         // Actualizado para incluir RatingStats
-        Task<(double AverageRating, int TotalReviews, List<RatingCountDto> RatingStats)> GetProductReviewStatsAsync(int productId);
+        Task<(
+            double AverageRating,
+            int TotalReviews,
+            List<RatingCountDto> RatingStats
+        )> GetProductReviewStatsAsync(int productId);
 
         Task<(List<Review> Reviews, int TotalCount)> GetPaginatedAsync(int page, int pageSize);
 
