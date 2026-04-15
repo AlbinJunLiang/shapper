@@ -34,6 +34,13 @@ namespace Shapper.Repositories.Products
             return await _context.Products.FirstOrDefaultAsync(c => c.Name == name);
         }
 
+        public async Task<Dictionary<int, Product>> GetProductsByIdsAsync(List<int> productIds)
+        {
+            return await _context
+                .Products.Where(p => productIds.Contains(p.Id))
+                .ToDictionaryAsync(p => p.Id);
+        }
+
         public async Task<(List<Product> Products, int TotalCount)> GetPaginatedAsync(
             int page,
             int pageSize

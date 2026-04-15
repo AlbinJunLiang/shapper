@@ -17,7 +17,7 @@ namespace Shapper.Services.Emails
             {
                 "smtp" => _provider.GetRequiredService<SmtpEmailStrategy>(),
                 "brevo" => _provider.GetRequiredService<BrevoEmailStrategy>(),
-                _ => throw new NotSupportedException("Proveedor no soportado"),
+                _ => throw new NotSupportedException("Email provider is not supported"),
             };
         }
     }

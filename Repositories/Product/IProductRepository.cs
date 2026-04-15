@@ -20,6 +20,9 @@ namespace Shapper.Repositories.Products
             int page,
             int pageSize
         );
+
+        Task<Dictionary<int, Product>> GetProductsByIdsAsync(List<int> ids);
+
         Task AddAsync(Product product);
         Task<Product> UpdateAsync(Product product);
         Task DeleteAsync(Product product);

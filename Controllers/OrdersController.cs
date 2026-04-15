@@ -15,12 +15,12 @@ namespace Shapper.Controller
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class OrderController : ControllerBase
+    public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
         private readonly IPaymentWebhookService _paymentWebhooks;
 
-        public OrderController(IOrderService orderService, IPaymentWebhookService paymentWebhooks)
+        public OrdersController(IOrderService orderService, IPaymentWebhookService paymentWebhooks)
         {
             _orderService = orderService;
             _paymentWebhooks = paymentWebhooks;
@@ -64,6 +64,40 @@ namespace Shapper.Controller
             }
 
             return Ok(order);
+        }
+
+        [HttpGet("user/{userId}")] // Es mejor práctica pasar el userId en la ruta
+        public async Task<IActionResult> GetUserOrders(
+            int userId,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10
+        )
+        {
+            // Validaciones básicas de entrada
+            if (page <= 0)
+                return BadRequest(
+                    new { success = false, message = "Page number must be greater than 0." }
+                );
+
+            if (pageSize <= 0 || pageSize > 100)
+                return BadRequest(
+                    new { success = false, message = "Page size must be between 1 and 100." }
+                );
+
+            try
+            {
+                var result = await _orderService.GetUserOrdersAsync(userId, 60, page, pageSize);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log ex here
+                return StatusCode(500, new { success = false, message = "Internal server error." });
+            }
         }
 
         [HttpPost("process-payment")]

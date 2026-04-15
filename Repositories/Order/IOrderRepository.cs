@@ -12,7 +12,14 @@ namespace Shapper.Repositories.Orders
         Task<Order> UpdateAsync(Order order);
         Task DeleteAsync(Order order);
 
-        Task<Dictionary<int, Product>> GetProductsByIdsAsync(List<int> ids);
+
+        Task<(List<Order> Orders, int TotalCount)> GetUserOrdersAsync(
+            int userId,
+            int days,
+            int page,
+            int pageSize
+        );
+
         Task SaveChangesAsync();
     }
 }

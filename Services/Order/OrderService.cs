@@ -5,6 +5,7 @@ using Shapper.Dtos.Orders;
 using Shapper.Helpers;
 using Shapper.Models;
 using Shapper.Repositories.Orders;
+using Shapper.Repositories.Products;
 using Shapper.Repositories.Users;
 
 namespace Shapper.Services.Orders
@@ -13,18 +14,19 @@ namespace Shapper.Services.Orders
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IUserRepository _userRepository;
-
+        private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
 
         public OrderService(
             IOrderRepository orderRepository,
             IUserRepository userRepository,
+            IProductRepository productRepository,
             IMapper mapper
         )
         {
             _orderRepository = orderRepository;
             _userRepository = userRepository;
-
+            _productRepository = productRepository;
             _mapper = mapper;
         }
 
@@ -34,7 +36,7 @@ namespace Shapper.Services.Orders
 
             var items = dto.Items;
             var productIds = items.Select(i => i.ProductId).Distinct().ToList();
-            var products = await _orderRepository.GetProductsByIdsAsync(productIds);
+            var products = await _productRepository.GetProductsByIdsAsync(productIds);
 
             double totalOrder = 0;
             double totalSubtotal = 0; // Precio base - Descuento
@@ -266,6 +268,44 @@ namespace Shapper.Services.Orders
             };
         }
 
+        public async Task<PagedResponseDto<OrderResponseDto>> GetUserOrdersAsync(
+            int userId,
+            int days,
+            int page,
+            int pageSize
+        )
+        {
+            // 1. Validar que el usuario existe usando el userId proporcionado
+            var user = await _userRepository.GetByIdAsync(userId); // Cambiado de GetByEmailAsync(email)
+            if (user == null)
+                throw new KeyNotFoundException($"User with ID {userId} not found");
+
+            // 2. Normalizar valores (Sanitización)
+            page = page <= 0 ? 1 : page;
+            pageSize = pageSize <= 0 ? 10 : (pageSize > 100 ? 100 : pageSize);
+            days = days <= 0 ? 60 : days;
+
+            // 3. Obtener datos del repositorio
+            var (orders, totalCount) = await _orderRepository.GetUserOrdersAsync(
+                userId,
+                days,
+                page,
+                pageSize
+            );
+
+            // 4. Mapeo y Respuesta
+            var mapped = _mapper.Map<List<OrderResponseDto>>(orders);
+
+            return new PagedResponseDto<OrderResponseDto>
+            {
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
+                Data = mapped,
+            };
+        }
+
         public async Task<OrderResponseDto> UpdateAsync(int id, OrderDto dto)
         {
             var existingOrder = await _orderRepository.GetByIdAsync(id);
@@ -291,14 +331,10 @@ namespace Shapper.Services.Orders
 
         private async Task ValidateCustomerAsync(int? customerId)
         {
-            // 1. Si es nulo o 0, salimos del método (es un invitado, no hay nada que validar)
             if (!customerId.HasValue || customerId == 0)
             {
                 return;
             }
-
-            // 2. Si llegamos aquí, es porque intentaron enviar un ID.
-            // Ahora sí verificamos que exista en la base de datos.
             var exists = await _userRepository.ExistsAsync(customerId.Value);
 
             if (!exists)

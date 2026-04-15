@@ -45,5 +45,29 @@ namespace Shapper.Helpers
             }
             return current.ToString();
         }
+
+        public static string? GetString(JsonElement element, string property)
+        {
+            if (element.TryGetProperty(property, out var value))
+            {
+                var result = value.GetString();
+                return string.IsNullOrEmpty(result) ? null : result;
+            }
+
+            return null;
+        }
+
+        public static JsonElement? GetObject(JsonElement element, string property)
+        {
+            if (
+                element.TryGetProperty(property, out var value)
+                && value.ValueKind == JsonValueKind.Object
+            )
+            {
+                return value;
+            }
+
+            return null;
+        }
     }
 }

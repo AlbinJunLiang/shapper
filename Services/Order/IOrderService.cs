@@ -10,6 +10,14 @@ namespace Shapper.Services.Orders
         Task<OrderDto?> GetByIdAsync(int id);
 
         Task<PagedResponseDto<OrderResponseDto>> GetPaginatedAsync(int page, int pageSize);
+
+        Task<PagedResponseDto<OrderResponseDto>> GetUserOrdersAsync(
+            int userId,
+            int days,
+            int page,
+            int pageSize
+        );
+
         Task<OrderResponseDto?> GetByReferenceAsync(string reference);
 
         Task<OrderResponseDto?> CreateAsync(CreateOrderDto dto);

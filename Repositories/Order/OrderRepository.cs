@@ -45,6 +45,31 @@ namespace Shapper.Repositories.Orders
 
             return (orders, totalCount);
         }
+        
+        
+        public async Task<(List<Order> Orders, int TotalCount)> GetUserOrdersAsync(
+            int userId,
+            int days,
+            int page,
+            int pageSize
+        )
+        {
+            var fromDate = DateTime.UtcNow.AddDays(-days);
+
+            var query = _context
+                .Orders.AsNoTracking()
+                .Where(o => o.CustomerId == userId && o.CreatedAt >= fromDate);
+
+            var totalCount = await query.CountAsync();
+
+            var orders = await query
+                .OrderByDescending(o => o.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (orders, totalCount);
+        }
 
         public async Task<Order> UpdateAsync(Order order)
         {
@@ -56,13 +81,6 @@ namespace Shapper.Repositories.Orders
         {
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
-        }
-
-        public async Task<Dictionary<int, Product>> GetProductsByIdsAsync(List<int> productIds)
-        {
-            return await _context
-                .Products.Where(p => productIds.Contains(p.Id))
-                .ToDictionaryAsync(p => p.Id);
         }
 
         public async Task SaveChangesAsync()

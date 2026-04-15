@@ -1,38 +1,70 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using Shapper.Dtos.OrderPayments;
+using Shapper.Helpers;
+using Shapper.Services.PaymentWebhooks;
 
 namespace Shapper.Controllers
 {
     [ApiController]
-    [Route("api/paypal/webhook")]
+    [Route("api/paypal")]
     public class PaypalWebhookController : ControllerBase
     {
-        [HttpPost]
-        public IActionResult Receive([FromBody] JsonElement payload)
-        {
-            Console.WriteLine(payload);
-            var eventType = payload.GetProperty("event_type").GetString();
-            switch (eventType)
-            {
-                case "PAYMENT.CAPTURE.COMPLETED":
-                    var captureId = payload.GetProperty("resource").GetProperty("id").GetString();
-                    var CustomId = payload
-                        .GetProperty("resource")
-                        .GetProperty("custom_id")
-                        .GetString();
+        private readonly IPaymentWebhookService _paymentWebhooks;
 
-                    Console.WriteLine("PAGADOOOOOOOOOOOOOOO-------------- ID " + captureId);
-                    // ✅ Aquí:
-                    // - guardas en BD
-                    // - marcas orden como pagada
-                    // - activas servicio
-                    Console.WriteLine(
-                        "PAGADOOOOOOOOOOOOOOO-------------- PAYPAYPALLLL " + CustomId
-                    );
-                    break;
+        public PaypalWebhookController(IPaymentWebhookService paymentWebhooks)
+        {
+            _paymentWebhooks = paymentWebhooks;
+        }
+
+        [Consumes("application/json")]
+        [HttpPost("webhook")]
+        public async Task<IActionResult> Webhook()
+        {
+            Request.EnableBuffering();
+            string body;
+            using (var reader = new StreamReader(Request.Body))
+            {
+                body = await reader.ReadToEndAsync();
+                Request.Body.Position = 0;
             }
 
-            return Ok();
+            Console.WriteLine(body);
+
+            using var doc = JsonDocument.Parse(body);
+            var root = doc.RootElement;
+
+            var eventType = JsonHelper.GetString(root, "event_type");
+            if (eventType == null)
+                return BadRequest("event_type is required");
+
+            if (eventType != "PAYMENT.CAPTURE.COMPLETED")
+                return Ok(new { received = true });
+
+            var resource = JsonHelper.GetObject(root, "resource");
+            if (resource == null)
+                return BadRequest("resource is required");
+
+            var captureId = JsonHelper.GetString(resource.Value, "id");
+            if (captureId == null)
+                return BadRequest("resource.id is required");
+
+            var customId = JsonHelper.GetString(resource.Value, "custom_id");
+            if (customId == null)
+                return BadRequest("resource.custom_id is required");
+
+            var result = await _paymentWebhooks.ProcessAsync(
+                new ProcessOrderDto
+                {
+                    PaidId = captureId,
+                    Reference = customId,
+                    PaymentMethod = "PAYPAL-CARD",
+                }
+            );
+
+            Console.WriteLine($"Payment completed for order: {customId}");
+
+            return Ok(new { result });
         }
     }
 }

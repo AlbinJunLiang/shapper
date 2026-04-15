@@ -8,7 +8,6 @@ namespace Shapper.Models
         public int? CustomerId { get; set; }
         public string Status { get; set; }
         public string? ExtraData { get; set; } // JSON aquí
-
         public DateTime CreatedAt { get; set; }
 
         // Navegacion

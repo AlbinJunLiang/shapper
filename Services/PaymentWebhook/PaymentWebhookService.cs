@@ -1,4 +1,5 @@
 using AutoMapper;
+using Shapper.Dtos;
 using Shapper.Dtos.OrderDetails;
 using Shapper.Dtos.OrderPayments;
 using Shapper.Dtos.Orders;
@@ -8,7 +9,6 @@ using Shapper.Services.Emails;
 using Shapper.Services.OrderPayments;
 using Shapper.Services.Orders;
 using Shapper.Templates;
-using Shapper.Dtos;
 
 namespace Shapper.Services.PaymentWebhooks
 {
@@ -51,24 +51,57 @@ namespace Shapper.Services.PaymentWebhooks
                 }
             );
 
-            /*  if (success)
-              {
-                  await _emailService.SendAsync(provider, email);
-              }
-              Console.WriteLine(ProductTableTemplate.GenerateTableHtml(orderResponse.Details));
-  */
-
-            string address = JsonHelper.GetValue(orderResponse.ExtraData, "to");
-Console.WriteLine("------------------------------------------- " + address);
+            var extraDataDto = CreateExtraDataDto(orderResponse.ExtraData);
+            var htmlContent = ProductTableTemplate.GenerateTableHtml(orderResponse, extraDataDto);
             var emailDto = new EmailDto
             {
-                To = "destinatario@gmail.com",
-                Subject = "Prueba de correo",
-                HtmlContent = "<h1>Hola</h1><p>Este es un correo de prueba</p>",
-                SenderName = "Tu Nombre",
-                SenderEmail = "tucorreo@gmail.com",
+                To = extraDataDto.Email,
+                Subject = "Order Confirmation",
+                HtmlContent = htmlContent,
+                SenderName = orderResponse.CompanyName,
             };
+
+            if (success)
+            {
+                await _emailService.SendAsync("brevo", emailDto);
+            }
+
             return success;
+        }
+
+        public static ExtraDataDto CreateExtraDataDto(string extraData)
+        {
+            if (string.IsNullOrWhiteSpace(extraData))
+                return new ExtraDataDto();
+
+            return new ExtraDataDto
+            {
+                Address = JsonHelper.GetValue(extraData, "address"),
+                Email = JsonHelper.GetValue(extraData, "email"),
+                PhoneNumber = JsonHelper.GetValue(extraData, "phoneNumber"),
+                LastName = JsonHelper.GetValue(extraData, "lastName"),
+                Name = JsonHelper.GetValue(extraData, "name"),
+                Place = JsonHelper.GetValue(extraData, "place"),
+                PostalCode = JsonHelper.GetValue(extraData, "postalCode"),
+            };
+        }
+
+        public static EmailDto Create(
+            string to,
+            string subject,
+            string htmlContent,
+            string senderName,
+            string senderEmail
+        )
+        {
+            return new EmailDto
+            {
+                To = to,
+                Subject = subject,
+                HtmlContent = htmlContent,
+                SenderName = senderName,
+                SenderEmail = senderEmail,
+            };
         }
     }
 }

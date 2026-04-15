@@ -6,6 +6,8 @@ namespace Shapper.Dtos.Orders
     public class CreateOrderDto
     {
         public int? CustomerId { get; set; }
+
+        [Required]
         public string? ExtraData { get; set; }
         public string Provider { get; set; }
         public string CompanyName { get; set; }

@@ -22,7 +22,7 @@ namespace Shapper.Services.Emails.Strategies
         {
             var payload = new
             {
-                sender = new { name = message.SenderName, email = message.SenderEmail },
+                sender = new { name = message.SenderName, email = _settings.BrevoEmail },
                 to = new[] { new { email = message.To } },
                 subject = message.Subject,
                 htmlContent = message.HtmlContent,

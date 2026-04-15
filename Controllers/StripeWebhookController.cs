@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Shapper.Config;
+using Shapper.Dtos.OrderPayments;
+using Shapper.Services.PaymentWebhooks;
 using Stripe;
 
 namespace Shapper.Controllers
@@ -10,10 +12,15 @@ namespace Shapper.Controllers
     public class StripeWebhookController : ControllerBase
     {
         private readonly StripeSettings _stripeSettings;
+        private readonly IPaymentWebhookService _paymentWebhooks;
 
-        public StripeWebhookController(IOptions<StripeSettings> stripeOptions)
+        public StripeWebhookController(
+            IOptions<StripeSettings> stripeOptions,
+            IPaymentWebhookService paymentWebhooks
+        )
         {
             _stripeSettings = stripeOptions.Value;
+            _paymentWebhooks = paymentWebhooks;
         }
 
         [HttpPost("webhook")]
@@ -41,30 +48,51 @@ namespace Shapper.Controllers
             switch (stripeEvent.Type)
             {
                 case "checkout.session.completed":
-                    var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
-                    if (session.PaymentStatus == "paid")
-                    {
-                        string paymentIntentId = session.PaymentIntentId;
-                        Console.WriteLine($"Pago completado {session.PaymentStatus}");
-                        Console.WriteLine($"Stripe Payment Intent ID (PaidId): {paymentIntentId}");
-                        if (session.Metadata.TryGetValue("OrderReference", out var orderReference))
-                        {
-                            Console.WriteLine($"Pago completado para la orden: {orderReference}");
 
-                            // Ahora puedes llamar a tu servicio para actualizar la orden en Shapper
-                            // await _orderService.UpdateStatusToPaidAsync(orderReference);
-                        }
-                        else
-                        {
-                            Console.WriteLine(
-                                "La sesión de Stripe no contiene la referencia de la orden."
-                            );
-                        }
+                    var session = stripeEvent.Data.Object as Stripe.Checkout.Session;
+
+                    if (session == null)
+                    {
+                        return BadRequest("Invalid session data");
                     }
-                    break;
+
+                    if (session.PaymentStatus != "paid")
+                    {
+                        return Ok(new { received = true });
+                    }
+
+                    if (string.IsNullOrEmpty(session.PaymentIntentId))
+                    {
+                        return BadRequest("PaymentIntentId is missing");
+                    }
+
+                    var paymentIntentId = session.PaymentIntentId;
+
+                    if (
+                        session.Metadata == null
+                        || !session.Metadata.TryGetValue("OrderReference", out var orderReference)
+                    )
+                    {
+                        return BadRequest("Missing OrderReference");
+                    }
+
+                    var result = await _paymentWebhooks.ProcessAsync(
+                        new ProcessOrderDto
+                        {
+                            PaidId = paymentIntentId,
+                            Reference = orderReference,
+                            PaymentMethod = "STRIPE-CARD",
+                        }
+                    );
+
+                    Console.WriteLine(
+                        $"Pago completado para la orden-----------------------------------------: {orderReference}"
+                    );
+
+                    return Ok(new { received = true });
 
                 default:
-                    Console.WriteLine($"Evento no manejado: {stripeEvent.Type}");
+                    Console.WriteLine($"Unhandled event: {stripeEvent.Type}");
                     break;
             }
 
