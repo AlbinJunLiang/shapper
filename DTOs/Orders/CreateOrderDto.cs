@@ -8,8 +8,9 @@ namespace Shapper.Dtos.Orders
         public int? CustomerId { get; set; }
 
         [Required]
-        public string? ExtraData { get; set; }
+        public ExtraDataDto? ExtraData { get; set; } // JSON aquí
         public string Provider { get; set; }
+        public int? LocationId { get; set; }
         public string CompanyName { get; set; }
         public string SuccessUrl { get; set; } = "";
         public string CancelUrl { get; set; } = "";

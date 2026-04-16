@@ -13,7 +13,7 @@ namespace Shapper.Services.OrderPayments
 
         Task<PagedResponseDto<OrderPaymentResponseDto>> GetPaginatedAsync(int page, int pageSize);
 
-        Task<bool> CreateAsync(ConfirmPaymentDto orderData);
+        Task<string> CreateAsync(ConfirmPaymentDto orderData);
 
         Task<OrderPaymentResponseDto> UpdateAsync(int id, OrderPaymentDto dto);
 

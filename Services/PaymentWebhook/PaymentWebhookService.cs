@@ -1,10 +1,11 @@
+using System.Text.Json; // Librería principal
+using System.Text.Json.Serialization; // Solo si necesitas atributos especiales
 using AutoMapper;
 using Shapper.Dtos;
 using Shapper.Dtos.OrderDetails;
 using Shapper.Dtos.OrderPayments;
 using Shapper.Dtos.Orders;
-using Shapper.Helpers;
-using Shapper.Helpers;
+using Shapper.Enums;
 using Shapper.Services.Emails;
 using Shapper.Services.OrderPayments;
 using Shapper.Services.Orders;
@@ -33,16 +34,14 @@ namespace Shapper.Services.PaymentWebhooks
             _emailService = emailService;
         }
 
-        public async Task<bool> ProcessAsync(ProcessOrderDto dto)
+        public async Task<string> ProcessAsync(ProcessOrderDto dto)
         {
             var orderResponse = await _orderService.GetByReferenceAsync(dto.Reference);
 
             if (orderResponse == null)
-            {
-                return false;
-            }
+                return OrderPaymentStatus.Failed.ToString();
 
-            var success = await _orderPaymentService.CreateAsync(
+            var tag = await _orderPaymentService.CreateAsync(
                 new ConfirmPaymentDto
                 {
                     PaidId = dto.PaidId,
@@ -51,39 +50,25 @@ namespace Shapper.Services.PaymentWebhooks
                 }
             );
 
-            var extraDataDto = CreateExtraDataDto(orderResponse.ExtraData);
-            var htmlContent = ProductTableTemplate.GenerateTableHtml(orderResponse, extraDataDto);
-            var emailDto = new EmailDto
+            if (tag == OrderPaymentStatus.AlreadyPaid.ToString())
             {
-                To = extraDataDto.Email,
-                Subject = "Order Confirmation",
-                HtmlContent = htmlContent,
-                SenderName = orderResponse.CompanyName,
-            };
+                // 1. Deserializamos el string JSON que viene de la base de datos
 
-            if (success)
-            {
+                // 2. Generamos el HTML y enviamos el correo
+                var htmlContent = ProductTableTemplate.GenerateTableHtml(orderResponse);
+
+                var emailDto = new EmailDto
+                {
+                    To = orderResponse.ExtraData.Email,
+                    Subject = "Order Confirmation",
+                    HtmlContent = htmlContent,
+                    SenderName = orderResponse.CompanyName,
+                };
+
                 await _emailService.SendAsync("brevo", emailDto);
             }
 
-            return success;
-        }
-
-        public static ExtraDataDto CreateExtraDataDto(string extraData)
-        {
-            if (string.IsNullOrWhiteSpace(extraData))
-                return new ExtraDataDto();
-
-            return new ExtraDataDto
-            {
-                Address = JsonHelper.GetValue(extraData, "address"),
-                Email = JsonHelper.GetValue(extraData, "email"),
-                PhoneNumber = JsonHelper.GetValue(extraData, "phoneNumber"),
-                LastName = JsonHelper.GetValue(extraData, "lastName"),
-                Name = JsonHelper.GetValue(extraData, "name"),
-                Place = JsonHelper.GetValue(extraData, "place"),
-                PostalCode = JsonHelper.GetValue(extraData, "postalCode"),
-            };
+            return tag;
         }
 
         public static EmailDto Create(

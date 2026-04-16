@@ -2,6 +2,7 @@ using AutoMapper;
 using Shapper.Dtos;
 using Shapper.Dtos.OrderPayments;
 using Shapper.Dtos.Orders;
+using Shapper.Enums;
 using Shapper.Models;
 using Shapper.Repositories.OrderPayments;
 using Shapper.Repositories.Orders;
@@ -26,18 +27,18 @@ namespace Shapper.Services.OrderPayments
             _mapper = mapper;
         }
 
-        public async Task<bool> CreateAsync(ConfirmPaymentDto orderData)
+        public async Task<string> CreateAsync(ConfirmPaymentDto orderData)
         {
             var order = await _orderRepository.GetByIdAsync(orderData.Order.Id);
             if (order == null)
-                return false;
+                return OrderPaymentStatus.Failed.ToString();
 
             var existing = await _orderPaymentRepository.GetByTransactionReferenceAsync(
                 orderData.PaidId
             );
 
             if (existing != null || order.Status == "PAID")
-                return true;
+                return OrderPaymentStatus.AlreadyPaid.ToString();
 
             order.Status = "PAID";
 
@@ -60,11 +61,11 @@ namespace Shapper.Services.OrderPayments
 
                 await _orderRepository.SaveChangesAsync();
 
-                return true;
+                return OrderPaymentStatus.Paid.ToString();
             }
             catch
             {
-                return false;
+                return OrderPaymentStatus.Failed.ToString();
             }
         }
 

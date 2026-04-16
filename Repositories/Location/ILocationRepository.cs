@@ -6,6 +6,7 @@ namespace Shapper.Repositories.Locations
     {
         Task<Location> GetByIdAsync(int id);
         Task<(List<Location> Locations, int TotalCount)> GetPaginatedAsync(int page, int pageSize);
+        Task<double?> GetCostByIdAsync(int id);
         Task AddAsync(Location location);
         Task<Location> UpdateAsync(Location location);
         Task DeleteAsync(Location location);

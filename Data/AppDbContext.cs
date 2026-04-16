@@ -52,6 +52,13 @@ namespace Shapper.Data
                 .HasForeignKey(s => s.LocationId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder
+                .Entity<Order>()
+                .HasOne(o => o.Location)
+                .WithMany(l => l.Orders)
+                .HasForeignKey(o => o.LocationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             /*Reviews Model*/
             modelBuilder
                 .Entity<Review>()
@@ -100,6 +107,13 @@ namespace Shapper.Data
                 .HasMany(o => o.OrderPayments)
                 .WithOne(op => op.Order)
                 .HasForeignKey(op => op.OrderId);
+
+            modelBuilder
+                .Entity<Order>()
+                .HasOne(o => o.Location) // Una Orden tiene una Ubicación
+                .WithMany(l => l.Orders) // Una Ubicación tiene muchas Órdenes
+                .HasForeignKey(o => o.LocationId) // La llave es LocationId
+                .OnDelete(DeleteBehavior.Restrict); // SEGURIDAD: No borrar ubicaciones con pedidos
 
             /*PRODUCT MODEL*/
 

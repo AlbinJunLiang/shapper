@@ -9,5 +9,7 @@ namespace Shapper.Models
         public string Type { get; set; }
         public double Cost { get; set; }
         public string Status { get; set; }
+
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

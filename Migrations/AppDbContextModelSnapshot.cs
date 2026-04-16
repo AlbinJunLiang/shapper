@@ -120,6 +120,9 @@ namespace shapper.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("Cost")
+                        .HasColumnType("float");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -154,6 +157,9 @@ namespace shapper.Migrations
                     b.Property<string>("ExtraData")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("OrderReference")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -168,6 +174,8 @@ namespace shapper.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("LocationId");
 
                     b.ToTable("Orders");
                 });
@@ -536,7 +544,14 @@ namespace shapper.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId");
 
+                    b.HasOne("Shapper.Models.Location", "Location")
+                        .WithMany("Orders")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Customer");
+
+                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("Shapper.Models.OrderDetail", b =>
@@ -646,6 +661,11 @@ namespace shapper.Migrations
             modelBuilder.Entity("Shapper.Models.Category", b =>
                 {
                     b.Navigation("Subcategories");
+                });
+
+            modelBuilder.Entity("Shapper.Models.Location", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("Shapper.Models.Order", b =>

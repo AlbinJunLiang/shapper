@@ -53,7 +53,7 @@ namespace Shapper.Controllers
             if (customId == null)
                 return BadRequest("resource.custom_id is required");
 
-            var result = await _paymentWebhooks.ProcessAsync(
+            var status = await _paymentWebhooks.ProcessAsync(
                 new ProcessOrderDto
                 {
                     PaidId = captureId,
@@ -64,7 +64,8 @@ namespace Shapper.Controllers
 
             Console.WriteLine($"Payment completed for order: {customId}");
 
-            return Ok(new { result });
+
+            return Ok(new { result = status == "Paid" });
         }
     }
 }

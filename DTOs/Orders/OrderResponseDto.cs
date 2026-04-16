@@ -12,7 +12,8 @@ namespace Shapper.Dtos.Orders
         public double Subtotal { get; set; }
         public int? CustomerId { get; set; }
         public string Status { get; set; }
-        public string? ExtraData { get; set; }
+        public ExtraDataDto? ExtraData { get; set; } // JSON aquí
+        public int? LocationId { get; set; }
         public string CompanyName { get; set; }
 
         public DateTime CreatedAt { get; set; }

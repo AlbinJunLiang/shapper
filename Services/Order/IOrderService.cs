@@ -11,7 +11,7 @@ namespace Shapper.Services.Orders
 
         Task<PagedResponseDto<OrderResponseDto>> GetPaginatedAsync(int page, int pageSize);
 
-        Task<PagedResponseDto<OrderResponseDto>> GetUserOrdersAsync(
+        Task<PagedResponseDto<OrderDto>> GetUserOrdersAsync(
             int userId,
             int days,
             int page,

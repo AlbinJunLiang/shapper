@@ -5,6 +5,6 @@ namespace Shapper.Services.PaymentWebhooks
 {
     public interface IPaymentWebhookService
     {
-        Task<bool> ProcessAsync(ProcessOrderDto dto);
+        Task<string> ProcessAsync(ProcessOrderDto dto);
     }
 }

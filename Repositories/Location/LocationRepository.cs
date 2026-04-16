@@ -21,6 +21,14 @@ namespace Shapper.Repositories.Locations
 
         public async Task<Location?> GetByIdAsync(int id) => await _context.Locations.FindAsync(id);
 
+        public async Task<double?> GetCostByIdAsync(int id)
+        {
+            return await _context
+                .Locations.Where(l => l.Id == id)
+                .Select(l => l.Cost) 
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<(List<Location> Locations, int TotalCount)> GetPaginatedAsync(
             int page,
             int pageSize

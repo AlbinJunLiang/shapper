@@ -9,10 +9,12 @@ namespace Shapper.Models
         public string Status { get; set; }
         public string? ExtraData { get; set; } // JSON aquí
         public DateTime CreatedAt { get; set; }
+        public int? LocationId { get; set; }
 
         // Navegacion
         public User? Customer { get; set; } //Puede ser nulo ya hay cliente sin registrar en el sistema
         public ICollection<OrderDetail> OrderDetails { get; set; }
         public ICollection<OrderPayment> OrderPayments { get; set; }
+        public Location? Location { get; set; }
     }
 }

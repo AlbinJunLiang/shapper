@@ -13,11 +13,6 @@ namespace Shapper.Repositories.Users
             _context = context;
         }
 
-        public async Task<bool> UserExistsAsync(int userId)
-        {
-            return await _context.Users.AnyAsync(u => u.Id == userId);
-        }
-
         public async Task<bool> ExistsAsync(int id)
         {
             return await _context.Users.AnyAsync(u => u.Id == id);

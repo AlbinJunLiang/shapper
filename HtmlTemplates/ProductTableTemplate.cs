@@ -8,10 +8,10 @@ namespace Shapper.Templates
 {
     public static class ProductTableTemplate
     {
-        public static string GenerateTableHtml(OrderResponseDto order, ExtraDataDto extra)
+        public static string GenerateTableHtml(OrderResponseDto order)
         {
+            var extra = order.ExtraData;
             var details = order.Details ?? new List<OrderDetailResponseDto>();
-
             var sb = new StringBuilder();
 
             sb.Append(
@@ -87,7 +87,7 @@ namespace Shapper.Templates
             );
 
             sb.Append(BuildHeader(order, extra));
-            sb.Append(BuildTotals(order));
+            sb.Append(BuildTotals(order, extra)); // Se agregó extra aquí
             sb.Append(BuildTable(details));
 
             sb.Append(
@@ -103,6 +103,13 @@ namespace Shapper.Templates
 
         private static string BuildHeader(OrderResponseDto order, ExtraDataDto extra)
         {
+            // Protección de nombre completo
+            var firstName = extra.Name ?? "";
+            var lastName = extra.LastName ?? "";
+            var fullName = $"{firstName} {lastName}".Trim();
+            if (string.IsNullOrWhiteSpace(fullName))
+                fullName = "Cliente";
+
             return $@"
 <div class='header'>
     <h2>Pago confirmado</h2>
@@ -113,26 +120,30 @@ namespace Shapper.Templates
 
     <div class='user-box'>
         <strong>Información del usuario</strong><br/>
-        Nombre: {WebUtility.HtmlEncode(extra.Name + " " + extra.LastName)}<br/>
-        Email: {WebUtility.HtmlEncode(extra.Email)}<br/>
-        Tel: {WebUtility.HtmlEncode(extra.PhoneNumber)}<br/>
-        Dirección: {WebUtility.HtmlEncode(extra.Address)}<br/>
-        Ciudad: {WebUtility.HtmlEncode(extra.Place)}<br/>
-        Código Postal: {WebUtility.HtmlEncode(extra.PostalCode)}
+        Nombre: {WebUtility.HtmlEncode(fullName)}<br/>
+        Email: {WebUtility.HtmlEncode(extra.Email ?? "-")}<br/>
+        Tel: {WebUtility.HtmlEncode(extra.PhoneNumber ?? "-")}<br/>
+        Dirección: {WebUtility.HtmlEncode(extra.Address ?? "No proporcionada")}<br/>
+        Ciudad: {WebUtility.HtmlEncode(extra.Place ?? "-")}<br/>
+        Código Postal: {WebUtility.HtmlEncode(extra.PostalCode ?? "-")}
     </div>
 
-    <p><strong>REFERENCIA:</strong> {WebUtility.HtmlEncode(order.OrderReference)}</p>
+    <p><strong>REFERENCIA:</strong> {WebUtility.HtmlEncode(order.OrderReference ?? "-")}</p>
 </div>";
         }
 
-        private static string BuildTotals(OrderResponseDto order)
+        private static string BuildTotals(OrderResponseDto order, ExtraDataDto extra)
         {
+            // Protegemos el costo de envío que viene del JSON
+            var shipping = extra.ShippingCost ?? 0;
+
             return $@"
 <div class='totals'>
-    <p><strong>Total:</strong> ${order.Total:F2}</p>
+    <p><strong>Costo de Envío:</strong> ${shipping:F2}</p>
     <p><strong>Subtotal:</strong> ${order.Subtotal:F2}</p>
     <p><strong>Impuestos:</strong> ${order.TotalTax:F2}</p>
     <p><strong>Descuento:</strong> ${order.TotalDiscount:F2}</p>
+    <p><strong>Total Final:</strong> ${order.Total:F2}</p>
 </div>";
         }
 
@@ -167,7 +178,7 @@ namespace Shapper.Templates
                 sb.Append(
                     $@"
 <tr>
-    <td>{WebUtility.HtmlEncode(item.ProductName)}</td>
+    <td>{WebUtility.HtmlEncode(item.ProductName ?? "Producto")}</td>
     <td class='small'>{WebUtility.HtmlEncode(item.Description ?? "-")}</td>
     <td>{item.RequestedQuantity}</td>
     <td>{item.ActualQuantity}</td>

@@ -1,9 +1,15 @@
 using System.Text.Json;
+using Shapper.Dtos;
 
 namespace Shapper.Helpers
 {
     public static class JsonHelper
     {
+        private static readonly JsonSerializerOptions _options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+        };
+
         public static string GetValue(string json, string propertyName)
         {
             try
@@ -68,6 +74,22 @@ namespace Shapper.Helpers
             }
 
             return null;
+        }
+
+        public static ExtraDataDto ParseExtraData(string? extraData)
+        {
+            if (string.IsNullOrWhiteSpace(extraData) || extraData.Trim().ToLower() == "null")
+                return new ExtraDataDto();
+
+            try
+            {
+                return JsonSerializer.Deserialize<ExtraDataDto>(extraData, _options)
+                    ?? new ExtraDataDto();
+            }
+            catch (JsonException)
+            {
+                return new ExtraDataDto();
+            }
         }
     }
 }

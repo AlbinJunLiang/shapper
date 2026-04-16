@@ -111,27 +111,30 @@ namespace Shapper.Controller
                 );
             }
 
-            var result = await _paymentWebhooks.ProcessAsync(dto);
+            var status = await _paymentWebhooks.ProcessAsync(dto);
 
             // 3. Conditional Response
-            if (!result)
+            if (status == "FAILED")
             {
                 return BadRequest(
                     new
                     {
-                        status = "Failure",
+                        status,
                         message = "Payment could not be processed. Please verify the order reference or status.",
                     }
                 );
             }
 
+            if (status == "AlreadyPaid")
+            {
+                return BadRequest(
+                    new { status, message = "A payment for this order has already been processed." }
+                );
+            }
+
             // 4. Success Response
             return Ok(
-                new
-                {
-                    status = "Success",
-                    message = "Payment processed and order updated successfully.",
-                }
+                new { status, message = "Payment processed and order updated successfully." }
             );
         }
     }

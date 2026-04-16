@@ -1,9 +1,12 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using AutoMapper;
 using Shapper.Dtos;
 using Shapper.Dtos.OrderDetails;
 using Shapper.Dtos.Orders;
 using Shapper.Helpers;
 using Shapper.Models;
+using Shapper.Repositories.Locations;
 using Shapper.Repositories.Orders;
 using Shapper.Repositories.Products;
 using Shapper.Repositories.Users;
@@ -15,24 +18,29 @@ namespace Shapper.Services.Orders
         private readonly IOrderRepository _orderRepository;
         private readonly IUserRepository _userRepository;
         private readonly IProductRepository _productRepository;
+        private readonly ILocationRepository _locationRepository;
+
         private readonly IMapper _mapper;
 
         public OrderService(
             IOrderRepository orderRepository,
             IUserRepository userRepository,
             IProductRepository productRepository,
+            ILocationRepository locationRepository,
             IMapper mapper
         )
         {
             _orderRepository = orderRepository;
             _userRepository = userRepository;
             _productRepository = productRepository;
+            _locationRepository = locationRepository;
             _mapper = mapper;
         }
 
         public async Task<OrderResponseDto> CreateAsync(CreateOrderDto dto)
         {
             await ValidateCustomerAsync(dto.CustomerId);
+            var locationCost = await GetShippingCostAsync(dto.LocationId);
 
             var items = dto.Items;
             var productIds = items.Select(i => i.ProductId).Distinct().ToList();
@@ -48,11 +56,12 @@ namespace Shapper.Services.Orders
             var order = new Order
             {
                 CustomerId = (dto.CustomerId <= 0) ? null : dto.CustomerId,
+                LocationId = (dto.LocationId <= 0) ? null : dto.LocationId,
                 OrderReference = OrderHelper.GenerateReference("ORD"),
                 Status = "PENDING",
                 Total = 0,
                 CreatedAt = DateTime.UtcNow,
-                ExtraData = dto.ExtraData,
+                ExtraData = JsonSerializer.Serialize(dto.ExtraData ?? new ExtraDataDto()),
                 OrderDetails = new List<OrderDetail>(),
             };
 
@@ -147,7 +156,7 @@ namespace Shapper.Services.Orders
             }
 
             // 5. Asignación final con redondeo a 2 decimales (Vital para PayPal/Stripe)
-            order.Total = Math.Round(totalOrder, 2, MidpointRounding.AwayFromZero);
+            order.Total = Math.Round(totalOrder, 2, MidpointRounding.AwayFromZero) + locationCost;
 
             await _orderRepository.AddAsync(order);
             await _orderRepository.SaveChangesAsync();
@@ -158,13 +167,13 @@ namespace Shapper.Services.Orders
                 Id = order.Id,
                 OrderReference = order.OrderReference,
                 CustomerId = order.CustomerId,
+                LocationId = order.LocationId,
                 // Nuevos campos del DTO:
                 Subtotal = Math.Round(totalSubtotal, 2, MidpointRounding.AwayFromZero),
                 TotalDiscount = Math.Round(totalDiscount, 2, MidpointRounding.AwayFromZero),
                 TotalTax = Math.Round(totalTax, 2, MidpointRounding.AwayFromZero),
                 Total = order.Total,
-                ExtraData = order.ExtraData,
-
+                ExtraData = JsonHelper.ParseExtraData(order.ExtraData),
                 Status = order.Status,
                 CompanyName = dto.CompanyName ?? string.Empty,
                 CreatedAt = order.CreatedAt,
@@ -227,12 +236,12 @@ namespace Shapper.Services.Orders
                 Id = order.Id,
                 OrderReference = order.OrderReference,
                 CustomerId = order.CustomerId,
-                // Totales calculados a partir de los detalles
+                LocationId = order.LocationId,
                 Subtotal = Math.Round(totalSubtotal, 2, MidpointRounding.AwayFromZero),
                 TotalDiscount = Math.Round(totalDiscount, 2, MidpointRounding.AwayFromZero),
                 TotalTax = Math.Round(totalTax, 2, MidpointRounding.AwayFromZero),
                 Total = order.Total,
-                ExtraData = order.ExtraData,
+                ExtraData = JsonHelper.ParseExtraData(order.ExtraData),
                 Status = order.Status,
                 CreatedAt = order.CreatedAt,
                 Details = detailsDto,
@@ -268,7 +277,7 @@ namespace Shapper.Services.Orders
             };
         }
 
-        public async Task<PagedResponseDto<OrderResponseDto>> GetUserOrdersAsync(
+        public async Task<PagedResponseDto<OrderDto>> GetUserOrdersAsync(
             int userId,
             int days,
             int page,
@@ -294,9 +303,9 @@ namespace Shapper.Services.Orders
             );
 
             // 4. Mapeo y Respuesta
-            var mapped = _mapper.Map<List<OrderResponseDto>>(orders);
+            var mapped = _mapper.Map<List<OrderDto>>(orders);
 
-            return new PagedResponseDto<OrderResponseDto>
+            return new PagedResponseDto<OrderDto>
             {
                 TotalCount = totalCount,
                 Page = page,
@@ -343,6 +352,23 @@ namespace Shapper.Services.Orders
                     $"The Customer ID {customerId} was provided but does not exist in our records."
                 );
             }
+        }
+
+        private async Task<double> GetShippingCostAsync(int? locationId)
+        {
+            // If no location is provided or ID is invalid, cost is zero
+            if (!locationId.HasValue || locationId <= 0)
+            {
+                return 0;
+            }
+
+            var cost = await _locationRepository.GetCostByIdAsync(locationId.Value);
+            if (cost == null)
+            {
+                throw new KeyNotFoundException($"Location with ID {locationId} was not found.");
+            }
+
+            return cost.Value;
         }
     }
 }
