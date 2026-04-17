@@ -100,12 +100,10 @@ namespace Shapper.Mappings
 
             // Agrega estos mapeos en MappingProfile.cs
             CreateMap<StoreInformation, StoreInformationResponseDto>()
-                .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.Location))
                 .ForMember(dest => dest.StoreLinks, opt => opt.MapFrom(src => src.StoreLinks));
 
             CreateMap<StoreInformationDto, StoreInformation>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-                .ForMember(dest => dest.Location, opt => opt.Ignore())
                 .ForMember(dest => dest.StoreLinks, opt => opt.Ignore());
 
             CreateMap<Location, LocationResponseDto>().ReverseMap();

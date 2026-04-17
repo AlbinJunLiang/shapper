@@ -10,7 +10,6 @@ namespace Shapper.Models
         public string? Status { get; set; }
         public string? PostalCode { get; set; }
 
-        public virtual StoreInformation? Store { get; set; }
         public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

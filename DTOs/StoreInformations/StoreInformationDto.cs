@@ -21,7 +21,7 @@ namespace Shapper.Dtos.StoreInformations
         [MaxLength(20, ErrorMessage = "Phone number cannot exceed 20 characters")]
         public string PhoneNumber { get; set; } = string.Empty;
 
-        // LocationId es opcional (nullable)
-        public int? LocationId { get; set; }
+        [MaxLength(1000, ErrorMessage = "Main location cannot exceed 1000 characters")]
+        public string MainLocation { get; set; } = string.Empty;
     }
 }

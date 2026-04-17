@@ -34,15 +34,6 @@ namespace Shapper.Services.StoreInformations
                     $"A store with the email '{dto.Email}' already exists."
                 );
 
-            // Validación 3: Location existe (si se proporcionó)
-            if (
-                dto.LocationId.HasValue
-                && !await _storeInformationRepository.LocationExistsAsync(dto.LocationId)
-            )
-                throw new InvalidOperationException(
-                    $"Location with ID {dto.LocationId} does not exist."
-                );
-
             var storeInfo = _mapper.Map<StoreInformation>(dto);
             storeInfo.CreatedAt = DateTime.UtcNow;
 
@@ -103,15 +94,6 @@ namespace Shapper.Services.StoreInformations
             )
                 throw new InvalidOperationException(
                     $"A store with the email '{dto.Email}' already exists."
-                );
-
-            // Validación 3: Location existe (si se proporcionó)
-            if (
-                dto.LocationId.HasValue
-                && !await _storeInformationRepository.LocationExistsAsync(dto.LocationId)
-            )
-                throw new InvalidOperationException(
-                    $"Location with ID {dto.LocationId} does not exist."
                 );
 
             _mapper.Map(dto, existing);

@@ -1,16 +1,15 @@
 USE shapper;
 
-INSERT INTO StoreInformations (Name, Description, Email, PhoneNumber, CreatedAt, LocationId)
+INSERT INTO StoreInformations (StoreCode, Name, Description, Email, PhoneNumber, CreatedAt, MainLocation)
 VALUES (
+    'ST-MANUAL01', -- Debes ponerlo tú
     'LIMÓN', 
     'Store', 
     'albinliang081@gmail.com', 
     '65565665', 
     GETUTCDATE(), 
-    NULL
+    '100 metros del palo de mango.'
 );
-
-
 -- 1. Link de Red Social - Facebook
 INSERT INTO StoreLinks (Name, Url, Type, Status, StoreInformationId, CreatedAt)
 VALUES (
@@ -113,9 +112,9 @@ VALUES (
 -- 10. Link de TikTok
 INSERT INTO StoreLinks (Name, Url, Type, Status, StoreInformationId, CreatedAt)
 VALUES (
-    'SUCESS',
+    'SUCCESS',
     'http://localhost:5127/sucess.html',
-    'SUCESS',
+    'SUCCESS',
     'ACTIVE',
     1,
     GETUTCDATE()

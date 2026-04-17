@@ -47,12 +47,8 @@ namespace Shapper.Data
             modelBuilder.Entity<StoreLink>().Property(sl => sl.Id).ValueGeneratedOnAdd();
 
             /*StoreInformation Model*/
-            modelBuilder
-                .Entity<StoreInformation>()
-                .HasOne(s => s.Location)
-                .WithOne() // Aquí cambiamos WithMany por WithOne
-                .HasForeignKey<StoreInformation>(s => s.LocationId) // Nota los genéricos <StoreInformation>
-                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<StoreInformation>().HasIndex(s => s.StoreCode).IsUnique();
 
             modelBuilder
                 .Entity<Order>()

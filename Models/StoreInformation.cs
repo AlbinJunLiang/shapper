@@ -8,6 +8,11 @@ namespace Shapper.Models
         [Key]
         public int Id { get; set; }
 
+        [Required]
+        [MaxLength(20)]
+        public string StoreCode { get; set; } =
+            "ST-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
+
         [Required(ErrorMessage = "Name is required")]
         [MaxLength(200, ErrorMessage = "Name cannot exceed 200 characters")]
         public string Name { get; set; } = string.Empty;
@@ -25,15 +30,12 @@ namespace Shapper.Models
         [MaxLength(20, ErrorMessage = "Phone number cannot exceed 20 characters")]
         public string PhoneNumber { get; set; } = string.Empty;
 
+        [MaxLength(1000, ErrorMessage = "Main location cannot exceed 1000 characters")]
+        public string MainLocation { get; set; } = string.Empty;
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Location es OPCIONAL (nullable int)
-        [ForeignKey(nameof(Location))]
-        public int? LocationId { get; set; } // ← Ahora es nullable
-
         // Navegación (puede ser null)
-        public virtual Location? Location { get; set; }
-
         public virtual ICollection<StoreLink> StoreLinks { get; set; } = new List<StoreLink>();
     }
 }

@@ -31,17 +31,14 @@ namespace shapper.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
@@ -59,22 +56,18 @@ namespace shapper.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Answer")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DisplayOrder")
+                    b.Property<int?>("DisplayOrder")
                         .HasColumnType("int");
 
                     b.Property<string>("Question")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Url")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -90,7 +83,7 @@ namespace shapper.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DisplayedOrder")
+                    b.Property<int?>("DisplayedOrder")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
@@ -113,25 +106,21 @@ namespace shapper.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Cost")
+                    b.Property<double?>("Cost")
                         .HasColumnType("float");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PostalCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Type")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -234,7 +223,6 @@ namespace shapper.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PaymentMethod")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
@@ -244,10 +232,10 @@ namespace shapper.Migrations
                     b.Property<double>("Subtotal")
                         .HasColumnType("float");
 
-                    b.Property<double>("TaxAmount")
+                    b.Property<double?>("TaxAmount")
                         .HasColumnType("float");
 
-                    b.Property<double>("TotalAmount")
+                    b.Property<double?>("TotalAmount")
                         .HasColumnType("float");
 
                     b.Property<string>("TransactionReference")
@@ -357,7 +345,6 @@ namespace shapper.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
@@ -413,11 +400,10 @@ namespace shapper.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("LocationId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("LocationId1")
-                        .HasColumnType("int");
+                    b.Property<string>("MainLocation")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -429,15 +415,15 @@ namespace shapper.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("StoreCode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("LocationId")
-                        .IsUnique()
-                        .HasFilter("[LocationId] IS NOT NULL");
-
-                    b.HasIndex("LocationId1")
-                        .IsUnique()
-                        .HasFilter("[LocationId1] IS NOT NULL");
+                    b.HasIndex("StoreCode")
+                        .IsUnique();
 
                     b.ToTable("StoreInformations");
                 });
@@ -680,20 +666,6 @@ namespace shapper.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Shapper.Models.StoreInformation", b =>
-                {
-                    b.HasOne("Shapper.Models.Location", "Location")
-                        .WithOne()
-                        .HasForeignKey("Shapper.Models.StoreInformation", "LocationId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Shapper.Models.Location", null)
-                        .WithOne("Store")
-                        .HasForeignKey("Shapper.Models.StoreInformation", "LocationId1");
-
-                    b.Navigation("Location");
-                });
-
             modelBuilder.Entity("Shapper.Models.StoreLink", b =>
                 {
                     b.HasOne("Shapper.Models.StoreInformation", "StoreInformation")
@@ -735,8 +707,6 @@ namespace shapper.Migrations
             modelBuilder.Entity("Shapper.Models.Location", b =>
                 {
                     b.Navigation("Orders");
-
-                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("Shapper.Models.Order", b =>
@@ -748,8 +718,7 @@ namespace shapper.Migrations
 
             modelBuilder.Entity("Shapper.Models.Product", b =>
                 {
-                    b.Navigation("FeaturedProduct")
-                        .IsRequired();
+                    b.Navigation("FeaturedProduct");
 
                     b.Navigation("OrderDetails");
 
