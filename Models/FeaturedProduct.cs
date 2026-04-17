@@ -9,9 +9,9 @@ namespace Shapper.Models
 
         [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }
-        public int DisplayedOrder { get; set; }
+        public int? DisplayedOrder { get; set; }
 
         // Navegación
-        public Product Product { get; set; }
+        public virtual Product Product { get; set; } = null!;
     }
 }

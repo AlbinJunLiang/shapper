@@ -12,7 +12,7 @@ using Shapper.Data;
 namespace shapper.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260415043546_InitialCreate")]
+    [Migration("20260416051350_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -119,15 +119,14 @@ namespace shapper.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Contact")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("Cost")
                         .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostalCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
@@ -404,42 +403,98 @@ namespace shapper.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AcceptUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CancelUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedAt")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
-                    b.Property<string>("Links")
+                    b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LocationId1")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("StoreImageUrl")
+                    b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocationId");
+                    b.HasIndex("LocationId")
+                        .IsUnique()
+                        .HasFilter("[LocationId] IS NOT NULL");
+
+                    b.HasIndex("LocationId1")
+                        .IsUnique()
+                        .HasFilter("[LocationId1] IS NOT NULL");
 
                     b.ToTable("StoreInformations");
+                });
+
+            modelBuilder.Entity("Shapper.Models.StoreLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("ACTIVE");
+
+                    b.Property<int>("StoreInformationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("other");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("StoreInformationId");
+
+                    b.HasIndex("Type");
+
+                    b.ToTable("StoreLinks");
                 });
 
             modelBuilder.Entity("Shapper.Models.Subcategory", b =>
@@ -631,12 +686,26 @@ namespace shapper.Migrations
             modelBuilder.Entity("Shapper.Models.StoreInformation", b =>
                 {
                     b.HasOne("Shapper.Models.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .WithOne()
+                        .HasForeignKey("Shapper.Models.StoreInformation", "LocationId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Shapper.Models.Location", null)
+                        .WithOne("Store")
+                        .HasForeignKey("Shapper.Models.StoreInformation", "LocationId1");
 
                     b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("Shapper.Models.StoreLink", b =>
+                {
+                    b.HasOne("Shapper.Models.StoreInformation", "StoreInformation")
+                        .WithMany("StoreLinks")
+                        .HasForeignKey("StoreInformationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StoreInformation");
                 });
 
             modelBuilder.Entity("Shapper.Models.Subcategory", b =>
@@ -669,6 +738,8 @@ namespace shapper.Migrations
             modelBuilder.Entity("Shapper.Models.Location", b =>
                 {
                     b.Navigation("Orders");
+
+                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("Shapper.Models.Order", b =>
@@ -693,6 +764,11 @@ namespace shapper.Migrations
             modelBuilder.Entity("Shapper.Models.Role", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Shapper.Models.StoreInformation", b =>
+                {
+                    b.Navigation("StoreLinks");
                 });
 
             modelBuilder.Entity("Shapper.Models.Subcategory", b =>

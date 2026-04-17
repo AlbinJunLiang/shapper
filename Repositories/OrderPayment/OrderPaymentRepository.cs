@@ -14,9 +14,10 @@ namespace Shapper.Repositories.OrderPayments
             _context = context;
         }
 
-        public async Task AddAsync(OrderPayment orderPayment)
+        public Task AddAsync(OrderPayment orderPayment)
         {
             _context.OrderPayments.Add(orderPayment);
+            return Task.CompletedTask; // Esto quita el warning y permite que el servicio use "await"
         }
 
         public async Task<OrderPayment?> GetByIdAsync(int id) =>

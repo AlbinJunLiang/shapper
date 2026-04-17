@@ -10,16 +10,17 @@ namespace Shapper.Models
 
         [Required(ErrorMessage = "ProductId is required.")]
         [ForeignKey(nameof(Product))]
-        public int ProductId { get; set; } // FK hacia Product
+        public int ProductId { get; set; }
 
         [Required(ErrorMessage = "ImageUrl is required.")]
         [MaxLength(500, ErrorMessage = "ImageUrl cannot exceed 500 characters.")]
-        public string ImageUrl { get; set; }
+        public string ImageUrl { get; set; } = string.Empty; // Protegido
 
         [MaxLength(250, ErrorMessage = "ResourceReference cannot exceed 250 characters.")]
-        public string ResourceReference { get; set; }
+        public string ResourceReference { get; set; } = string.Empty; // Protegido
 
         // Propiedad de navegación
-        public Product Product { get; set; }
+        // Usamos virtual para Lazy Loading y null! para el compilador
+        public virtual Product Product { get; set; } = null!;
     }
 }

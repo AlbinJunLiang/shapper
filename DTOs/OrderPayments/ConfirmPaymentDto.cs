@@ -4,8 +4,12 @@ namespace Shapper.Dtos.OrderPayments
 {
     public class ConfirmPaymentDto
     {
-        public OrderResponseDto Order { get; set; }
-        public string PaidId { get; set; }
-        public string PaymentMethod { get; set; }
+        // Usamos null! porque este objeto DEBE venir del proceso de pago
+        public OrderResponseDto Order { get; set; } = null!;
+
+        // Inicializamos con string.Empty para las referencias de pago
+        public string PaidId { get; set; } = string.Empty;
+
+        public string PaymentMethod { get; set; } = string.Empty;
     }
 }

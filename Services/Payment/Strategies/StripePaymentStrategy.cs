@@ -25,7 +25,9 @@ namespace Shapper.Services.Payment.Strategies
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
                             Name = detail.ProductName,
-                            Description = detail.Description,
+                            Description = string.IsNullOrWhiteSpace(detail.Description)
+                                ? null
+                                : detail.Description,
                             Images = string.IsNullOrWhiteSpace(detail.ProductImageUrl)
                                 ? null
                                 : new List<string> { detail.ProductImageUrl },
@@ -33,6 +35,20 @@ namespace Shapper.Services.Payment.Strategies
                     },
                 })
                 .ToList();
+
+            // Esto es lo más corto que existe, pero aparece como producto
+            lineItems.Add(
+                new()
+                {
+                    PriceData = new()
+                    {
+                        Currency = "usd",
+                        UnitAmount = (long)(orderResponse.ShippingCost * 100),
+                        ProductData = new() { Name = "Shippment cost - costo de envío" },
+                    },
+                    Quantity = 1,
+                }
+            );
 
             var options = new SessionCreateOptions
             {

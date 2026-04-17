@@ -20,7 +20,7 @@ namespace Shapper.Services.FeaturedProducts
             _mapper = mapper;
         }
 
-        public async Task<FeaturedProductResponseDto> CreateAsync(FeaturedProductDto dto)
+        public async Task<FeaturedProductResponseDto?> CreateAsync(FeaturedProductDto dto)
         {
             var category = _mapper.Map<FeaturedProduct>(dto);
 

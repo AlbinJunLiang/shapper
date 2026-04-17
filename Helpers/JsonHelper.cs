@@ -26,7 +26,7 @@ namespace Shapper.Helpers
             }
             catch
             {
-                return null;
+                return "";
             }
         }
 
@@ -46,7 +46,7 @@ namespace Shapper.Helpers
                 }
                 else
                 {
-                    return null;
+                    return "";
                 }
             }
             return current.ToString();

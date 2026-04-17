@@ -4,8 +4,8 @@ namespace Shapper.Repositories.Subcategories
 {
     public interface ISubcategoryRepository
     {
-        Task<Subcategory> GetByIdAsync(int id);
-        Task<Subcategory> GetByNameAsync(string name);
+        Task<Subcategory?> GetByIdAsync(int id);
+        Task<Subcategory?> GetByNameAsync(string name);
 
         Task<(List<Subcategory> Subcategories, int TotalCount)> GetPaginatedAsync(
             int page,

@@ -2,18 +2,21 @@ using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
 
+namespace Shapper.Services.Firebase;
+
 public class FirebaseService
 {
     public FirebaseApp App { get; }
 
     public FirebaseService(string credentialPath)
     {
-        // Solo crea la app si no existe
         if (FirebaseApp.DefaultInstance == null)
         {
-            App = FirebaseApp.Create(
-                new AppOptions { Credential = GoogleCredential.FromFile(credentialPath) }
-            );
+            var credential = CredentialFactory
+                .FromFile<ServiceAccountCredential>(credentialPath)
+                .ToGoogleCredential();
+
+            App = FirebaseApp.Create(new AppOptions { Credential = credential });
         }
         else
         {

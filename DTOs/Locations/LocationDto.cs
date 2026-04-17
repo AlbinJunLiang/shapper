@@ -2,11 +2,15 @@ namespace Shapper.Dtos.Locations
 {
     public class LocationDto
     {
-        public string Name { get; set; }
-        public string Contact { get; set; }
-        public string Address { get; set; }
-        public string Type { get; set; }
+        // Inicializamos con string.Empty para garantizar que nunca sean null
+        public string Name { get; set; } = string.Empty;
+
+        public string Address { get; set; } = string.Empty;
+
+        public string Type { get; set; } = string.Empty;
+
         public double Cost { get; set; }
-        public string Status { get; set; }
+
+        public string Status { get; set; } = string.Empty;
     }
 }

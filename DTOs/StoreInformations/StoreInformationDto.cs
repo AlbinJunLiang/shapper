@@ -1,20 +1,27 @@
 using System.ComponentModel.DataAnnotations;
-using Shapper.Validators;
 
 namespace Shapper.Dtos.StoreInformations
 {
     public class StoreInformationDto
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Address { get; set; }
-        public string PhoneNumber { get; set; }
+        [Required(ErrorMessage = "Name is required")]
+        [MaxLength(200, ErrorMessage = "Name cannot exceed 200 characters")]
+        public string Name { get; set; } = string.Empty;
 
-        [SingleLevelJson(ErrorMessage = "Details must be a single-level JSON object.")]
-        public string Links { get; set; }
-        public string CreatedAt { get; set; }
-        public int LocationId { get; set; }
-        public string AcceptUrl { get; set; }
-        public string CancelUrl { get; set; }
+        [MaxLength(1000, ErrorMessage = "Description cannot exceed 1000 characters")]
+        public string Description { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email format")]
+        [MaxLength(100, ErrorMessage = "Email cannot exceed 100 characters")]
+        public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Phone number is required")]
+        [Phone(ErrorMessage = "Invalid phone number format")]
+        [MaxLength(20, ErrorMessage = "Phone number cannot exceed 20 characters")]
+        public string PhoneNumber { get; set; } = string.Empty;
+
+        // LocationId es opcional (nullable)
+        public int? LocationId { get; set; }
     }
 }

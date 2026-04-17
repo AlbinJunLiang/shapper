@@ -7,8 +7,15 @@ namespace Shapper.Dtos.Categories
     public class CategoryWithSubcategoriesDto
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+
+        // Protegemos el string para evitar advertencias en el mapeo
+        public string Name { get; set; } = string.Empty;
+
         public bool Completed { get; set; } = false;
-        public List<SubcategoryResponse2Dto> Subcategories { get; set; }
+
+        // Inicializamos la lista. Esto es CRUCIAL para que Angular
+        // no reciba un 'null' y rompa el *ngFor
+        public List<SubcategoryResponse2Dto> Subcategories { get; set; } =
+            new List<SubcategoryResponse2Dto>();
     }
 }

@@ -76,7 +76,7 @@ namespace Shapper.Controllers
             var dto = new CreateUserDto
             {
                 Name = input.Name,
-                LastName = input.LastName,
+                LastName = input.LastName ?? "",
                 Email = email,
                 Status = emailVerified ? "VERIFIED" : "REGISTERED",
             };
@@ -187,7 +187,7 @@ namespace Shapper.Controllers
             {
                 return NotFound(new { Message = "User not found." });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // En desarrollo puedes loguear 'ex', en producción solo el mensaje genérico
                 return StatusCode(500, new { Message = "Internal server error." });

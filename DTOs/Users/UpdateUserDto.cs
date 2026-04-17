@@ -10,8 +10,13 @@ namespace Shapper.Dtos.Users
         public string? LastName { get; set; }
         public string? PasswordHash { get; set; }
         public string? Email { get; set; }
-        public string Address { get; set; }
-        public string PhoneNumber { get; set; }
+
+        // CS8618 Fixed: Address cannot be null
+        public string Address { get; set; } = string.Empty;
+
+        // CS8618 Fixed: PhoneNumber cannot be null
+        public string PhoneNumber { get; set; } = string.Empty;
+
         public string? Status { get; set; }
         public int RoleId { get; set; }
     }

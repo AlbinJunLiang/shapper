@@ -17,16 +17,21 @@ namespace Shapper.Services.Categories
             _mapper = mapper;
         }
 
-        public async Task<CategoryResponseDto> CreateAsync(CategoryDto dto)
+        public async Task<CategoryResponseDto?> CreateAsync(CategoryDto dto)
         {
-            var existingCategory = await _categoryRepository.GetByNameAsync(dto.Name);
-            dto.Name = dto.Name?.Trim();
+            string cleanName = dto.Name?.Trim() ?? string.Empty;
 
-            var otherCategory = await _categoryRepository.GetByNameAsync(dto.Name);
-            if (otherCategory != null)
+            if (string.IsNullOrWhiteSpace(cleanName))
+                throw new InvalidOperationException("Category name is required.");
+
+            // 2. Solo hacemos UNA consulta a la base de datos (antes tenías dos)
+            var existingCategory = await _categoryRepository.GetByNameAsync(cleanName);
+            if (existingCategory != null)
                 throw new InvalidOperationException("Category name already exists.");
 
+            // 3. Mapeo y creación
             var category = _mapper.Map<Category>(dto);
+            category.Name = cleanName; // Aseguramos que el nombre en la DB esté limpio
 
             await _categoryRepository.AddAsync(category);
 
@@ -73,20 +78,27 @@ namespace Shapper.Services.Categories
         public async Task<CategoryResponseDto> UpdateAsync(int id, CategoryDto dto)
         {
             var existingCategory = await _categoryRepository.GetByIdAsync(id);
-            dto.Name = dto.Name?.Trim();
-
             if (existingCategory == null)
                 throw new InvalidOperationException("Category not found.");
 
-            var otherCategory = await _categoryRepository.GetByNameAsync(dto.Name);
-            if (otherCategory != null)
-                throw new InvalidOperationException("Category name already exists.");
+            // 1. Limpiamos el nombre con seguridad
+            string cleanName = dto.Name?.Trim() ?? string.Empty;
 
-            existingCategory.Name = dto.Name;
-            existingCategory.Description = dto.Description;
-            existingCategory.ImageUrl = dto.ImageUrl;
+            // 2. CORRECCIÓN DE LÓGICA: Solo validar si el nombre cambió
+            if (existingCategory.Name != cleanName)
+            {
+                var otherCategory = await _categoryRepository.GetByNameAsync(cleanName);
+                if (otherCategory != null)
+                    throw new InvalidOperationException("Category name already exists.");
+            }
+
+            // 3. Asignaciones seguras (Matando los warnings)
+            existingCategory.Name = cleanName;
+            existingCategory.Description = dto.Description ?? string.Empty;
+            existingCategory.ImageUrl = dto.ImageUrl ?? string.Empty;
 
             await _categoryRepository.UpdateAsync(existingCategory);
+            // await _categoryRepository.SaveChangesAsync(); // Asegúrate de llamar al Save si tu Repo no lo hace
 
             return new CategoryResponseDto
             {

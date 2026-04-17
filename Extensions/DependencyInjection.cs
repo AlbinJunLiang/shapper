@@ -10,6 +10,7 @@ using Shapper.Repositories.Products;
 using Shapper.Repositories.Reviews;
 using Shapper.Repositories.Roles;
 using Shapper.Repositories.StoreInformations;
+using Shapper.Repositories.StoreLinks;
 using Shapper.Repositories.Subcategories;
 using Shapper.Repositories.Users;
 using Shapper.Services.Categories;
@@ -25,6 +26,7 @@ using Shapper.Services.Products;
 using Shapper.Services.Reviews;
 using Shapper.Services.Roles;
 using Shapper.Services.StoreInformations;
+using Shapper.Services.StoreLinks;
 using Shapper.Services.Subcategories;
 using Shapper.Services.Users;
 
@@ -69,6 +71,11 @@ namespace Shapper.Extensions
             services.AddScoped<ICheckoutService, CheckoutService>();
             services.AddScoped<IPaymentWebhookService, PaymentWebhookService>();
 
+            // Agrega estas líneas en el método AddApplicationServices
+
+            // En el método AddApplicationServices, agrega:
+            services.AddScoped<IStoreLinkRepository, StoreLinkRepository>();
+            services.AddScoped<IStoreLinkService, StoreLinkService>();
             return services;
         }
     }

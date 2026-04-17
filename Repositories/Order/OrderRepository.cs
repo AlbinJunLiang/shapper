@@ -13,9 +13,11 @@ namespace Shapper.Repositories.Orders
             _context = context;
         }
 
-        public async Task AddAsync(Order order)
+        // En OrderRepository.cs
+        public Task AddAsync(Order order)
         {
             _context.Orders.Add(order);
+            return Task.CompletedTask; // Esto quita el warning y permite que el servicio use "await"
         }
 
         public async Task<Order?> GetByIdAsync(int id) => await _context.Orders.FindAsync(id);
@@ -45,8 +47,7 @@ namespace Shapper.Repositories.Orders
 
             return (orders, totalCount);
         }
-        
-        
+
         public async Task<(List<Order> Orders, int TotalCount)> GetUserOrdersAsync(
             int userId,
             int days,
@@ -71,10 +72,10 @@ namespace Shapper.Repositories.Orders
             return (orders, totalCount);
         }
 
-        public async Task<Order> UpdateAsync(Order order)
+        public Task<Order> UpdateAsync(Order order)
         {
             _context.Orders.Update(order);
-            return order;
+            return Task.FromResult(order);
         }
 
         public async Task DeleteAsync(Order order)

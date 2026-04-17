@@ -16,6 +16,6 @@ namespace Shapper.Dtos.Reviews
             MinimumLength = 3,
             ErrorMessage = "El comentario debe tener entre 3 y 300 caracteres."
         )]
-        public string Comment { get; set; }
+        public string Comment { get; set; } = "";
     }
 }

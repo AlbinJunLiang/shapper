@@ -1,21 +1,22 @@
-using System.ComponentModel.DataAnnotations;
-using Shapper.Validators;
+using Shapper.Dtos.Locations;
+using Shapper.Dtos.StoreLinks;
 
 namespace Shapper.Dtos.StoreInformations
 {
     public class StoreInformationResponseDto
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Address { get; set; }
-        public string PhoneNumber { get; set; }
-        public int LocationId { get; set; }
-        public string AcceptUrl { get; set; }
-        public string CancelUrl { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public int? LocationId { get; set; }
 
-        [SingleLevelJson(ErrorMessage = "Details must be a single-level JSON object.")]
-        public string Links { get; set; }
-        public string CreatedAt { get; set; }
+        // Información de ubicación (puede ser null)
+        public LocationResponseDto? Location { get; set; }
+
+        // Links asociados
+        public List<StoreLinkResponseDto> StoreLinks { get; set; } = new();
     }
 }

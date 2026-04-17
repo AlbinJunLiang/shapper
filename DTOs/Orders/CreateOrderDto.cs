@@ -9,9 +9,9 @@ namespace Shapper.Dtos.Orders
 
         [Required]
         public ExtraDataDto? ExtraData { get; set; } // JSON aquí
-        public string Provider { get; set; }
+        public string Provider { get; set; } = "";
         public int? LocationId { get; set; }
-        public string CompanyName { get; set; }
+        public string CompanyName { get; set; } = "";
         public string SuccessUrl { get; set; } = "";
         public string CancelUrl { get; set; } = "";
 

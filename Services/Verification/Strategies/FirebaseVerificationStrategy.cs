@@ -1,5 +1,6 @@
 using FirebaseAdmin.Auth;
 using Shapper.Dtos;
+using Shapper.Services.Firebase;
 
 namespace Shapper.Services.Verifications.Strategies
 {

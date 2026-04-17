@@ -8,18 +8,32 @@ namespace Shapper.Models
         [Key]
         public int Id { get; set; }
 
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string StoreImageUrl { get; set; }
+        [Required(ErrorMessage = "Name is required")]
+        [MaxLength(200, ErrorMessage = "Name cannot exceed 200 characters")]
+        public string Name { get; set; } = string.Empty;
 
-        public string AcceptUrl { get; set; }
-        public string CancelUrl { get; set; }
-        public string Links { get; set; }
-        public string CreatedAt { get; set; }
+        [MaxLength(1000, ErrorMessage = "Description cannot exceed 1000 characters")]
+        public string Description { get; set; } = string.Empty;
 
-        public int LocationId { get; set; }
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email format")]
+        [MaxLength(100, ErrorMessage = "Email cannot exceed 100 characters")]
+        public string Email { get; set; } = string.Empty;
 
-        [ForeignKey("LocationId")]
-        public Location Location { get; set; }
+        [Required(ErrorMessage = "Phone number is required")]
+        [Phone(ErrorMessage = "Invalid phone number format")]
+        [MaxLength(20, ErrorMessage = "Phone number cannot exceed 20 characters")]
+        public string PhoneNumber { get; set; } = string.Empty;
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        // Location es OPCIONAL (nullable int)
+        [ForeignKey(nameof(Location))]
+        public int? LocationId { get; set; } // ← Ahora es nullable
+
+        // Navegación (puede ser null)
+        public virtual Location? Location { get; set; }
+
+        public virtual ICollection<StoreLink> StoreLinks { get; set; } = new List<StoreLink>();
     }
 }

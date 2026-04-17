@@ -18,7 +18,7 @@ namespace Shapper.Services.OrderDetails
             _mapper = mapper;
         }
 
-        public async Task<OrderDetailResponseDto> CreateAsync(OrderDetailDto dto)
+        public async Task<OrderDetailResponseDto?> CreateAsync(OrderDetailDto dto)
         {
             var category = _mapper.Map<OrderDetail>(dto);
 

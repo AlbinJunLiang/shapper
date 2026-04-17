@@ -9,6 +9,5 @@ namespace Shapper.Dtos
         public string PhoneNumber { get; set; } = string.Empty;
         public string Place { get; set; } = string.Empty;
         public string PostalCode { get; set; } = string.Empty;
-        public double? ShippingCost { get; set; } = 0; // Por defecto 0
     }
 }

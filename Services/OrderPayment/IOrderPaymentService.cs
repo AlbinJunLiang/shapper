@@ -9,7 +9,7 @@ namespace Shapper.Services.OrderPayments
     {
         Task<OrderPaymentDto?> GetByIdAsync(int id);
 
-        Task<OrderPaymentDto> GetByTransactionReferenceAsync(string transactionReference);
+        Task<OrderPaymentDto?> GetByTransactionReferenceAsync(string transactionReference);
 
         Task<PagedResponseDto<OrderPaymentResponseDto>> GetPaginatedAsync(int page, int pageSize);
 

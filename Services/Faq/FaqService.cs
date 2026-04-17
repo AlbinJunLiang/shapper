@@ -17,9 +17,11 @@ namespace Shapper.Services.Faqs
             _mapper = mapper;
         }
 
-        public async Task<FaqResponseDto> CreateAsync(FaqDto dto)
+        public async Task<FaqResponseDto?> CreateAsync(FaqDto dto)
         {
             var category = _mapper.Map<Faq>(dto);
+
+            if(category != null)
 
             await _faqRepository.AddAsync(category);
 

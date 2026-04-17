@@ -37,7 +37,7 @@ namespace Shapper.Services.Orders
             _mapper = mapper;
         }
 
-        public async Task<OrderResponseDto> CreateAsync(CreateOrderDto dto)
+        public async Task<OrderResponseDto?> CreateAsync(CreateOrderDto dto)
         {
             await ValidateCustomerAsync(dto.CustomerId);
             var locationCost = await GetShippingCostAsync(dto.LocationId);
@@ -173,6 +173,7 @@ namespace Shapper.Services.Orders
                 TotalDiscount = Math.Round(totalDiscount, 2, MidpointRounding.AwayFromZero),
                 TotalTax = Math.Round(totalTax, 2, MidpointRounding.AwayFromZero),
                 Total = order.Total,
+                ShippingCost = locationCost,
                 ExtraData = JsonHelper.ParseExtraData(order.ExtraData),
                 Status = order.Status,
                 CompanyName = dto.CompanyName ?? string.Empty,
@@ -224,11 +225,13 @@ namespace Shapper.Services.Orders
                         Tax = product.TaxAmount,
                         FinalPrice = Math.Round(finalPrice, 2, MidpointRounding.AwayFromZero),
                         Subtotal = detail.Subtotal, // Este ya venía redondeado de la BD
-                        Status = detail.Status,
-                        Description = detail.Description,
+                        Status = detail.Status ?? "",
+                        Description = detail.Description ?? "",
                     }
                 );
             }
+
+            var locationCost = await GetShippingCostAsync(order.LocationId);
 
             // 3. Devolvemos el mismo objeto que CreateAsync
             return new OrderResponseDto
@@ -237,6 +240,7 @@ namespace Shapper.Services.Orders
                 OrderReference = order.OrderReference,
                 CustomerId = order.CustomerId,
                 LocationId = order.LocationId,
+                ShippingCost = locationCost,
                 Subtotal = Math.Round(totalSubtotal, 2, MidpointRounding.AwayFromZero),
                 TotalDiscount = Math.Round(totalDiscount, 2, MidpointRounding.AwayFromZero),
                 TotalTax = Math.Round(totalTax, 2, MidpointRounding.AwayFromZero),
@@ -356,7 +360,6 @@ namespace Shapper.Services.Orders
 
         private async Task<double> GetShippingCostAsync(int? locationId)
         {
-            // If no location is provided or ID is invalid, cost is zero
             if (!locationId.HasValue || locationId <= 0)
             {
                 return 0;

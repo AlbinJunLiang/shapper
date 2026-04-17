@@ -6,34 +6,6 @@ using Shapper.Services.Verifications;
 
 namespace Shapper.Authentication
 {
-    /// <summary>
-    /// Handles the authentication process for incoming HTTP requests using a custom Bearer token strategy.
-    ///
-    /// This method:
-    /// 1. Extracts the Authorization header from the request.
-    /// 2. Validates the Bearer token using a verification strategy.
-    /// 3. Builds a ClaimsPrincipal with user information (UserId, Email, Role, EmailVerified).
-    /// 4. Returns an AuthenticationTicket if the token is valid.
-    ///
-    /// Returns:
-    /// - AuthenticateResult.Success if the token is valid.
-    /// - AuthenticateResult.Fail if validation fails.
-    /// - AuthenticateResult.NoResult if no Authorization header is present.
-    ///
-    /// This handler integrates with ASP.NET Core authentication middleware
-    /// and enables the use of [Authorize] attributes throughout the application.
-    /// </summary>
-    /*
-    Intercepta requests HTTP protegidos
-    
-    Lee el header Authorization
-    
-    Valida el token
-    
-    Crea el ClaimsPrincipal
-    
-    Devuelve AuthenticateResult
-    */
     public class ProviderAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         private readonly VerificationStrategyFactory _factory;
@@ -42,34 +14,43 @@ namespace Shapper.Authentication
             IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
-            ISystemClock clock,
             VerificationStrategyFactory factory
         )
-            : base(options, logger, encoder, clock)
+            : base(options, logger, encoder)
         {
             _factory = factory;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            if (!Request.Headers.ContainsKey("Authorization"))
+            // 1. Verificación segura del Header
+            if (!Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
                 return AuthenticateResult.NoResult();
 
-            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            string? headerValue = authorizationHeader.ToString();
 
-            if (string.IsNullOrWhiteSpace(token))
+            if (
+                string.IsNullOrWhiteSpace(headerValue)
+                || !headerValue.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)
+            )
                 return AuthenticateResult.NoResult();
+
+            var token = headerValue.Substring("Bearer ".Length).Trim();
 
             try
             {
                 var strategy = _factory.Create();
-
                 var user = await strategy.VerifyTokenAsync(token);
+
+                // CS8602 Prevention: Si user es null, fallamos la autenticación
+                if (user == null)
+                    return AuthenticateResult.Fail("Invalid user data from token.");
 
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.NameIdentifier, user.UserId),
-                    new Claim(ClaimTypes.Email, user.Email ?? ""),
+                    // Usamos el operador null-coalescing (??) para asegurar que no viajen nulos
+                    new Claim(ClaimTypes.NameIdentifier, user.UserId ?? string.Empty),
+                    new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
                     new Claim("role", user.Role ?? "authenticated"),
                     new Claim("email_verified", user.EmailVerified.ToString().ToLower()),
                 };
@@ -82,7 +63,7 @@ namespace Shapper.Authentication
             }
             catch (Exception ex)
             {
-                return AuthenticateResult.Fail(ex.Message);
+                return AuthenticateResult.Fail($"Authentication failed: {ex.Message}");
             }
         }
     }

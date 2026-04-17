@@ -35,8 +35,14 @@ namespace Shapper.Services.Checkouts
 
             // 2. Ejecución de lógica de negocio (Creación de la Orden)
             var order = await _orderService.CreateAsync(dto);
-            ValidateOrder(order);
 
+            if (order == null)
+                throw new InvalidOperationException("Failed to create the order record.");
+
+            if (order.Details == null || !order.Details.Any())
+                throw new InvalidOperationException(
+                    "No valid products found in the created order."
+                );
             // 3. Generación de Pago
             var paymentUrl = await GeneratePaymentUrlAsync(dto, order);
 
@@ -57,17 +63,6 @@ namespace Shapper.Services.Checkouts
             if (!_paymentUrlValidators.IsValidUrl(cancelUrl))
                 throw new BadHttpRequestException(
                     $"Invalid Cancel URL: {_paymentUrlValidators.GetFullUrl(cancelUrl)}"
-                );
-        }
-
-        private void ValidateOrder(OrderResponseDto? order)
-        {
-            if (order == null)
-                throw new InvalidOperationException("Failed to create the order record.");
-
-            if (order.Details == null || !order.Details.Any())
-                throw new InvalidOperationException(
-                    "No valid products found in the created order."
                 );
         }
 

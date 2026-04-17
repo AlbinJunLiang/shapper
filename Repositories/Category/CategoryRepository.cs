@@ -25,9 +25,17 @@ namespace Shapper.Repositories.Categories
         public async Task<Category?> GetByIdAsync(int id) =>
             await _context.Categories.FindAsync(id);
 
-        public async Task<Category?> GetByNameAsync(string name)
+        public async Task<Category?> GetByNameAsync(string? name)
         {
-            return await _context.Categories.FirstOrDefaultAsync(c => c.Name == name);
+            if (string.IsNullOrWhiteSpace(name))
+                return null;
+
+            // Guardamos el nombre procesado en una variable para no repetir el ToLower/Trim
+            var processedName = name.Trim().ToLower();
+
+            return await _context.Categories.FirstOrDefaultAsync(c =>
+                c.Name != null && c.Name.ToLower() == processedName
+            );
         }
 
         public async Task<(List<Category> Categories, int TotalCount)> GetPaginatedAsync(
@@ -55,7 +63,7 @@ namespace Shapper.Repositories.Categories
                 .Categories.Select(c => new CategoryWithSubcategoriesDto
                 {
                     Id = c.Id,
-                    Name = c.Name,
+                    Name = c.Name ?? "",
                     Subcategories = c
                         .Subcategories.Where(s =>
                             s.Products.Any(p => p.Status == ProductStatus.ACTIVE.ToString())
@@ -79,8 +87,8 @@ namespace Shapper.Repositories.Categories
 
             return new CategoriesWithGlobalPriceRangeDto
             {
-                GlobalMinPrice = priceStats?.MinPrice,
-                GlobalMaxPrice = priceStats?.MaxPrice,
+                GlobalMinPrice = priceStats?.MinPrice ?? 0,
+                GlobalMaxPrice = priceStats?.MaxPrice ?? 0,
                 Categories = categories,
             };
         }

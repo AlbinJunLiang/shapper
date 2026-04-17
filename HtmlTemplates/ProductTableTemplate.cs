@@ -10,7 +10,7 @@ namespace Shapper.Templates
     {
         public static string GenerateTableHtml(OrderResponseDto order)
         {
-            var extra = order.ExtraData;
+            var extra = order.ExtraData ?? new ExtraDataDto();
             var details = order.Details ?? new List<OrderDetailResponseDto>();
             var sb = new StringBuilder();
 
@@ -132,14 +132,13 @@ namespace Shapper.Templates
 </div>";
         }
 
-        private static string BuildTotals(OrderResponseDto order, ExtraDataDto extra)
+        private static string BuildTotals(OrderResponseDto order, ExtraDataDto? extra)
         {
             // Protegemos el costo de envío que viene del JSON
-            var shipping = extra.ShippingCost ?? 0;
 
             return $@"
 <div class='totals'>
-    <p><strong>Costo de Envío:</strong> ${shipping:F2}</p>
+    <p><strong>Costo de Envío:</strong> ${order.ShippingCost:F2}</p>
     <p><strong>Subtotal:</strong> ${order.Subtotal:F2}</p>
     <p><strong>Impuestos:</strong> ${order.TotalTax:F2}</p>
     <p><strong>Descuento:</strong> ${order.TotalDiscount:F2}</p>

@@ -12,6 +12,7 @@ using Shapper.Dtos.Products;
 using Shapper.Dtos.Reviews;
 using Shapper.Dtos.Roles;
 using Shapper.Dtos.StoreInformations;
+using Shapper.Dtos.StoreLinks;
 using Shapper.Dtos.Subcategories;
 using Shapper.Dtos.Users;
 using Shapper.Models;
@@ -96,10 +97,35 @@ namespace Shapper.Mappings
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.User.Name))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.User.LastName))
                 .ReverseMap();
-            CreateMap<StoreInformation, StoreInformationResponseDto>().ReverseMap();
-            CreateMap<StoreInformation, StoreInformationDto>().ReverseMap();
+
+            // Agrega estos mapeos en MappingProfile.cs
+            CreateMap<StoreInformation, StoreInformationResponseDto>()
+                .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.Location))
+                .ForMember(dest => dest.StoreLinks, opt => opt.MapFrom(src => src.StoreLinks));
+
+            CreateMap<StoreInformationDto, StoreInformation>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.Location, opt => opt.Ignore())
+                .ForMember(dest => dest.StoreLinks, opt => opt.Ignore());
+
             CreateMap<Location, LocationResponseDto>().ReverseMap();
             CreateMap<Location, LocationDto>().ReverseMap();
+
+            // Agrega estos mapeos en MappingProfile.cs
+            CreateMap<StoreLink, StoreLinkResponseDto>()
+                .ForMember(
+                    dest => dest.StoreInformationName,
+                    opt =>
+                        opt.MapFrom(src =>
+                            src.StoreInformation != null ? src.StoreInformation.Name : string.Empty
+                        )
+                );
+
+            CreateMap<StoreLinkDto, StoreLink>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.StoreInformation, opt => opt.Ignore());
         }
     }
 }

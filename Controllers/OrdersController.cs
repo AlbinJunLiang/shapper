@@ -93,7 +93,7 @@ namespace Shapper.Controller
             {
                 return NotFound(new { success = false, message = ex.Message });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log ex here
                 return StatusCode(500, new { success = false, message = "Internal server error." });

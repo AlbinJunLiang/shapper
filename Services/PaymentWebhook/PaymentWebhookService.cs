@@ -59,10 +59,10 @@ namespace Shapper.Services.PaymentWebhooks
 
                 var emailDto = new EmailDto
                 {
-                    To = orderResponse.ExtraData.Email,
+                    To = orderResponse?.ExtraData?.Email ?? "",
                     Subject = "Order Confirmation",
                     HtmlContent = htmlContent,
-                    SenderName = orderResponse.CompanyName,
+                    SenderName = orderResponse?.CompanyName ?? "",
                 };
 
                 await _emailService.SendAsync("brevo", emailDto);

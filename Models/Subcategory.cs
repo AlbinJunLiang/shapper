@@ -9,20 +9,24 @@ namespace Shapper.Models
         [Key]
         public int Id { get; set; }
 
+        [Required(ErrorMessage = "The Name is required.")]
         [MaxLength(150, ErrorMessage = "The Name cannot exceed 150 characters.")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        [MaxLength(500, ErrorMessage = "The Name cannot exceed 500 characters.")]
-        public string Description { get; set; }
+        [MaxLength(500, ErrorMessage = "The Description cannot exceed 500 characters.")]
+        public string Description { get; set; } = string.Empty;
 
-        [MaxLength(500, ErrorMessage = "The {0} cannot exceed {1} characters.")]
-        public string ImageUrl { get; set; }
+        [MaxLength(500, ErrorMessage = "The Image URL cannot exceed 500 characters.")]
+        public string ImageUrl { get; set; } = string.Empty;
 
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
 
-        public Category Category { get; set; }
+        // Navegación
+        // Usamos virtual y null! para silenciar warnings de nulabilidad
+        public virtual Category Category { get; set; } = null!;
 
-        public ICollection<Product> Products { get; set; } = new List<Product>();
+        // Inicializada como lista vacía para evitar NullReferenceException
+        public virtual ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

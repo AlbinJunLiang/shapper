@@ -17,6 +17,7 @@ using Shapper.Mappings;
 using Shapper.Services;
 using Shapper.Services.Emails;
 using Shapper.Services.Emails.Strategies;
+using Shapper.Services.Firebase;
 using Shapper.Services.ImageStorage;
 using Shapper.Services.ImageStorage.Strategies;
 using Shapper.Services.Payment;
@@ -44,8 +45,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddApplicationServices();
 
 // AutoMapper
-//builder.Services.AddAutoMapper(cfg => { }, typeof(MappingProfile).Assembly);
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddAutoMapper(cfg => { }, typeof(MappingProfile).Assembly);
 
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
@@ -53,13 +53,12 @@ StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 // Servicio de autenticación Firebase
 
-// Leer ruta del JSON desde appsettings.json o variable de entorno
-var firebaseJsonPath = builder.Configuration.GetValue<string>("Firebase:CredentialPath");
+// 1. Intentamos leer la ruta
+var firebaseJsonPath =
+    builder.Configuration.GetValue<string>("Firebase:CredentialPath")
+    ?? throw new InvalidOperationException("Firebase CredentialPath is missing in configuration.");
 
-// o desde variable de entorno:
-// var firebaseJsonPath = Environment.GetEnvironmentVariable("FIREBASE_CREDENTIAL_PATH");
-
-// Registrar el servicio pasando la ruta
+// 2. Registrar el servicio de forma segura
 builder.Services.AddSingleton<FirebaseService>(sp => new FirebaseService(firebaseJsonPath));
 
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));

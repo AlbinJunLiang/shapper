@@ -1,52 +1,125 @@
-using System.Security.Claims; // <-- necesario para Claim, ClaimTypes, ClaimsIdentity, ClaimsPrincipal
-using System.Text.Json;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shapper.Dtos;
 using Shapper.Dtos.StoreInformations;
-using Shapper.Models;
 using Shapper.Services.StoreInformations;
 
-namespace Shapper.Controller
+namespace Shapper.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class StoreInformationsController : ControllerBase
     {
         private readonly IStoreInformationService _storeInformationService;
+        private readonly ILogger<StoreInformationsController> _logger;
 
-        public StoreInformationsController(IStoreInformationService storeInformationService)
+        public StoreInformationsController(
+            IStoreInformationService storeInformationService,
+            ILogger<StoreInformationsController> logger
+        )
         {
             _storeInformationService = storeInformationService;
+            _logger = logger;
         }
 
+        /// <summary>
+        /// Creates a new store information (Location is optional)
+        /// </summary>
         [HttpPost]
-        public async Task<IActionResult> Create(StoreInformationDto dto)
+        public async Task<IActionResult> Create([FromBody] StoreInformationDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(
+                    new
+                    {
+                        success = false,
+                        errors = ModelState.Values.SelectMany(v =>
+                            v.Errors.Select(e => e.ErrorMessage)
+                        ),
+                    }
+                );
+
             try
             {
-                var storeInformation = await _storeInformationService.CreateAsync(dto);
-                return Ok(storeInformation);
+                var result = await _storeInformationService.CreateAsync(dto);
+
+                // CS8602 Fixed: Verificamos si el resultado es nulo antes de acceder a .Id
+                if (result == null)
+                {
+                    return StatusCode(
+                        500,
+                        new { success = false, message = "Failed to create store information." }
+                    );
+                }
+
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { id = result.Id },
+                    new { success = true, data = result }
+                );
             }
             catch (InvalidOperationException ex)
-                when (ex.Message.Contains("The specified subcategory does not exist."))
             {
-                return Conflict(new { message = ex.Message });
+                return Conflict(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating store information");
+                return StatusCode(
+                    500,
+                    new
+                    {
+                        success = false,
+                        message = "An internal error occurred while creating the store.",
+                    }
+                );
             }
         }
 
+        /// <summary>
+        /// Gets store information by ID (includes Location and StoreLinks if they exist)
+        /// </summary>
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var storeInformation = await _storeInformationService.GetByIdAsync(id);
-            if (storeInformation == null)
-                return NotFound();
-            return Ok(storeInformation);
+            if (id <= 0)
+                return BadRequest(
+                    new { success = false, message = "Invalid ID. ID must be greater than 0." }
+                );
+
+            try
+            {
+                var result = await _storeInformationService.GetByIdAsync(id);
+                if (result == null)
+                    return NotFound(
+                        new
+                        {
+                            success = false,
+                            message = $"StoreInformation with ID {id} not found.",
+                        }
+                    );
+
+                return Ok(new { success = true, data = result });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting store information by ID: {Id}", id);
+                return StatusCode(
+                    500,
+                    new { success = false, message = "An internal error occurred." }
+                );
+            }
         }
 
+        /// <summary>
+        /// Gets paginated list of store information
+        /// </summary>
         [HttpGet]
-        public async Task<IActionResult> GetPaginatedAsync(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> GetPaginated(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10
+        )
         {
+            // Validaciones de paginación
             if (page <= 0)
                 return BadRequest(
                     new { success = false, message = "Page number must be greater than 0." }
@@ -57,59 +130,104 @@ namespace Shapper.Controller
                     new { success = false, message = "Page size must be between 1 and 100." }
                 );
 
-            var result = await _storeInformationService.GetPaginatedAsync(page, pageSize);
-            return Ok(result);
+            try
+            {
+                var result = await _storeInformationService.GetPaginatedAsync(page, pageSize);
+                return Ok(new { success = true, data = result });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting paginated store information");
+                return StatusCode(
+                    500,
+                    new { success = false, message = "An internal error occurred." }
+                );
+            }
         }
 
+        /// <summary>
+        /// Updates an existing store information
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] StoreInformationDto dto)
         {
+            if (id <= 0)
+                return BadRequest(
+                    new { success = false, message = "Invalid ID. ID must be greater than 0." }
+                );
+
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(
+                    new
+                    {
+                        success = false,
+                        errors = ModelState.Values.SelectMany(v =>
+                            v.Errors.Select(e => e.ErrorMessage)
+                        ),
+                    }
+                );
 
             try
             {
-                var storeInformation = await _storeInformationService.UpdateAsync(id, dto);
-
+                var result = await _storeInformationService.UpdateAsync(id, dto);
                 return Ok(
                     new
                     {
-                        message = "StoreInformation updated successfully",
-                        data = storeInformation,
+                        success = true,
+                        message = "Store information updated successfully",
+                        data = result,
                     }
                 );
             }
             catch (InvalidOperationException ex)
             {
-                return ex.Message switch
-                {
-                    "StoreInformation not found." => NotFound(
-                        new { message = ex.Message, status = 404 }
-                    ),
-                    "StoreInformation name already exists." => Conflict(
-                        new { message = ex.Message, status = 409 }
-                    ),
+                if (ex.Message.Contains("not found"))
+                    return NotFound(new { success = false, message = ex.Message });
 
-                    _ => StatusCode(500, new { message = "Internal server error." }),
-                };
+                return Conflict(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating store information with ID: {Id}", id);
+                return StatusCode(
+                    500,
+                    new { success = false, message = "An internal error occurred while updating." }
+                );
             }
         }
 
+        /// <summary>
+        /// Deletes a store information (only if it has no associated links)
+        /// </summary>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            if (id <= 0)
+                return BadRequest(
+                    new { success = false, message = "Invalid ID. ID must be greater than 0." }
+                );
+
             try
             {
                 await _storeInformationService.DeleteAsync(id);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
+                return Ok(
+                    new { success = true, message = "Store information deleted successfully" }
+                );
             }
             catch (InvalidOperationException ex)
             {
-                return Conflict(new { message = ex.Message });
+                if (ex.Message.Contains("not found"))
+                    return NotFound(new { success = false, message = ex.Message });
+
+                return Conflict(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting store information with ID: {Id}", id);
+                return StatusCode(
+                    500,
+                    new { success = false, message = "An internal error occurred while deleting." }
+                );
             }
         }
     }

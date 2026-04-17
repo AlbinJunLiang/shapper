@@ -2,8 +2,8 @@ namespace Shapper.Config
 {
     public class PayPalSettings
     {
-        public string Api { get; set; }
-        public string ClientId { get; set; }
-        public string Secret { get; set; }
+        public string Api { get; set; } = string.Empty;
+        public string ClientId { get; set; } = string.Empty;
+        public string Secret { get; set; } = string.Empty;
     }
 }

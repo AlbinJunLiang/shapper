@@ -20,19 +20,42 @@ namespace Shapper.Services.StoreInformations
             _mapper = mapper;
         }
 
-        public async Task<StoreInformationResponseDto> CreateAsync(StoreInformationDto dto)
+        public async Task<StoreInformationResponseDto?> CreateAsync(StoreInformationDto dto)
         {
-            var category = _mapper.Map<StoreInformation>(dto);
+            // Validación 1: Nombre único
+            if (!await _storeInformationRepository.IsNameUniqueAsync(dto.Name))
+                throw new InvalidOperationException(
+                    $"A store with the name '{dto.Name}' already exists."
+                );
 
-            await _storeInformationRepository.AddAsync(category);
+            // Validación 2: Email único
+            if (!await _storeInformationRepository.IsEmailUniqueAsync(dto.Email))
+                throw new InvalidOperationException(
+                    $"A store with the email '{dto.Email}' already exists."
+                );
 
-            return _mapper.Map<StoreInformationResponseDto>(category);
+            // Validación 3: Location existe (si se proporcionó)
+            if (
+                dto.LocationId.HasValue
+                && !await _storeInformationRepository.LocationExistsAsync(dto.LocationId)
+            )
+                throw new InvalidOperationException(
+                    $"Location with ID {dto.LocationId} does not exist."
+                );
+
+            var storeInfo = _mapper.Map<StoreInformation>(dto);
+            storeInfo.CreatedAt = DateTime.UtcNow;
+
+            await _storeInformationRepository.AddAsync(storeInfo);
+
+            var created = await _storeInformationRepository.GetByIdAsync(storeInfo.Id);
+            return _mapper.Map<StoreInformationResponseDto>(created);
         }
 
-        public async Task<StoreInformationDto?> GetByIdAsync(int id)
+        public async Task<StoreInformationResponseDto?> GetByIdAsync(int id)
         {
-            var category = await _storeInformationRepository.GetByIdAsync(id);
-            return category == null ? null : _mapper.Map<StoreInformationDto>(category);
+            var storeInfo = await _storeInformationRepository.GetByIdAsync(id);
+            return storeInfo == null ? null : _mapper.Map<StoreInformationResponseDto>(storeInfo);
         }
 
         public async Task<PagedResponseDto<StoreInformationResponseDto>> GetPaginatedAsync(
@@ -44,10 +67,9 @@ namespace Shapper.Services.StoreInformations
             pageSize = pageSize <= 0 ? 10 : pageSize;
             pageSize = pageSize > 100 ? 100 : pageSize;
 
-            var (StoreInformations, totalCount) =
+            var (storeInformations, totalCount) =
                 await _storeInformationRepository.GetPaginatedAsync(page, pageSize);
-
-            var mapped = _mapper.Map<List<StoreInformationResponseDto>>(StoreInformations);
+            var mapped = _mapper.Map<List<StoreInformationResponseDto>>(storeInformations);
 
             return new PagedResponseDto<StoreInformationResponseDto>
             {
@@ -61,25 +83,59 @@ namespace Shapper.Services.StoreInformations
 
         public async Task<StoreInformationResponseDto> UpdateAsync(int id, StoreInformationDto dto)
         {
-            var existingOrder = await _storeInformationRepository.GetByIdAsync(id);
+            var existing = await _storeInformationRepository.GetByIdAsync(id);
+            if (existing == null)
+                throw new InvalidOperationException($"StoreInformation with ID {id} not found.");
 
-            if (existingOrder == null)
-                throw new InvalidOperationException("StoreInformation not found.");
-            _mapper.Map(dto, existingOrder);
+            // Validación 1: Nombre único (excluyendo el actual)
+            if (
+                existing.Name != dto.Name
+                && !await _storeInformationRepository.IsNameUniqueAsync(dto.Name, id)
+            )
+                throw new InvalidOperationException(
+                    $"A store with the name '{dto.Name}' already exists."
+                );
 
-            await _storeInformationRepository.UpdateAsync(existingOrder);
-            // Mapear entidad → response
-            return _mapper.Map<StoreInformationResponseDto>(existingOrder);
+            // Validación 2: Email único (excluyendo el actual)
+            if (
+                existing.Email != dto.Email
+                && !await _storeInformationRepository.IsEmailUniqueAsync(dto.Email, id)
+            )
+                throw new InvalidOperationException(
+                    $"A store with the email '{dto.Email}' already exists."
+                );
+
+            // Validación 3: Location existe (si se proporcionó)
+            if (
+                dto.LocationId.HasValue
+                && !await _storeInformationRepository.LocationExistsAsync(dto.LocationId)
+            )
+                throw new InvalidOperationException(
+                    $"Location with ID {dto.LocationId} does not exist."
+                );
+
+            _mapper.Map(dto, existing);
+            existing.Id = id;
+
+            await _storeInformationRepository.UpdateAsync(existing);
+
+            var updated = await _storeInformationRepository.GetByIdAsync(id);
+            return _mapper.Map<StoreInformationResponseDto>(updated);
         }
 
         public async Task DeleteAsync(int id)
         {
-            var category = await _storeInformationRepository.GetByIdAsync(id);
+            var storeInfo = await _storeInformationRepository.GetByIdAsync(id);
+            if (storeInfo == null)
+                throw new InvalidOperationException($"StoreInformation with ID {id} not found.");
 
-            if (category == null)
-                throw new InvalidOperationException("StoreInformation not found.");
+            // Validación: Verificar si tiene StoreLinks asociados
+            if (storeInfo.StoreLinks != null && storeInfo.StoreLinks.Any())
+                throw new InvalidOperationException(
+                    "Cannot delete store with associated links. Remove all links first."
+                );
 
-            await _storeInformationRepository.DeleteAsync(category);
+            await _storeInformationRepository.DeleteAsync(storeInfo);
         }
     }
 }

@@ -5,8 +5,8 @@ namespace Shapper.Repositories.Categories
 {
     public interface ICategoryRepository
     {
-        Task<Category> GetByIdAsync(int id);
-        Task<Category> GetByNameAsync(string name);
+        Task<Category?> GetByIdAsync(int id);
+        Task<Category?> GetByNameAsync(string name);
         Task<CategoriesWithGlobalPriceRangeDto> GetCategoriesWithGlobalPriceRangeAsync();
 
         Task<(List<Category> Categories, int TotalCount)> GetPaginatedAsync(int page, int pageSize);

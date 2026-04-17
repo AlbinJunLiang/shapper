@@ -18,7 +18,7 @@ namespace Shapper.Services.Locations
             _mapper = mapper;
         }
 
-        public async Task<LocationResponseDto> CreateAsync(LocationDto dto)
+        public async Task<LocationResponseDto?> CreateAsync(LocationDto dto)
         {
             var category = _mapper.Map<Location>(dto);
 

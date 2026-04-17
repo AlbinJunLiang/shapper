@@ -5,7 +5,7 @@ namespace Shapper.Repositories.FeaturedProducts
 {
     public interface IFeaturedProductRepository
     {
-        Task<FeaturedProduct> GetByIdAsync(int id);
+        Task<FeaturedProduct?> GetByIdAsync(int id);
         Task<(List<FeaturedProduct> FeaturedProducts, int TotalCount)> GetPaginatedAsync(
             int page,
             int pageSize

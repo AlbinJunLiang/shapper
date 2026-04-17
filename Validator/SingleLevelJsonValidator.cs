@@ -1,43 +1,53 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
-namespace Shapper.Validators;
-
-public class SingleLevelJsonAttribute : ValidationAttribute
+namespace Shapper.Validators
 {
-    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    public class SingleLevelJsonAttribute : ValidationAttribute
     {
-        if (value == null)
-            return ValidationResult.Success;
-
-        if (value is not string jsonString)
-            return new ValidationResult("Invalid JSON format.");
-
-        try
+        protected override ValidationResult? IsValid(
+            object? value,
+            ValidationContext validationContext
+        )
         {
-            using var document = JsonDocument.Parse(jsonString);
+            // Si es nulo, dejamos que el atributo [Required] se encargue de la validación si es necesario
+            if (value == null)
+                return ValidationResult.Success;
 
-            if (document.RootElement.ValueKind != JsonValueKind.Object)
-                return new ValidationResult("JSON must be an object.");
+            if (value is not string jsonString)
+                return new ValidationResult("Invalid JSON format.");
 
-            foreach (var property in document.RootElement.EnumerateObject())
+            try
             {
-                if (
-                    property.Value.ValueKind == JsonValueKind.Object
-                    || property.Value.ValueKind == JsonValueKind.Array
-                )
-                {
-                    return new ValidationResult(
-                        "JSON must be single-level (no nested objects or arrays)."
-                    );
-                }
-            }
+                using var document = JsonDocument.Parse(jsonString);
 
-            return ValidationResult.Success;
-        }
-        catch
-        {
-            return new ValidationResult("Invalid JSON format.");
+                if (document.RootElement.ValueKind != JsonValueKind.Object)
+                    return new ValidationResult("JSON must be an object.");
+
+                foreach (var property in document.RootElement.EnumerateObject())
+                {
+                    // Verificamos si algún valor es un objeto o un arreglo (anidación)
+                    if (
+                        property.Value.ValueKind == JsonValueKind.Object
+                        || property.Value.ValueKind == JsonValueKind.Array
+                    )
+                    {
+                        return new ValidationResult(
+                            "JSON must be single-level (no nested objects or arrays)."
+                        );
+                    }
+                }
+
+                return ValidationResult.Success;
+            }
+            catch (JsonException)
+            {
+                return new ValidationResult("Invalid JSON format.");
+            }
+            catch (Exception)
+            {
+                return new ValidationResult("An unexpected error occurred during JSON validation.");
+            }
         }
     }
 }

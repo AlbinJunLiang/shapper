@@ -17,7 +17,7 @@ namespace Shapper.Services.Reviews
             _mapper = mapper;
         }
 
-        public async Task<ReviewResponseDto> CreateAsync(ReviewDto dto)
+        public async Task<ReviewResponseDto?> CreateAsync(ReviewDto dto)
         {
             // Validate product
             if (!await _reviewRepository.ProductExistsAsync(dto.ProductId))

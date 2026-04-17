@@ -22,6 +22,7 @@ namespace Shapper.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<StoreInformation> StoreInformations { get; set; }
         public DbSet<Location> Locations { get; set; }
+        public DbSet<StoreLink> StoreLinks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,13 +44,14 @@ namespace Shapper.Data
             modelBuilder.Entity<Review>().Property(r => r.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<StoreInformation>().Property(s => s.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Location>().Property(l => l.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<StoreLink>().Property(sl => sl.Id).ValueGeneratedOnAdd();
 
             /*StoreInformation Model*/
             modelBuilder
                 .Entity<StoreInformation>()
                 .HasOne(s => s.Location)
-                .WithMany()
-                .HasForeignKey(s => s.LocationId)
+                .WithOne() // Aquí cambiamos WithMany por WithOne
+                .HasForeignKey<StoreInformation>(s => s.LocationId) // Nota los genéricos <StoreInformation>
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder
@@ -170,6 +172,17 @@ namespace Shapper.Data
                 .OnDelete(DeleteBehavior.Restrict);
             // Restrict evita que se elimine un Role si existen Users asociados.
             // Esto protege la integridad referencial y evita eliminaciones accidentales
+
+            modelBuilder.Entity<StoreLink>(entity =>
+            {
+                entity.Property(sl => sl.Name).HasMaxLength(100).IsRequired();
+                entity.Property(sl => sl.Url).HasMaxLength(500).IsRequired();
+                entity.Property(sl => sl.Type).HasMaxLength(50).HasDefaultValue("other"); // ← NUEVO
+                entity.Property(sl => sl.Status).HasMaxLength(20).HasDefaultValue("ACTIVE");
+                entity.HasIndex(sl => sl.StoreInformationId);
+                entity.HasIndex(sl => sl.Status);
+                entity.HasIndex(sl => sl.Type);
+            });
         }
     }
 }
