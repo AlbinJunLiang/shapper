@@ -11,7 +11,7 @@ using Shapper.Dtos.ProductImages;
 using Shapper.Dtos.Products;
 using Shapper.Dtos.Reviews;
 using Shapper.Dtos.Roles;
-using Shapper.Dtos.StoreInformations;
+using Shapper.Dtos.Store;
 using Shapper.Dtos.StoreLinks;
 using Shapper.Dtos.Subcategories;
 using Shapper.Dtos.Users;
@@ -99,10 +99,10 @@ namespace Shapper.Mappings
                 .ReverseMap();
 
             // Agrega estos mapeos en MappingProfile.cs
-            CreateMap<StoreInformation, StoreInformationResponseDto>()
+            CreateMap<Store, StoreResponseDto>()
                 .ForMember(dest => dest.StoreLinks, opt => opt.MapFrom(src => src.StoreLinks));
 
-            CreateMap<StoreInformationDto, StoreInformation>()
+            CreateMap<StoreDto, Store>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.StoreLinks, opt => opt.Ignore());
 
@@ -110,20 +110,13 @@ namespace Shapper.Mappings
             CreateMap<Location, LocationDto>().ReverseMap();
 
             // Agrega estos mapeos en MappingProfile.cs
-            CreateMap<StoreLink, StoreLinkResponseDto>()
-                .ForMember(
-                    dest => dest.StoreInformationName,
-                    opt =>
-                        opt.MapFrom(src =>
-                            src.StoreInformation != null ? src.StoreInformation.Name : string.Empty
-                        )
-                );
+            CreateMap<StoreLink, StoreLinkResponseDto>().ReverseMap();
 
             CreateMap<StoreLinkDto, StoreLink>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
-                .ForMember(dest => dest.StoreInformation, opt => opt.Ignore());
+                .ForMember(dest => dest.Store, opt => opt.Ignore());
         }
     }
 }

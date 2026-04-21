@@ -207,7 +207,7 @@ namespace Shapper.Controllers
         /// <summary>
         /// Toggles the status of a store link (ACTIVE ↔ INACTIVE)
         /// </summary>
-        [HttpPatch("{id}/toggle-status")]
+        [HttpPatch("toggle-status/{id}")]
         public async Task<IActionResult> ToggleStatus(int id)
         {
             if (id <= 0)
@@ -260,6 +260,61 @@ namespace Shapper.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error deleting store link: {Id}", id);
+                return StatusCode(
+                    500,
+                    new { success = false, message = "An internal error occurred." }
+                );
+            }
+        }
+
+        [HttpPut("upsert/{id?}")] // El '?' hace que el ID sea opcional en la URL
+        public async Task<IActionResult> Upsert(int? id, [FromBody] StoreLinkUpdateDto dto)
+        {
+            // Validamos el modelo (Data Annotations)
+            if (!ModelState.IsValid)
+                return BadRequest(new { success = false, errors = GetModelStateErrors() });
+
+            try
+            {
+                // Llamamos al nuevo método Upsert del servicio
+                var result = await _storeLinkService.UpsertAsync(id, dto);
+
+                // Si id era null o 0, técnicamente es un "Created" (201)
+                // Si id tenía valor, es un "OK" (200)
+                if (!id.HasValue || id <= 0)
+                {
+                    return CreatedAtAction(
+                        nameof(GetById),
+                        new { id = result.Id },
+                        new
+                        {
+                            success = true,
+                            message = "Store link created successfully",
+                            data = result,
+                        }
+                    );
+                }
+
+                return Ok(
+                    new
+                    {
+                        success = true,
+                        message = "Store link updated successfully",
+                        data = result,
+                    }
+                );
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Manejamos errores de negocio (nombre duplicado, límite alcanzado, etc.)
+                if (ex.Message.Contains("not found"))
+                    return NotFound(new { success = false, message = ex.Message });
+
+                return Conflict(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during Upsert for store link. ID: {Id}", id);
                 return StatusCode(
                     500,
                     new { success = false, message = "An internal error occurred." }

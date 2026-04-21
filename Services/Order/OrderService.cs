@@ -258,10 +258,7 @@ namespace Shapper.Services.Orders
             return category == null ? null : _mapper.Map<OrderDto>(category);
         }
 
-        public async Task<PagedResponseDto<OrderResponseDto>> GetPaginatedAsync(
-            int page,
-            int pageSize
-        )
+        public async Task<PagedResponseDto<OrderDto>> GetPaginatedAsync(int page, int pageSize)
         {
             page = page <= 0 ? 1 : page;
             pageSize = pageSize <= 0 ? 10 : pageSize;
@@ -269,9 +266,9 @@ namespace Shapper.Services.Orders
 
             var (Orders, totalCount) = await _orderRepository.GetPaginatedAsync(page, pageSize);
 
-            var mapped = _mapper.Map<List<OrderResponseDto>>(Orders);
+            var mapped = _mapper.Map<List<OrderDto>>(Orders);
 
-            return new PagedResponseDto<OrderResponseDto>
+            return new PagedResponseDto<OrderDto>
             {
                 TotalCount = totalCount,
                 Page = page,
@@ -330,6 +327,22 @@ namespace Shapper.Services.Orders
             await _orderRepository.UpdateAsync(existingOrder);
             // Mapear entidad → response
             return _mapper.Map<OrderResponseDto>(existingOrder);
+        }
+
+        public async Task<bool> UpdateStatusAsync(int orderId, string status)
+        {
+            var validStatuses = new[] { "PENDING", "PAID", "CANCELLED", "COMPLETED" };
+
+            if (!validStatuses.Contains(status.ToUpper()))
+                throw new InvalidOperationException(
+                    $"Invalid status: {status}. Valid statuses are: {string.Join(", ", validStatuses)}"
+                );
+
+            var order = await _orderRepository.GetByIdAsync(orderId);
+            if (order == null)
+                throw new KeyNotFoundException($"Order with ID {orderId} not found.");
+
+            return await _orderRepository.UpdateStatusAsync(orderId, status.ToUpper());
         }
 
         public async Task DeleteAsync(int id)

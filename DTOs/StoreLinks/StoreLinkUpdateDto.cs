@@ -4,6 +4,9 @@ namespace Shapper.Dtos.StoreLinks
 {
     public class StoreLinkUpdateDto
     {
+        [Required]
+        public int StoreId { get; set; }
+
         [MaxLength(100, ErrorMessage = "Name cannot exceed 100 characters")]
         public string? Name { get; set; }
 
@@ -14,7 +17,10 @@ namespace Shapper.Dtos.StoreLinks
         [MaxLength(50, ErrorMessage = "Type cannot exceed 50 characters")]
         public string? Type { get; set; }
 
-        [RegularExpression("^(ACTIVE|INACTIVE)$", ErrorMessage = "Status must be ACTIVE or INACTIVE")]
+        [RegularExpression(
+            "^(ACTIVE|INACTIVE)$",
+            ErrorMessage = "Status must be ACTIVE or INACTIVE"
+        )]
         public string? Status { get; set; }
     }
 }

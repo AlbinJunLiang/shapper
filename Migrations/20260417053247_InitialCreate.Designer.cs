@@ -12,7 +12,7 @@ using Shapper.Data;
 namespace shapper.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260417042411_InitialCreate")]
+    [Migration("20260417053247_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -70,10 +70,15 @@ namespace shapper.Migrations
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("StoreId");
 
                     b.ToTable("Faqs");
                 });
@@ -382,7 +387,7 @@ namespace shapper.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("Shapper.Models.StoreInformation", b =>
+            modelBuilder.Entity("Shapper.Models.Store", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -428,7 +433,7 @@ namespace shapper.Migrations
                     b.HasIndex("StoreCode")
                         .IsUnique();
 
-                    b.ToTable("StoreInformations");
+                    b.ToTable("Stores");
                 });
 
             modelBuilder.Entity("Shapper.Models.StoreLink", b =>
@@ -454,7 +459,7 @@ namespace shapper.Migrations
                         .HasColumnType("nvarchar(20)")
                         .HasDefaultValue("ACTIVE");
 
-                    b.Property<int>("StoreInformationId")
+                    b.Property<int>("StoreId")
                         .HasColumnType("int");
 
                     b.Property<string>("Type")
@@ -476,7 +481,7 @@ namespace shapper.Migrations
 
                     b.HasIndex("Status");
 
-                    b.HasIndex("StoreInformationId");
+                    b.HasIndex("StoreId");
 
                     b.HasIndex("Type");
 
@@ -569,6 +574,17 @@ namespace shapper.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Shapper.Models.Faq", b =>
+                {
+                    b.HasOne("Shapper.Models.Store", "Store")
+                        .WithMany("Faqs")
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("Shapper.Models.FeaturedProduct", b =>
@@ -671,13 +687,13 @@ namespace shapper.Migrations
 
             modelBuilder.Entity("Shapper.Models.StoreLink", b =>
                 {
-                    b.HasOne("Shapper.Models.StoreInformation", "StoreInformation")
+                    b.HasOne("Shapper.Models.Store", "Store")
                         .WithMany("StoreLinks")
-                        .HasForeignKey("StoreInformationId")
+                        .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("StoreInformation");
+                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("Shapper.Models.Subcategory", b =>
@@ -735,8 +751,10 @@ namespace shapper.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("Shapper.Models.StoreInformation", b =>
+            modelBuilder.Entity("Shapper.Models.Store", b =>
                 {
+                    b.Navigation("Faqs");
+
                     b.Navigation("StoreLinks");
                 });
 

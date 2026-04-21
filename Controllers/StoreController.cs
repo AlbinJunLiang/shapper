@@ -1,20 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
 using Shapper.Dtos;
-using Shapper.Dtos.StoreInformations;
-using Shapper.Services.StoreInformations;
+using Shapper.Dtos.Store;
+using Shapper.Services.Stores;
 
 namespace Shapper.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class StoreInformationsController : ControllerBase
+    public class StoreController : ControllerBase
     {
-        private readonly IStoreInformationService _storeInformationService;
-        private readonly ILogger<StoreInformationsController> _logger;
+        private readonly IStoreService _storeInformationService;
+        private readonly ILogger<StoreController> _logger;
 
-        public StoreInformationsController(
-            IStoreInformationService storeInformationService,
-            ILogger<StoreInformationsController> logger
+        public StoreController(
+            IStoreService storeInformationService,
+            ILogger<StoreController> logger
         )
         {
             _storeInformationService = storeInformationService;
@@ -25,7 +25,7 @@ namespace Shapper.Controllers
         /// Creates a new store information (Location is optional)
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] StoreInformationDto dto)
+        public async Task<IActionResult> Create([FromBody] StoreDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(
@@ -110,6 +110,40 @@ namespace Shapper.Controllers
             }
         }
 
+
+
+        [HttpGet("code/{storeCode}")]
+        public async Task<IActionResult> GetByStoreCode(string storeCode)
+        {
+            if (storeCode.Equals(""))
+                return BadRequest(
+                    new { success = false, message = "Invalid Store code. StoreCode is required." }
+                );
+
+            try
+            {
+                var result = await _storeInformationService.GetByStoreCodeAsync(storeCode);
+                if (result == null)
+                    return NotFound(
+                        new
+                        {
+                            success = false,
+                            message = $"StoreInformation with StoreCode {storeCode} not found.",
+                        }
+                    );
+
+                return Ok(new { success = true, data = result });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting store information by Store code: {StoreCode}", storeCode);
+                return StatusCode(
+                    500,
+                    new { success = false, message = "An internal error occurred." }
+                );
+            }
+        }
+        
         /// <summary>
         /// Gets paginated list of store information
         /// </summary>
@@ -149,7 +183,7 @@ namespace Shapper.Controllers
         /// Updates an existing store information
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] StoreInformationDto dto)
+        public async Task<IActionResult> Update(int id, [FromBody] StoreDto dto)
         {
             if (id <= 0)
                 return BadRequest(

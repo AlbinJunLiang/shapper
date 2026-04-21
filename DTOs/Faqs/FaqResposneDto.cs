@@ -4,6 +4,9 @@ namespace Shapper.Dtos.Faqs
     {
         public int Id { get; set; }
 
+        public int StoreId { get; set; }
+
+
         // Inicializamos con string.Empty para matar los warnings CS8618
         public string Question { get; set; } = string.Empty;
 
@@ -13,6 +16,6 @@ namespace Shapper.Dtos.Faqs
 
         public int DisplayOrder { get; set; }
 
-        public string Status { get; set; } = "ACTIVE"; 
+        public string Status { get; set; } = "ACTIVE";
     }
 }

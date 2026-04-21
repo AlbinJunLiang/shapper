@@ -23,6 +23,6 @@ namespace Shapper.Dtos.StoreLinks
         public string Status { get; set; } = "ACTIVE";
 
         [Required(ErrorMessage = "StoreInformationId is required")]
-        public int StoreInformationId { get; set; }
+        public int StoreId { get; set; }
     }
 }

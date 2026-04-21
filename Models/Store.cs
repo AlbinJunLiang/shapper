@@ -1,9 +1,18 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Shapper.Dtos.StoreInformations
+namespace Shapper.Models
 {
-    public class StoreInformationDto
+    public class Store
     {
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
+        [MaxLength(20)]
+        public string StoreCode { get; set; } =
+            "ST-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
+
         [Required(ErrorMessage = "Name is required")]
         [MaxLength(200, ErrorMessage = "Name cannot exceed 200 characters")]
         public string Name { get; set; } = string.Empty;
@@ -23,5 +32,11 @@ namespace Shapper.Dtos.StoreInformations
 
         [MaxLength(1000, ErrorMessage = "Main location cannot exceed 1000 characters")]
         public string MainLocation { get; set; } = string.Empty;
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        // Navegación (puede ser null)
+        public virtual ICollection<StoreLink> StoreLinks { get; set; } = new List<StoreLink>();
+        public virtual ICollection<Faq> Faqs { get; set; } = new List<Faq>();
     }
 }

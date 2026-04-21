@@ -9,7 +9,7 @@ namespace Shapper.Services.Orders
     {
         Task<OrderDto?> GetByIdAsync(int id);
 
-        Task<PagedResponseDto<OrderResponseDto>> GetPaginatedAsync(int page, int pageSize);
+        Task<PagedResponseDto<OrderDto>> GetPaginatedAsync(int page, int pageSize);
 
         Task<PagedResponseDto<OrderDto>> GetUserOrdersAsync(
             int userId,
@@ -23,6 +23,9 @@ namespace Shapper.Services.Orders
         Task<OrderResponseDto?> CreateAsync(CreateOrderDto dto);
 
         Task<OrderResponseDto> UpdateAsync(int id, OrderDto dto);
+
+        Task<bool> UpdateStatusAsync(int orderId, string status);
+
 
         Task DeleteAsync(int id);
     }

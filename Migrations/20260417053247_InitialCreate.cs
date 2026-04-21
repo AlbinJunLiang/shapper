@@ -27,23 +27,6 @@ namespace shapper.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Faqs",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Question = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Answer = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Faqs", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Locations",
                 columns: table => new
                 {
@@ -76,7 +59,7 @@ namespace shapper.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StoreInformations",
+                name: "Stores",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -91,7 +74,7 @@ namespace shapper.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StoreInformations", x => x.Id);
+                    table.PrimaryKey("PK_Stores", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -144,6 +127,30 @@ namespace shapper.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Faqs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StoreId = table.Column<int>(type: "int", nullable: false),
+                    Question = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Answer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayOrder = table.Column<int>(type: "int", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Faqs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Faqs_Stores_StoreId",
+                        column: x => x.StoreId,
+                        principalTable: "Stores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "StoreLinks",
                 columns: table => new
                 {
@@ -153,7 +160,7 @@ namespace shapper.Migrations
                     Url = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, defaultValue: "other"),
                     Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "ACTIVE"),
-                    StoreInformationId = table.Column<int>(type: "int", nullable: false),
+                    StoreId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -161,9 +168,9 @@ namespace shapper.Migrations
                 {
                     table.PrimaryKey("PK_StoreLinks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StoreLinks_StoreInformations_StoreInformationId",
-                        column: x => x.StoreInformationId,
-                        principalTable: "StoreInformations",
+                        name: "FK_StoreLinks_Stores_StoreId",
+                        column: x => x.StoreId,
+                        principalTable: "Stores",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -354,6 +361,11 @@ namespace shapper.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Faqs_StoreId",
+                table: "Faqs",
+                column: "StoreId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FeaturedProducts_ProductId",
                 table: "FeaturedProducts",
                 column: "ProductId",
@@ -405,25 +417,25 @@ namespace shapper.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreInformations_StoreCode",
-                table: "StoreInformations",
-                column: "StoreCode",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_StoreLinks_Status",
                 table: "StoreLinks",
                 column: "Status");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoreLinks_StoreInformationId",
+                name: "IX_StoreLinks_StoreId",
                 table: "StoreLinks",
-                column: "StoreInformationId");
+                column: "StoreId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StoreLinks_Type",
                 table: "StoreLinks",
                 column: "Type");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Stores_StoreCode",
+                table: "Stores",
+                column: "StoreCode",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Subcategories_CategoryId",
@@ -473,7 +485,7 @@ namespace shapper.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "StoreInformations");
+                name: "Stores");
 
             migrationBuilder.DropTable(
                 name: "Locations");

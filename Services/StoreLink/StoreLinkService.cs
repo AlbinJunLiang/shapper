@@ -20,25 +20,20 @@ namespace Shapper.Services.StoreLinks
         public async Task<StoreLinkResponseDto> CreateAsync(StoreLinkDto dto)
         {
             // Validación 1: StoreInformation existe
-            if (!await _storeLinkRepository.StoreInformationExistsAsync(dto.StoreInformationId))
+            if (!await _storeLinkRepository.StoreExistsAsync(dto.StoreId))
                 throw new InvalidOperationException(
-                    $"StoreInformation with ID {dto.StoreInformationId} does not exist."
+                    $"StoreInformation with ID {dto.StoreId} does not exist."
                 );
 
             // Validación 2: Nombre único dentro de la misma tienda
-            var existing = await _storeLinkRepository.GetByNameAndStoreAsync(
-                dto.Name,
-                dto.StoreInformationId
-            );
+            var existing = await _storeLinkRepository.GetByNameAndStoreAsync(dto.Name, dto.StoreId);
             if (existing != null)
                 throw new InvalidOperationException(
                     $"A link with name '{dto.Name}' already exists for this store."
                 );
 
             // Validación 3: Límite de links por tienda (opcional - 20 links máximo)
-            var linkCount = await _storeLinkRepository.CountLinksByStoreAsync(
-                dto.StoreInformationId
-            );
+            var linkCount = await _storeLinkRepository.CountLinksByStoreAsync(dto.StoreId);
             if (linkCount >= 20)
                 throw new InvalidOperationException(
                     "Maximum number of links (20) reached for this store."
@@ -59,16 +54,16 @@ namespace Shapper.Services.StoreLinks
             return storeLink == null ? null : _mapper.Map<StoreLinkResponseDto>(storeLink);
         }
 
-        public async Task<List<StoreLinkResponseDto>> GetByStoreIdAsync(int storeInformationId)
+        public async Task<List<StoreLinkResponseDto>> GetByStoreIdAsync(int storeId)
         {
-            var storeLinks = await _storeLinkRepository.GetByStoreIdAsync(storeInformationId);
+            var storeLinks = await _storeLinkRepository.GetByStoreIdAsync(storeId);
             return _mapper.Map<List<StoreLinkResponseDto>>(storeLinks);
         }
 
         public async Task<PagedResponseDto<StoreLinkResponseDto>> GetPaginatedAsync(
             int page,
             int pageSize,
-            int? storeInformationId = null
+            int? storeId = null
         )
         {
             page = page <= 0 ? 1 : page;
@@ -78,7 +73,7 @@ namespace Shapper.Services.StoreLinks
             var (storeLinks, totalCount) = await _storeLinkRepository.GetPaginatedAsync(
                 page,
                 pageSize,
-                storeInformationId
+                storeId
             );
             var mapped = _mapper.Map<List<StoreLinkResponseDto>>(storeLinks);
 
@@ -103,7 +98,7 @@ namespace Shapper.Services.StoreLinks
             {
                 var nameExists = await _storeLinkRepository.GetByNameAndStoreAsync(
                     dto.Name,
-                    existing.StoreInformationId,
+                    existing.StoreId,
                     id
                 );
                 if (nameExists != null)
@@ -152,6 +147,61 @@ namespace Shapper.Services.StoreLinks
             await _storeLinkRepository.UpdateAsync(storeLink);
 
             return _mapper.Map<StoreLinkResponseDto>(storeLink);
+        }
+
+        public async Task<StoreLinkResponseDto> UpsertAsync(int? id, StoreLinkUpdateDto dto)
+        {
+            StoreLink? entity;
+            bool isNew = false;
+
+            // 1. Identificación: El ID viene de la URL, no del DTO
+            if (id.HasValue && id > 0)
+            {
+                // CASO UPDATE: Recuperamos la entidad original de la BD
+                entity = await _storeLinkRepository.GetByIdAsync(id.Value);
+
+                if (entity == null)
+                    throw new InvalidOperationException($"StoreLink with ID {id} not found.");
+
+                // AQUÍ ESTÁ EL TRUCO:
+                // Nunca asignamos entity.Id = algo.
+                // EF ya sabe que entity.Id es el valor actual y lo marcará como inmutable.
+            }
+            else
+            {
+                // CASO CREATE
+                isNew = true;
+
+                // Validamos que la tienda exista para evitar el error de Foreign Key
+                if (!await _storeLinkRepository.StoreExistsAsync(dto.StoreId))
+                    throw new InvalidOperationException(
+                        $"Store with ID {dto.StoreId} does not exist."
+                    );
+
+                entity = new StoreLink { StoreId = dto.StoreId, CreatedAt = DateTime.UtcNow };
+
+                // Al ser un objeto nuevo, el ID es 0 y SQL Server lo generará (Identity)
+            }
+
+            // 2. Mapeo de datos (Solo campos de negocio, NUNCA el ID)
+            if (!string.IsNullOrEmpty(dto.Name))
+                entity.Name = dto.Name;
+            if (!string.IsNullOrEmpty(dto.Url))
+                entity.Url = dto.Url;
+            if (!string.IsNullOrEmpty(dto.Type))
+                entity.Type = dto.Type;
+            if (!string.IsNullOrEmpty(dto.Status))
+                entity.Status = dto.Status;
+
+            entity.UpdatedAt = DateTime.UtcNow;
+
+            // 3. Persistencia
+            if (isNew)
+                await _storeLinkRepository.AddAsync(entity);
+            else
+                await _storeLinkRepository.UpdateAsync(entity);
+
+            return _mapper.Map<StoreLinkResponseDto>(entity);
         }
     }
 }

@@ -100,6 +100,39 @@ namespace Shapper.Controller
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetPaginatedAsync(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10
+        )
+        {
+            // Validaciones básicas de entrada
+            if (page <= 0)
+                return BadRequest(
+                    new { success = false, message = "Page number must be greater than 0." }
+                );
+
+            if (pageSize <= 0 || pageSize > 100)
+                return BadRequest(
+                    new { success = false, message = "Page size must be between 1 and 100." }
+                );
+
+            try
+            {
+                var result = await _orderService.GetPaginatedAsync(page, pageSize);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { success = false, message = ex.Message });
+            }
+            catch (Exception)
+            {
+                // Log ex here
+                return StatusCode(500, new { success = false, message = "Internal server error." });
+            }
+        }
+
         [HttpPost("process-payment")]
         public async Task<IActionResult> ProcessPayment([FromBody] ProcessOrderDto dto)
         {
@@ -136,6 +169,43 @@ namespace Shapper.Controller
             return Ok(
                 new { status, message = "Payment processed and order updated successfully." }
             );
+        }
+
+        [HttpPatch("status/{id}")]
+        public async Task<IActionResult> UpdateOrderStatus(int id, [FromQuery] string status)
+        {
+            if (string.IsNullOrWhiteSpace(status))
+                return BadRequest(new { success = false, message = "Status is required." });
+
+            try
+            {
+                var result = await _orderService.UpdateStatusAsync(id, status);
+
+                if (!result)
+                    return NotFound(
+                        new { success = false, message = $"Order with ID {id} not found." }
+                    );
+
+                return Ok(
+                    new
+                    {
+                        success = true,
+                        message = $"Order status updated to '{status}' successfully.",
+                    }
+                );
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { success = false, message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { success = false, message = "Internal server error." });
+            }
         }
     }
 }

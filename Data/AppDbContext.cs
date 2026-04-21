@@ -20,7 +20,7 @@ namespace Shapper.Data
         public DbSet<FeaturedProduct> FeaturedProducts { get; set; }
         public DbSet<OrderPayment> OrderPayments { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<StoreInformation> StoreInformations { get; set; }
+        public DbSet<Store> Stores { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<StoreLink> StoreLinks { get; set; }
 
@@ -42,13 +42,22 @@ namespace Shapper.Data
             modelBuilder.Entity<Faq>().Property(f => f.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<OrderPayment>().Property(op => op.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Review>().Property(r => r.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<StoreInformation>().Property(s => s.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Store>().Property(s => s.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Location>().Property(l => l.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<StoreLink>().Property(sl => sl.Id).ValueGeneratedOnAdd();
 
-            /*StoreInformation Model*/
 
-            modelBuilder.Entity<StoreInformation>().HasIndex(s => s.StoreCode).IsUnique();
+            /*Faqs*/
+
+            modelBuilder.Entity<Faq>()
+           .HasOne(f => f.Store)
+           .WithMany(s => s.Faqs)
+           .HasForeignKey(f => f.StoreId)
+           .OnDelete(DeleteBehavior.Cascade);
+
+            /*Id Model*/
+
+            modelBuilder.Entity<Store>().HasIndex(s => s.StoreCode).IsUnique();
 
             modelBuilder
                 .Entity<Order>()
@@ -175,7 +184,7 @@ namespace Shapper.Data
                 entity.Property(sl => sl.Url).HasMaxLength(500).IsRequired();
                 entity.Property(sl => sl.Type).HasMaxLength(50).HasDefaultValue("other"); // ← NUEVO
                 entity.Property(sl => sl.Status).HasMaxLength(20).HasDefaultValue("ACTIVE");
-                entity.HasIndex(sl => sl.StoreInformationId);
+                entity.HasIndex(sl => sl.StoreId);
                 entity.HasIndex(sl => sl.Status);
                 entity.HasIndex(sl => sl.Type);
             });

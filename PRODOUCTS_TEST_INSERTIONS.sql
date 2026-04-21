@@ -1,6 +1,6 @@
 USE shapper;
 
-INSERT INTO StoreInformations (StoreCode, Name, Description, Email, PhoneNumber, CreatedAt, MainLocation)
+INSERT INTO Stores (StoreCode, Name, Description, Email, PhoneNumber, CreatedAt, MainLocation)
 VALUES (
     'ST-MANUAL01', -- Debes ponerlo tú
     'LIMÓN', 
@@ -11,7 +11,7 @@ VALUES (
     '100 metros del palo de mango.'
 );
 -- 1. Link de Red Social - Facebook
-INSERT INTO StoreLinks (Name, Url, Type, Status, StoreInformationId, CreatedAt)
+INSERT INTO StoreLinks (Name, Url, Type, Status, StoreId, CreatedAt)
 VALUES (
     'Facebook',
     'https://facebook.com/limon2',
@@ -22,7 +22,7 @@ VALUES (
 );
 
 -- 2. Link de Red Social - Instagram
-INSERT INTO StoreLinks (Name, Url, Type, Status, StoreInformationId, CreatedAt)
+INSERT INTO StoreLinks (Name, Url, Type, Status, StoreId, CreatedAt)
 VALUES (
     'Instagram',
     'https://instagram.com/limon2',
@@ -33,7 +33,7 @@ VALUES (
 );
 
 -- 3. Link de Red Social - WhatsApp
-INSERT INTO StoreLinks (Name, Url, Type, Status, StoreInformationId, CreatedAt)
+INSERT INTO StoreLinks (Name, Url, Type, Status, StoreId, CreatedAt)
 VALUES (
     'WhatsApp',
     'https://wa.me/50683919528',
@@ -44,7 +44,7 @@ VALUES (
 );
 
 -- 4. Link de Soporte
-INSERT INTO StoreLinks (Name, Url, Type, Status, StoreInformationId, CreatedAt)
+INSERT INTO StoreLinks (Name, Url, Type, Status, StoreId, CreatedAt)
 VALUES (
     'Centro de Ayuda',
     'https://limon2.com/soporte',
@@ -55,7 +55,7 @@ VALUES (
 );
 
 -- 5. Link de Términos y Condiciones
-INSERT INTO StoreLinks (Name, Url, Type, Status, StoreInformationId, CreatedAt)
+INSERT INTO StoreLinks (Name, Url, Type, Status, StoreId, CreatedAt)
 VALUES (
     'Términos y Condiciones',
     'https://limon2.com/terminos',
@@ -66,7 +66,7 @@ VALUES (
 );
 
 -- 6. Link de Política de Privacidad
-INSERT INTO StoreLinks (Name, Url, Type, Status, StoreInformationId, CreatedAt)
+INSERT INTO StoreLinks (Name, Url, Type, Status, StoreId, CreatedAt)
 VALUES (
     'Política de Privacidad',
     'https://limon2.com/privacidad',
@@ -77,7 +77,7 @@ VALUES (
 );
 
 -- 7. Link de Métodos de Pago
-INSERT INTO StoreLinks (Name, Url, Type, Status, StoreInformationId, CreatedAt)
+INSERT INTO StoreLinks (Name, Url, Type, Status, StoreId, CreatedAt)
 VALUES (
     'Métodos de Pago',
     'https://limon2.com/pagos',
@@ -88,7 +88,7 @@ VALUES (
 );
 
 -- 8. Link de Envíos
-INSERT INTO StoreLinks (Name, Url, Type, Status, StoreInformationId, CreatedAt)
+INSERT INTO StoreLinks (Name, Url, Type, Status, StoreId, CreatedAt)
 VALUES (
     'TIENDA',
     'http://localhost:4200/index.html',
@@ -99,7 +99,7 @@ VALUES (
 );
 
 -- 9. Link de YouTube
-INSERT INTO StoreLinks (Name, Url, Type, Status, StoreInformationId, CreatedAt)
+INSERT INTO StoreLinks (Name, Url, Type, Status, StoreId, CreatedAt)
 VALUES (
     'CANCEL',
     'http://localhost:5127/cancel.html',
@@ -110,7 +110,7 @@ VALUES (
 );
 
 -- 10. Link de TikTok
-INSERT INTO StoreLinks (Name, Url, Type, Status, StoreInformationId, CreatedAt)
+INSERT INTO StoreLinks (Name, Url, Type, Status, StoreId, CreatedAt)
 VALUES (
     'SUCCESS',
     'http://localhost:5127/sucess.html',

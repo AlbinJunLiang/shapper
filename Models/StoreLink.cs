@@ -27,12 +27,12 @@ namespace Shapper.Models
         )]
         public string Status { get; set; } = "ACTIVE";
 
-        [Required(ErrorMessage = "StoreInformationId is required")]
-        [ForeignKey(nameof(StoreInformation))]
-        public int StoreInformationId { get; set; }
+        [Required(ErrorMessage = "storeId is required")]
+        [ForeignKey(nameof(Store))]
+        public int StoreId { get; set; }
 
         // Navegación
-        public virtual StoreInformation StoreInformation { get; set; } = null!;
+        public virtual Store Store { get; set; } = null!;
 
         // Fechas de auditoría (opcional)
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

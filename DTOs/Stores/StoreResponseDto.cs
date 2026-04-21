@@ -1,9 +1,9 @@
 using Shapper.Dtos.Locations;
 using Shapper.Dtos.StoreLinks;
 
-namespace Shapper.Dtos.StoreInformations
+namespace Shapper.Dtos.Store
 {
-    public class StoreInformationResponseDto
+    public class StoreResponseDto
     {
         public int Id { get; set; }
         public string StoreCode { get; set; } = string.Empty;

@@ -102,25 +102,41 @@ namespace Shapper.Services.Users
         {
             var user = await _userRepository.GetByEmailAsync(email);
             if (user == null)
-                throw new KeyNotFoundException("User not found");
+                throw new KeyNotFoundException($"User with email {email} not found");
 
-            if (!string.IsNullOrEmpty(dto.Name))
+            // 1. Definir estados válidos (puedes mover esto a una constante de clase o Enum)
+            var validStatuses = new[] { "ACTIVE", "REGISTERED", "BANNED", "INACTIVE" };
+
+            // 2. Actualización de campos básicos
+            if (!string.IsNullOrWhiteSpace(dto.Name))
                 user.Name = dto.Name;
 
-            if (!string.IsNullOrEmpty(dto.LastName))
+            if (!string.IsNullOrWhiteSpace(dto.LastName))
                 user.LastName = dto.LastName;
 
-            if (!string.IsNullOrEmpty(dto.PhoneNumber))
+            if (!string.IsNullOrWhiteSpace(dto.PhoneNumber))
                 user.PhoneNumber = dto.PhoneNumber;
 
-            if (!string.IsNullOrEmpty(dto.Address))
+            if (!string.IsNullOrWhiteSpace(dto.Address))
                 user.Address = dto.Address;
 
             if (dto.RoleId > 0)
                 user.RoleId = dto.RoleId;
 
-            if (!string.IsNullOrEmpty(dto.Status))
-                user.Status = dto.Status;
+            // 3. Validación y actualización de Status
+            if (!string.IsNullOrWhiteSpace(dto.Status))
+            {
+                var normalizedStatus = dto.Status.ToUpper().Trim();
+
+                if (!validStatuses.Contains(normalizedStatus))
+                {
+                    throw new InvalidOperationException(
+                        $"Invalid status: {dto.Status}. Valid statuses are: {string.Join(", ", validStatuses)}"
+                    );
+                }
+
+                user.Status = normalizedStatus; // Guardamos siempre en mayúsculas para consistencia
+            }
 
             await _userRepository.UpdateAsync(user);
             return _mapper.Map<UserResponseDto>(user);

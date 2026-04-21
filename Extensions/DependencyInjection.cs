@@ -9,7 +9,7 @@ using Shapper.Repositories.Orders;
 using Shapper.Repositories.Products;
 using Shapper.Repositories.Reviews;
 using Shapper.Repositories.Roles;
-using Shapper.Repositories.StoreInformations;
+using Shapper.Repositories.Stores;
 using Shapper.Repositories.StoreLinks;
 using Shapper.Repositories.Subcategories;
 using Shapper.Repositories.Users;
@@ -25,7 +25,7 @@ using Shapper.Services.PaymentWebhooks;
 using Shapper.Services.Products;
 using Shapper.Services.Reviews;
 using Shapper.Services.Roles;
-using Shapper.Services.StoreInformations;
+using Shapper.Services.Stores;
 using Shapper.Services.StoreLinks;
 using Shapper.Services.Subcategories;
 using Shapper.Services.Users;
@@ -49,7 +49,7 @@ namespace Shapper.Extensions
             services.AddScoped<IOrderRepository, OrderRepository>();
 
             services.AddScoped<IReviewRepository, ReviewRepository>();
-            services.AddScoped<IStoreInformationRepository, StoreInformationRepository>();
+            services.AddScoped<IStoreRepository, StoreRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
 
             // Services
@@ -65,7 +65,7 @@ namespace Shapper.Extensions
             services.AddScoped<IOrderService, OrderService>();
 
             services.AddScoped<IReviewService, ReviewService>();
-            services.AddScoped<IStoreInformationService, StoreInformationService>();
+            services.AddScoped<IStoreService, StoreService>();
             services.AddScoped<ILocationService, LocationService>();
 
             services.AddScoped<ICheckoutService, CheckoutService>();

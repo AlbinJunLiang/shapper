@@ -10,8 +10,10 @@ namespace Shapper.Repositories.Orders
 
         Task AddAsync(Order order);
         Task<Order> UpdateAsync(Order order);
-        Task DeleteAsync(Order order);
 
+        Task<bool> UpdateStatusAsync(int orderId, string status);
+
+        Task DeleteAsync(Order order);
 
         Task<(List<Order> Orders, int TotalCount)> GetUserOrdersAsync(
             int userId,
@@ -19,7 +21,6 @@ namespace Shapper.Repositories.Orders
             int page,
             int pageSize
         );
-
         Task SaveChangesAsync();
     }
 }

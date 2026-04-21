@@ -40,7 +40,7 @@ namespace Shapper.Repositories.Orders
             var totalCount = await query.CountAsync();
 
             var orders = await query
-                .OrderBy(o => o.Id)
+                .OrderByDescending(o => o.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -76,6 +76,20 @@ namespace Shapper.Repositories.Orders
         {
             _context.Orders.Update(order);
             return Task.FromResult(order);
+        }
+
+        public async Task<bool> UpdateStatusAsync(int orderId, string status)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+
+            if (order == null)
+                return false;
+
+            order.Status = status;
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task DeleteAsync(Order order)

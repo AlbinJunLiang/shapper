@@ -144,6 +144,7 @@ namespace Shapper.Controllers
             [FromBody] UpdateUserForCustomerDto dto
         )
         {
+            // 1. Extraer email del Claim de forma segura
             var claimEmail = User.FindFirst(ClaimTypes.Email)?.Value;
 
             if (string.IsNullOrEmpty(claimEmail))
@@ -151,8 +152,10 @@ namespace Shapper.Controllers
                 return Unauthorized(new { message = "Invalid token: Email claim is missing." });
             }
 
+            // 2. Validación de seguridad (El usuario solo puede editarse a sí mismo)
             if (!string.Equals(claimEmail, email, StringComparison.OrdinalIgnoreCase))
             {
+                // Es mejor Forbid() si está autenticado pero no tiene permiso sobre este recurso
                 return Forbid();
             }
 
@@ -168,11 +171,14 @@ namespace Shapper.Controllers
                     LastName = dto.LastName,
                     PhoneNumber = dto.PhoneNumber,
                     Address = dto.Address,
+                    // Importante: No pasamos Status ni RoleId aquí por seguridad
+                    // ya que este es el endpoint para el "Customer"
                 };
 
-                // 4. Llamada al servicio usando el email validado del token (más seguro)
+                // 4. Llamada al servicio
                 var updatedUser = await _userService.UpdateUserAsync(claimEmail, serviceDto);
 
+                // 5. Devolver solo lo necesario
                 return Ok(
                     new
                     {
@@ -183,13 +189,20 @@ namespace Shapper.Controllers
                     }
                 );
             }
+            // ... dentro del try ...
             catch (KeyNotFoundException)
             {
                 return NotFound(new { Message = "User not found." });
             }
+            // AGREGA ESTE BLOQUE:
+            catch (InvalidOperationException ex)
+            {
+                // Esto devolverá un error 400 con el mensaje:
+                // "Invalid status: XYZ. Valid statuses are: ACTIVE, REGISTERED..."
+                return BadRequest(new { ex.Message });
+            }
             catch (Exception)
             {
-                // En desarrollo puedes loguear 'ex', en producción solo el mensaje genérico
                 return StatusCode(500, new { Message = "Internal server error." });
             }
         }
@@ -229,6 +242,13 @@ namespace Shapper.Controllers
             catch (KeyNotFoundException)
             {
                 return NotFound(new { Message = "User not found." });
+            }
+            // AGREGA ESTE BLOQUE:
+            catch (InvalidOperationException ex)
+            {
+                // Esto devolverá un error 400 con el mensaje:
+                // "Invalid status: XYZ. Valid statuses are: ACTIVE, REGISTERED..."
+                return BadRequest(new { ex.Message });
             }
             catch (Exception)
             {
