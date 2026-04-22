@@ -1,7 +1,3 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using Shapper.Config;
-using Shapper.Services.Payment.Strategies;
 
 namespace Shapper.Services.Payment
 {

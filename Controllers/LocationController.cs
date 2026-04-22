@@ -98,7 +98,7 @@ namespace Shapper.Controller
             {
                 return NotFound(new { message = ex.Message });
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 return Conflict(new { message = "Internal Server Error" });
             }

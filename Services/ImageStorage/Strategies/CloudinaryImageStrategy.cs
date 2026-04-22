@@ -1,6 +1,5 @@
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
-using Microsoft.AspNetCore.Http;
 
 namespace Shapper.Services.ImageStorage.Strategies
 {

@@ -105,9 +105,11 @@ builder.Services.AddSingleton(provider =>
     return new CloudinaryDotNet.Cloudinary(url);
 });
 
-//builder.Services.AddScoped<IImageService, LocalImageStrategy>();
 
-builder.Services.AddScoped<IImageService, CloudinaryImageStrategy>();
+// Estrategias de imágenes
+builder.Services.AddScoped<LocalImageStrategy>();
+builder.Services.AddScoped<CloudinaryImageStrategy>();
+builder.Services.AddScoped<ImageStrategyFactory>();
 
 // Swagger con Bearer JWT
 builder.Services.AddSwaggerGen(c =>

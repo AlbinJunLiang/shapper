@@ -1,5 +1,4 @@
 using Shapper.Dtos.Orders;
-using Shapper.Services.Payment;
 using Stripe.Checkout;
 
 namespace Shapper.Services.Payment.Strategies

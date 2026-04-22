@@ -1,7 +1,6 @@
 using AutoMapper;
 using Shapper.Dtos.Checkouts;
 using Shapper.Dtos.Orders;
-using Shapper.Dtos.PaymentRequests;
 using Shapper.Services.Orders;
 using Shapper.Services.Payment;
 using Shapper.Services.PaymentUrlValidators;
@@ -10,19 +9,16 @@ namespace Shapper.Services.Checkouts
 {
     public class CheckoutService : ICheckoutService
     {
-        private readonly IMapper _mapper;
         private readonly IOrderService _orderService;
         private readonly PaymentService _paymentService;
         private readonly IPaymentUrlValidator _paymentUrlValidators;
 
         public CheckoutService(
-            IMapper mapper,
             IOrderService orderService,
             PaymentService paymentService,
             IPaymentUrlValidator paymentUrlValidators
         )
         {
-            _mapper = mapper;
             _orderService = orderService;
             _paymentService = paymentService;
             _paymentUrlValidators = paymentUrlValidators;

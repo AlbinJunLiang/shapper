@@ -19,7 +19,6 @@ namespace Shapper.Services.Orders
         private readonly IUserRepository _userRepository;
         private readonly IProductRepository _productRepository;
         private readonly ILocationRepository _locationRepository;
-
         private readonly IMapper _mapper;
 
         public OrderService(
