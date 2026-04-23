@@ -36,6 +36,7 @@ var status = builder.Environment.IsDevelopment();
 // Servicios y dependencias
 // =======================
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 
 // DB Context
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -224,6 +225,7 @@ app.UseWhen(
 // Autorización (HttpContext.User si FirebaseAuthMiddleware establece ClaimsPrincipal)
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 // Mapear controllers
 app.MapControllers();

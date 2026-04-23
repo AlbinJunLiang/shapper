@@ -34,6 +34,16 @@ namespace Shapper.Mappings
             CreateMap<Subcategory, SubcategoryResponseDto>().ReverseMap();
             CreateMap<Subcategory, SubcategoryDto>().ReverseMap();
 
+            // ✅ NUEVO: Mapeos para ProductImage
+            CreateMap<ProductImage, ProductImageResponseDto>()
+                .ReverseMap();
+
+            CreateMap<CreateProductImageDto, ProductImage>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<UpdateProductImageDto, ProductImage>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.ProductId, opt => opt.Ignore());
+
             // ========== MAPEOS DE PRODUCTO CENTRALIZADOS ==========
 
             // Product -> ProductResponseDto
@@ -73,7 +83,7 @@ namespace Shapper.Mappings
                 )
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.ProductImages));
 
-            // ProductImage mapeos
+            // ProductImage mapeos existentes
             CreateMap<ProductImage, ProductImageDto>()
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId));
 
@@ -98,7 +108,7 @@ namespace Shapper.Mappings
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.User.LastName))
                 .ReverseMap();
 
-            // Agrega estos mapeos en MappingProfile.cs
+            // Store mapeos
             CreateMap<Store, StoreResponseDto>()
                 .ForMember(dest => dest.StoreLinks, opt => opt.MapFrom(src => src.StoreLinks));
 
@@ -109,7 +119,7 @@ namespace Shapper.Mappings
             CreateMap<Location, LocationResponseDto>().ReverseMap();
             CreateMap<Location, LocationDto>().ReverseMap();
 
-            // Agrega estos mapeos en MappingProfile.cs
+            // StoreLink mapeos
             CreateMap<StoreLink, StoreLinkResponseDto>().ReverseMap();
 
             CreateMap<StoreLinkDto, StoreLink>()

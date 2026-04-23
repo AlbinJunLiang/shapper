@@ -27,5 +27,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dtos\ImageStorage\" />
+    <Folder Include="Dtos\ProductImage\" />
+    <Folder Include="Repositories\ProductImage\" />
+    <Folder Include="Services\ProductImage\" />
   </ItemGroup>
 </Project>

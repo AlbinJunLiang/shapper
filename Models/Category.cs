@@ -18,6 +18,9 @@ namespace Shapper.Models
         [MaxLength(500, ErrorMessage = "The {0} cannot exceed {1} characters.")]
         public string? ImageUrl { get; set; }
 
+        // NUEVO: ID de la imagen (opcional)
+        public string? ImageId { get; set; }  // Para almacenar PublicId de Cloudinary o nombre de archivo local
+
         public ICollection<Subcategory> Subcategories { get; set; } = new List<Subcategory>();
     }
 }

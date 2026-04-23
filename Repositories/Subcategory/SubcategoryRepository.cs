@@ -19,25 +19,31 @@ namespace Shapper.Repositories.Subcategories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Subcategory?> GetByIdAsync(int id) =>
-            await _context.Subcategories.FindAsync(id);
+        public async Task<Subcategory?> GetByIdAsync(int id)
+        {
+            return await _context.Subcategories
+                .Include(s => s.Category)
+                .FirstOrDefaultAsync(s => s.Id == id);
+        }
 
         public async Task<Subcategory?> GetByNameAsync(string name)
         {
-            return await _context.Subcategories.FirstOrDefaultAsync(c => c.Name == name);
+            return await _context.Subcategories
+                .FirstOrDefaultAsync(s => s.Name.ToLower() == name.ToLower());
         }
 
         public async Task<(List<Subcategory> Subcategories, int TotalCount)> GetPaginatedAsync(
             int page,
-            int pageSize
-        )
+            int pageSize)
         {
-            var query = _context.Subcategories.AsNoTracking();
+            var query = _context.Subcategories
+                .Include(s => s.Category)
+                .AsNoTracking();
 
             var totalCount = await query.CountAsync();
 
             var subcategories = await query
-                .OrderBy(c => c.Id)
+                .OrderBy(s => s.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -56,6 +62,11 @@ namespace Shapper.Repositories.Subcategories
         {
             _context.Subcategories.Remove(subcategory);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _context.Subcategories.AnyAsync(s => s.Id == id);
         }
     }
 }

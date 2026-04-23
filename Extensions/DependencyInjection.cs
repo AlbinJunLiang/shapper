@@ -1,4 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
 using Shapper.Repositories.Categories;
 using Shapper.Repositories.Faqs;
 using Shapper.Repositories.FeaturedProducts;
@@ -29,6 +28,8 @@ using Shapper.Services.Stores;
 using Shapper.Services.StoreLinks;
 using Shapper.Services.Subcategories;
 using Shapper.Services.Users;
+using Shapper.Repositories.ProductImages;
+using Shapper.Services.ProductImages;
 
 namespace Shapper.Extensions
 {
@@ -51,6 +52,7 @@ namespace Shapper.Extensions
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IStoreRepository, StoreRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();
+            services.AddScoped<IProductImageRepository, ProductImageRepository>();
 
             // Services
             services.AddScoped<IUserService, UserService>();
@@ -76,6 +78,8 @@ namespace Shapper.Extensions
             // En el método AddApplicationServices, agrega:
             services.AddScoped<IStoreLinkRepository, StoreLinkRepository>();
             services.AddScoped<IStoreLinkService, StoreLinkService>();
+            services.AddScoped<IProductImageService, ProductImageService>();
+
             return services;
         }
     }

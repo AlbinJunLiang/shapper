@@ -22,31 +22,27 @@ namespace Shapper.Repositories.Categories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Category?> GetByIdAsync(int id) =>
-            await _context.Categories.FindAsync(id);
+        public async Task<Category?> GetByIdAsync(int id)
+        {
+            return await _context.Categories
+                .Include(c => c.Subcategories)
+                .FirstOrDefaultAsync(c => c.Id == id);
+        }
 
         public async Task<Category?> GetByNameAsync(string? name)
         {
             if (string.IsNullOrWhiteSpace(name))
                 return null;
 
-            // Guardamos el nombre procesado en una variable para no repetir el ToLower/Trim
             var processedName = name.Trim().ToLower();
-
             return await _context.Categories.FirstOrDefaultAsync(c =>
-                c.Name != null && c.Name.ToLower() == processedName
-            );
+                c.Name != null && c.Name.ToLower() == processedName);
         }
 
-        public async Task<(List<Category> Categories, int TotalCount)> GetPaginatedAsync(
-            int page,
-            int pageSize
-        )
+        public async Task<(List<Category> Categories, int TotalCount)> GetPaginatedAsync(int page, int pageSize)
         {
             var query = _context.Categories.AsNoTracking();
-
             var totalCount = await query.CountAsync();
-
             var categories = await query
                 .OrderBy(c => c.Id)
                 .Skip((page - 1) * pageSize)
@@ -58,26 +54,22 @@ namespace Shapper.Repositories.Categories
 
         public async Task<CategoriesWithGlobalPriceRangeDto> GetCategoriesWithGlobalPriceRangeAsync()
         {
-            // 1. Obtener categorías con sus subcategorías (solo subcategorías que tengan al menos un producto activo)
             var categories = await _context
                 .Categories.Select(c => new CategoryWithSubcategoriesDto
                 {
                     Id = c.Id,
                     Name = c.Name ?? "",
-                    Subcategories = c
-                        .Subcategories.Where(s =>
-                            s.Products.Any(p => p.Status == ProductStatus.ACTIVE.ToString())
-                        )
+                    Subcategories = c.Subcategories
+                        .Where(s => s.Products.Any(p => p.Status == ProductStatus.ACTIVE.ToString()))
                         .Select(s => new SubcategoryResponse2Dto { Id = s.Id, Name = s.Name })
                         .ToList(),
                 })
-                .Where(c => c.Subcategories.Any()) // omitir categorías sin subcategorías con productos
+                .Where(c => c.Subcategories.Any())
                 .ToListAsync();
 
-            // 2. Obtener precios globales (mín y máx de todos los productos activos)
             var priceStats = await _context
                 .Products.Where(p => p.Status == ProductStatus.ACTIVE.ToString())
-                .GroupBy(p => 1) // agrupa todos para aplicar agregaciones
+                .GroupBy(p => 1)
                 .Select(g => new
                 {
                     MinPrice = g.Min(p => (double?)p.Price),
@@ -104,6 +96,11 @@ namespace Shapper.Repositories.Categories
         {
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _context.Categories.AnyAsync(c => c.Id == id);
         }
     }
 }
