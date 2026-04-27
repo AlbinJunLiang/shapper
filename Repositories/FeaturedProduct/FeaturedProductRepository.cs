@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Shapper.Data;
-using Shapper.Dtos;
 using Shapper.Models;
 
 namespace Shapper.Repositories.FeaturedProducts
@@ -20,20 +19,21 @@ namespace Shapper.Repositories.FeaturedProducts
             await _context.SaveChangesAsync();
         }
 
-        public async Task<FeaturedProduct?> GetByIdAsync(int id) =>
-            await _context.FeaturedProducts.FindAsync(id);
+        public async Task<FeaturedProduct?> GetByIdAsync(int id)
+        {
+            return await _context.FeaturedProducts.FindAsync(id);
+        }
 
-        public async Task<(
-            List<FeaturedProduct> FeaturedProducts,
-            int TotalCount
-        )> GetPaginatedAsync(int page, int pageSize)
+        public async Task<(List<FeaturedProduct> FeaturedProducts, int TotalCount)> GetPaginatedAsync(
+            int page,
+            int pageSize)
         {
             var query = _context.FeaturedProducts.AsNoTracking();
 
             var totalCount = await query.CountAsync();
 
             var featuredProducts = await query
-                .OrderBy(u => u.Id)
+                .OrderBy(fp => fp.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,16 +11,22 @@ namespace Shapper.Models
         [Required(ErrorMessage = "StoreId is required")]
         public int StoreId { get; set; }
 
-        // PROPIEDAD DE NAVEGACIÓN
-        // Usamos '?' para permitir que sea nula al crear el objeto, 
-        // pero EF sabrá que la FK es obligatoria por el 'int StoreId' (no nuleable)
+        [Required(ErrorMessage = "Question is required")]
+        [MaxLength(500, ErrorMessage = "Question cannot exceed 500 characters")]
+        public string Question { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Answer is required")]
+        [MaxLength(2000, ErrorMessage = "Answer cannot exceed 2000 characters")]
+        public string Answer { get; set; } = string.Empty;
+
+        [RegularExpression("^(ACTIVE|INACTIVE)$", ErrorMessage = "Status must be ACTIVE or INACTIVE")]
+        public string Status { get; set; } = "ACTIVE";
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; }
+
+        // Navegación
         [ForeignKey(nameof(StoreId))]
         public virtual Store? Store { get; set; }
-
-        public string? Question { get; set; }
-        public string? Answer { get; set; }
-        public string? Url { get; set; }
-        public int? DisplayOrder { get; set; }
-        public string? Status { get; set; } = "ACTIVE";
     }
 }

@@ -9,6 +9,8 @@ namespace Shapper.Dtos.ProductImages
         // Usamos string.Empty para mantener el estándar de Shapper
         public string ImageUrl { get; set; } = string.Empty;
 
+        public string Provider { get; set; } = string.Empty;
+
         public string ResourceReference { get; set; } = string.Empty;
     }
 }

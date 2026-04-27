@@ -1,107 +1,135 @@
-using System.Security.Claims; // <-- necesario para Claim, ClaimTypes, ClaimsIdentity, ClaimsPrincipal
-using System.Text.Json;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shapper.Dtos;
 using Shapper.Dtos.Faqs;
-using Shapper.Models;
 using Shapper.Services.Faqs;
 
-namespace Shapper.Controller
+namespace Shapper.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class FaqsController : ControllerBase
     {
         private readonly IFaqService _faqService;
+        private readonly ILogger<FaqsController> _logger;
 
-        public FaqsController(IFaqService faqService)
+        public FaqsController(IFaqService faqService, ILogger<FaqsController> logger)
         {
             _faqService = faqService;
+            _logger = logger;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(FaqDto dto)
+        public async Task<IActionResult> Create([FromBody] FaqDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+
             try
             {
-                var faq = await _faqService.CreateAsync(dto);
-                return Ok(faq);
+                var result = await _faqService.CreateAsync(dto);
+                return CreatedAtAction(nameof(GetById), new { id = result.Id }, new { success = true, message = "FAQ created successfully", data = result });
             }
             catch (InvalidOperationException ex)
-                when (ex.Message.Contains("The specified subcategory does not exist."))
             {
-                return Conflict(new { message = ex.Message });
+                return Conflict(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating FAQ");
+                return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var faq = await _faqService.GetByIdAsync(id);
-            if (faq == null)
-                return NotFound();
-            return Ok(faq);
+            var result = await _faqService.GetByIdAsync(id);
+            if (result == null)
+                return NotFound(new { success = false, message = $"FAQ with ID {id} not found." });
+
+            return Ok(new { success = true, data = result });
+        }
+
+        [HttpGet("store/{storeId}")]
+        public async Task<IActionResult> GetByStoreId(int storeId)
+        {
+            var results = await _faqService.GetByStoreIdAsync(storeId);
+            return Ok(new { success = true, count = results.Count, data = results });
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPaginatedAsync(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> GetPaginated(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] int? storeId = null)
         {
             if (page <= 0)
-                return BadRequest(
-                    new { success = false, message = "Page number must be greater than 0." }
-                );
+                return BadRequest(new { success = false, message = "Page number must be greater than 0." });
 
             if (pageSize <= 0 || pageSize > 100)
-                return BadRequest(
-                    new { success = false, message = "Page size must be between 1 and 100." }
-                );
+                return BadRequest(new { success = false, message = "Page size must be between 1 and 100." });
 
-            var result = await _faqService.GetPaginatedAsync(page, pageSize);
+            var result = await _faqService.GetPaginatedAsync(page, pageSize, storeId);
             return Ok(result);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] FaqDto dto)
+        public async Task<IActionResult> Update(int id, [FromBody] FaqUpdateDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
-                var faq = await _faqService.UpdateAsync(id, dto);
-
-                return Ok(new { message = "Faq updated successfully", data = faq });
+                var result = await _faqService.UpdateAsync(id, dto);
+                return Ok(new { success = true, message = "FAQ updated successfully", data = result });
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("not found"))
+            {
+                return NotFound(new { success = false, message = ex.Message });
             }
             catch (InvalidOperationException ex)
             {
-                return ex.Message switch
-                {
-                    "Faq not found." => NotFound(new { message = ex.Message, status = 404 }),
-                    "Faq name already exists." => Conflict(
-                        new { message = ex.Message, status = 409 }
-                    ),
+                return Conflict(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating FAQ {Id}", id);
+                return StatusCode(500, new { success = false, message = "Internal server error." });
+            }
+        }
 
-                    _ => StatusCode(500, new { message = "Internal server error." }),
-                };
+        [HttpPatch("{id}/toggle-status")]
+        public async Task<IActionResult> ToggleStatus(int id)
+        {
+            try
+            {
+                var result = await _faqService.ToggleStatusAsync(id);
+                return Ok(new { success = true, message = $"FAQ status changed to {result.Status}", data = result });
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("not found"))
+            {
+                return NotFound(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error toggling FAQ status {Id}", id);
+                return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 await _faqService.DeleteAsync(id);
-                return NoContent();
+                return Ok(new { success = true, message = "FAQ deleted successfully." });
             }
-            catch (KeyNotFoundException ex)
+            catch (InvalidOperationException ex) when (ex.Message.Contains("not found"))
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(new { success = false, message = ex.Message });
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                return Conflict(new { message = ex.Message });
+                _logger.LogError(ex, "Error deleting FAQ {Id}", id);
+                return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }
     }

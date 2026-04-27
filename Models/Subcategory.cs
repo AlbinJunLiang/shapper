@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,10 +13,12 @@ namespace Shapper.Models
         public string Name { get; set; } = string.Empty;
 
         [MaxLength(500, ErrorMessage = "The Description cannot exceed 500 characters.")]
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; }
 
         [MaxLength(500, ErrorMessage = "The Image URL cannot exceed 500 characters.")]
-        public string ImageUrl { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; }
+
+        public string? ImageProvider { get; set; }
 
         // NUEVO: ID de la imagen (opcional)
         public string? ImageId { get; set; }  // Para almacenar PublicId de Cloudinary o nombre de archivo local

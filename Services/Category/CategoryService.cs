@@ -36,6 +36,8 @@ namespace Shapper.Services.Categories
 
             var category = _mapper.Map<Category>(dto);
             category.Name = cleanName;
+            category.ImageProvider = dto.ImageProvider ?? "LOCAL";
+
 
             // Procesar imagen si viene
             await ProcessImageAsync(category, dto);
@@ -94,6 +96,7 @@ namespace Shapper.Services.Categories
 
             // Actualizar campos básicos
             existingCategory.Description = dto.Description ?? string.Empty;
+            existingCategory.ImageProvider = dto.ImageProvider ?? "LOCAL";
 
             // Procesar imagen (puede ser archivo nuevo, URL nueva, o ninguna)
             await ProcessImageForUpdateAsync(existingCategory, dto);
@@ -105,6 +108,7 @@ namespace Shapper.Services.Categories
                 Id = existingCategory.Id,
                 Name = existingCategory.Name,
                 Description = existingCategory.Description,
+                ImageProvider = existingCategory.ImageProvider,
                 ImageUrl = existingCategory.ImageUrl,
                 ImageId = existingCategory.ImageId,
             };
@@ -135,11 +139,12 @@ namespace Shapper.Services.Categories
             if (hasFile)
             {
                 // Subir archivo
-                var strategy = _imageFactory.Create(dto.Provider);
+                var strategy = _imageFactory.Create(dto.ImageProvider);
                 var (path, publicId) = await strategy.UploadImageAsync(dto.ImageFile!);
 
                 category.ImageUrl = path.StartsWith("http") ? path : $"/{path}";
                 category.ImageId = publicId;
+                category.ImageProvider = dto.ImageProvider;
             }
             else if (hasUrl)
             {
@@ -161,16 +166,17 @@ namespace Shapper.Services.Categories
             // Si viene nueva imagen, eliminar la anterior
             if (!string.IsNullOrEmpty(category.ImageId))
             {
-                await DeletePhysicalImageAsync(category, dto.Provider ?? "LOCAL");
+                await DeletePhysicalImageAsync(category, dto.ImageProvider ?? "LOCAL");
             }
 
             if (hasFile)
             {
-                var strategy = _imageFactory.Create(dto.Provider);
+                var strategy = _imageFactory.Create(dto.ImageProvider);
                 var (path, publicId) = await strategy.UploadImageAsync(dto.ImageFile!);
 
                 category.ImageUrl = path.StartsWith("http") ? path : $"/{path}";
                 category.ImageId = publicId;
+                category.ImageProvider = dto.ImageProvider;
             }
             else if (hasUrl)
             {

@@ -9,7 +9,7 @@ namespace Shapper.Dtos.Categories
         public string? Name { get; set; }
 
         [MaxLength(500, ErrorMessage = "The Name cannot exceed 500 characters.")]
-        public string Description { get; set; } = "";
+        public string? Description { get; set; }
 
         // Opcional: URL de imagen
         [MaxLength(500, ErrorMessage = "The {0} cannot exceed {1} characters.")]
@@ -22,6 +22,6 @@ namespace Shapper.Dtos.Categories
         public IFormFile? ImageFile { get; set; }
 
         // Opcional: Proveedor para la imagen (cloudinary, local)
-        public string? Provider { get; set; }
+        public string? ImageProvider { get; set; }
     }
 }

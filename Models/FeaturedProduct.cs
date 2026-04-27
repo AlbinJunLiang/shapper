@@ -5,13 +5,13 @@ namespace Shapper.Models
 {
     public class FeaturedProduct
     {
+        [Key]
         public int Id { get; set; }
 
         [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }
-        public int? DisplayedOrder { get; set; }
 
-        // Navegación
+       
         public virtual Product Product { get; set; } = null!;
     }
 }

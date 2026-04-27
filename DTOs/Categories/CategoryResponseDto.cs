@@ -7,5 +7,7 @@ namespace Shapper.Dtos.Categories
         public string? Description { get; set; }
         public string? ImageUrl { get; set; }
         public string? ImageId { get; set; }
+
+        public string? ImageProvider { get; set; }
     }
 }

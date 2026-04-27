@@ -3,49 +3,81 @@ using Shapper.Dtos;
 using Shapper.Dtos.Faqs;
 using Shapper.Models;
 using Shapper.Repositories.Faqs;
+using Shapper.Repositories.Stores;
 
 namespace Shapper.Services.Faqs
 {
     public class FaqService : IFaqService
     {
         private readonly IFaqRepository _faqRepository;
+        private readonly IStoreRepository _storeRepository;
         private readonly IMapper _mapper;
 
-        public FaqService(IFaqRepository faqRepository, IMapper mapper)
+        public FaqService(
+            IFaqRepository faqRepository,
+            IStoreRepository storeRepository,
+            IMapper mapper)
         {
             _faqRepository = faqRepository;
+            _storeRepository = storeRepository;
             _mapper = mapper;
         }
 
-        public async Task<FaqResponseDto?> CreateAsync(FaqDto dto)
+        public async Task<FaqResponseDto> CreateAsync(FaqDto dto)
         {
-            var category = _mapper.Map<Faq>(dto);
+            // 1. Validar que la tienda existe
+            var store = await _storeRepository.GetByIdAsync(dto.StoreId);
+            if (store == null)
+                throw new InvalidOperationException($"Store with ID {dto.StoreId} does not exist.");
 
-            if(category != null)
+            // 2. Validar que no exista la misma pregunta en la tienda
+            var exists = await _faqRepository.ExistsByStoreAndQuestionAsync(dto.StoreId, dto.Question);
+            if (exists)
+                throw new InvalidOperationException("A FAQ with this question already exists for this store.");
 
-            await _faqRepository.AddAsync(category);
+            var faq = _mapper.Map<Faq>(dto);
+            faq.CreatedAt = DateTime.UtcNow;
 
-            return _mapper.Map<FaqResponseDto>(category);
+            await _faqRepository.AddAsync(faq);
+
+            return await MapToResponseAsync(faq);
         }
 
-        public async Task<FaqDto?> GetByIdAsync(int id)
+        public async Task<FaqResponseDto?> GetByIdAsync(int id)
         {
-            var category = await _faqRepository.GetByIdAsync(id);
-            return category == null ? null : _mapper.Map<FaqDto>(category);
+            var faq = await _faqRepository.GetByIdAsync(id);
+            return faq == null ? null : await MapToResponseAsync(faq);
+        }
+
+        public async Task<List<FaqResponseDto>> GetByStoreIdAsync(int storeId)
+        {
+            var faqs = await _faqRepository.GetByStoreIdAsync(storeId);
+            var responses = new List<FaqResponseDto>();
+
+            foreach (var faq in faqs)
+            {
+                responses.Add(await MapToResponseAsync(faq));
+            }
+
+            return responses;
         }
 
         public async Task<PagedResponseDto<FaqResponseDto>> GetPaginatedAsync(
             int page,
-            int pageSize
-        )
+            int pageSize,
+            int? storeId = null)
         {
             page = page <= 0 ? 1 : page;
             pageSize = pageSize <= 0 ? 10 : pageSize;
             pageSize = pageSize > 100 ? 100 : pageSize;
 
-            var (Faqs, totalCount) = await _faqRepository.GetPaginatedAsync(page, pageSize);
+            var (faqs, totalCount) = await _faqRepository.GetPaginatedAsync(page, pageSize, storeId);
 
-            var mapped = _mapper.Map<List<FaqResponseDto>>(Faqs);
+            var mapped = new List<FaqResponseDto>();
+            foreach (var faq in faqs)
+            {
+                mapped.Add(await MapToResponseAsync(faq));
+            }
 
             return new PagedResponseDto<FaqResponseDto>
             {
@@ -57,27 +89,77 @@ namespace Shapper.Services.Faqs
             };
         }
 
-        public async Task<FaqResponseDto> UpdateAsync(int id, FaqDto dto)
+        public async Task<FaqResponseDto> UpdateAsync(int id, FaqUpdateDto dto)
         {
-            var existingOrder = await _faqRepository.GetByIdAsync(id);
+            var existingFaq = await _faqRepository.GetByIdAsync(id);
+            if (existingFaq == null)
+                throw new InvalidOperationException("FAQ not found.");
 
-            if (existingOrder == null)
-                throw new InvalidOperationException("Faq not found.");
-            _mapper.Map(dto, existingOrder);
+            // Validar que no exista otra FAQ con la misma pregunta
+            if (!string.IsNullOrWhiteSpace(dto.Question))
+            {
+                var exists = await _faqRepository.ExistsByStoreAndQuestionAsync(
+                    existingFaq.StoreId,
+                    dto.Question,
+                    id);
 
-            await _faqRepository.UpdateAsync(existingOrder);
-            // Mapear entidad → response
-            return _mapper.Map<FaqResponseDto>(existingOrder);
+                if (exists)
+                    throw new InvalidOperationException("A FAQ with this question already exists for this store.");
+
+                existingFaq.Question = dto.Question;
+            }
+
+            // Actualizar campos
+            if (!string.IsNullOrWhiteSpace(dto.Answer))
+                existingFaq.Answer = dto.Answer;
+
+            if (!string.IsNullOrWhiteSpace(dto.Status))
+                existingFaq.Status = dto.Status;
+
+            existingFaq.UpdatedAt = DateTime.UtcNow;
+
+            await _faqRepository.UpdateAsync(existingFaq);
+
+            return await MapToResponseAsync(existingFaq);
         }
 
         public async Task DeleteAsync(int id)
         {
-            var category = await _faqRepository.GetByIdAsync(id);
+            var faq = await _faqRepository.GetByIdAsync(id);
+            if (faq == null)
+                throw new InvalidOperationException("FAQ not found.");
 
-            if (category == null)
-                throw new InvalidOperationException("Faq not found.");
+            await _faqRepository.DeleteAsync(faq);
+        }
 
-            await _faqRepository.DeleteAsync(category);
+        public async Task<FaqResponseDto> ToggleStatusAsync(int id)
+        {
+            var faq = await _faqRepository.GetByIdAsync(id);
+            if (faq == null)
+                throw new InvalidOperationException("FAQ not found.");
+
+            faq.Status = faq.Status == "ACTIVE" ? "INACTIVE" : "ACTIVE";
+            faq.UpdatedAt = DateTime.UtcNow;
+
+            await _faqRepository.UpdateAsync(faq);
+
+            return await MapToResponseAsync(faq);
+        }
+
+        // Método privado para mapear con nombre de tienda
+        private async Task<FaqResponseDto> MapToResponseAsync(Faq faq)
+        {
+            var response = _mapper.Map<FaqResponseDto>(faq);
+
+            if (faq.Store != null)
+                response.StoreName = faq.Store.Name;
+            else if (faq.StoreId > 0)
+            {
+                var store = await _storeRepository.GetByIdAsync(faq.StoreId);
+                response.StoreName = store?.Name ?? string.Empty;
+            }
+
+            return response;
         }
     }
 }

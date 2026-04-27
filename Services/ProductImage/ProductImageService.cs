@@ -65,6 +65,7 @@ namespace Shapper.Services.ProductImages
             var productImage = new ProductImage
             {
                 ProductId = dto.ProductId,
+                Provider = dto.Provider ?? "",
                 ImageUrl = imageUrl,
                 ResourceReference = resourceReference
             };
@@ -114,6 +115,7 @@ namespace Shapper.Services.ProductImages
 
                 existingImage.ImageUrl = path.StartsWith("http") ? path : $"/{path}";
                 existingImage.ResourceReference = publicId;
+                existingImage.Provider = dto.Provider ?? "";
             }
 
             // Caso 2: Solo se actualizó la URL (sin archivo)

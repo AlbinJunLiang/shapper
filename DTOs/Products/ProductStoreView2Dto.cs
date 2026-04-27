@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Shapper.Dtos.ProductImages;
 
 namespace Shapper.Dtos.Products

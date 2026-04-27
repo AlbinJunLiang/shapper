@@ -4,6 +4,5 @@ namespace Shapper.Dtos.FeaturedProducts
     {
         public int Id { get; set; }
         public int ProductId { get; set; }
-        public int DisplayedOrder { get; set; }
     }
 }

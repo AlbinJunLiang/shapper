@@ -13,7 +13,7 @@ namespace Shapper.Dtos.Products
         public string Name { get; set; } = string.Empty; // CS8618 Fixed
 
         [MaxLength(500, ErrorMessage = "The Description cannot exceed 500 characters.")]
-        public string Description { get; set; } = string.Empty; // CS8618 Fixed
+        public string? Description { get; set; }
 
         [Range(0, double.MaxValue, ErrorMessage = "Price must be greater or equal to 0.")]
         public double Price { get; set; } = 0;

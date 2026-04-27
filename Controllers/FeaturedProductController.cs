@@ -1,61 +1,64 @@
-using System.Security.Claims; // <-- necesario para Claim, ClaimTypes, ClaimsIdentity, ClaimsPrincipal
-using System.Text.Json;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shapper.Dtos;
 using Shapper.Dtos.FeaturedProducts;
-using Shapper.Models;
 using Shapper.Services.FeaturedProducts;
 
-namespace Shapper.Controller
+namespace Shapper.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class FeaturedProductsController : ControllerBase
     {
         private readonly IFeaturedProductService _featuredProductService;
+        private readonly ILogger<FeaturedProductsController> _logger;
 
-        public FeaturedProductsController(IFeaturedProductService featuredProductService)
+        public FeaturedProductsController(
+            IFeaturedProductService featuredProductService,
+            ILogger<FeaturedProductsController> logger)
         {
             _featuredProductService = featuredProductService;
+            _logger = logger;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(FeaturedProductDto dto)
+        public async Task<IActionResult> Create([FromBody] FeaturedProductDto dto)
         {
+            if (dto.ProductId <= 0)
+                return BadRequest(new { success = false, message = "ProductId is required." });
+
             try
             {
-                var featuredProduct = await _featuredProductService.CreateAsync(dto);
-                return Ok(featuredProduct);
+                var result = await _featuredProductService.CreateAsync(dto);
+                return Ok(new { success = true, message = "Product featured successfully", data = result });
             }
-            catch (InvalidOperationException ex)
-                when (ex.Message.Contains("The specified subcategory does not exist."))
+            catch (InvalidOperationException ex) when (ex.Message.Contains("does not exist"))
             {
-                return Conflict(new { message = ex.Message });
+                return NotFound(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error featuring product");
+                return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var featuredProduct = await _featuredProductService.GetByIdAsync(id);
-            if (featuredProduct == null)
-                return NotFound();
-            return Ok(featuredProduct);
+            var result = await _featuredProductService.GetByIdAsync(id);
+            if (result == null)
+                return NotFound(new { success = false, message = "Featured product not found." });
+
+            return Ok(new { success = true, data = result });
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPaginatedAsync(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> GetPaginated([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             if (page <= 0)
-                return BadRequest(
-                    new { success = false, message = "Page number must be greater than 0." }
-                );
+                return BadRequest(new { success = false, message = "Page must be greater than 0." });
 
             if (pageSize <= 0 || pageSize > 100)
-                return BadRequest(
-                    new { success = false, message = "Page size must be between 1 and 100." }
-                );
+                return BadRequest(new { success = false, message = "Page size must be between 1 and 100." });
 
             var result = await _featuredProductService.GetPaginatedAsync(page, pageSize);
             return Ok(result);
@@ -64,48 +67,38 @@ namespace Shapper.Controller
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] FeaturedProductDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
-                var featuredProduct = await _featuredProductService.UpdateAsync(id, dto);
-
-                return Ok(
-                    new { message = "FeaturedProduct updated successfully", data = featuredProduct }
-                );
+                var result = await _featuredProductService.UpdateAsync(id, dto);
+                return Ok(new { success = true, message = "Featured product updated", data = result });
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException ex) when (ex.Message.Contains("not found"))
             {
-                return ex.Message switch
-                {
-                    "FeaturedProduct not found." => NotFound(
-                        new { message = ex.Message, status = 404 }
-                    ),
-                    "FeaturedProduct name already exists." => Conflict(
-                        new { message = ex.Message, status = 409 }
-                    ),
-
-                    _ => StatusCode(500, new { message = "Internal server error." }),
-                };
+                return NotFound(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating featured product");
+                return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 await _featuredProductService.DeleteAsync(id);
-                return NoContent();
+                return Ok(new { success = true, message = "Featured product removed." });
             }
-            catch (KeyNotFoundException ex)
+            catch (InvalidOperationException ex) when (ex.Message.Contains("not found"))
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(new { success = false, message = ex.Message });
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                return Conflict(new { message = ex.Message });
+                _logger.LogError(ex, "Error deleting featured product");
+                return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }
     }

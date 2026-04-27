@@ -51,6 +51,7 @@ namespace Shapper.Services.Subcategories
 
             var subcategory = _mapper.Map<Subcategory>(dto);
             subcategory.Name = cleanName;
+            subcategory.ImageProvider = dto.ImageProvider ?? "";
 
             // Procesar imagen si viene
             await ProcessImageAsync(subcategory, dto);
@@ -105,6 +106,7 @@ namespace Shapper.Services.Subcategories
             // Actualizar campos básicos
             existingSubcategory.Description = dto.Description ?? string.Empty;
             existingSubcategory.CategoryId = dto.CategoryId;
+            existingSubcategory.ImageProvider = dto.ImageProvider ?? string.Empty;
 
             // Procesar imagen (puede ser archivo nuevo, URL nueva, o ninguna)
             await ProcessImageForUpdateAsync(existingSubcategory, dto);
@@ -138,11 +140,13 @@ namespace Shapper.Services.Subcategories
             if (hasFile)
             {
                 // Subir archivo
-                var strategy = _imageFactory.Create(dto.Provider);
+                var strategy = _imageFactory.Create(dto.ImageProvider);
                 var (path, publicId) = await strategy.UploadImageAsync(dto.ImageFile!);
 
                 subcategory.ImageUrl = path.StartsWith("http") ? path : $"/{path}";
                 subcategory.ImageId = publicId;
+                subcategory.ImageProvider = dto.ImageProvider;
+
             }
             else if (hasUrl)
             {
@@ -164,16 +168,18 @@ namespace Shapper.Services.Subcategories
             // Si viene nueva imagen, eliminar la anterior
             if (!string.IsNullOrEmpty(subcategory.ImageId))
             {
-                await DeletePhysicalImageAsync(subcategory, dto.Provider);
+                await DeletePhysicalImageAsync(subcategory, dto.ImageProvider);
             }
 
             if (hasFile)
             {
-                var strategy = _imageFactory.Create(dto.Provider);
+                var strategy = _imageFactory.Create(dto.ImageProvider);
                 var (path, publicId) = await strategy.UploadImageAsync(dto.ImageFile!);
 
                 subcategory.ImageUrl = path.StartsWith("http") ? path : $"/{path}";
                 subcategory.ImageId = publicId;
+                subcategory.ImageProvider = dto.ImageProvider;
+
             }
             else if (hasUrl)
             {

@@ -30,5 +30,6 @@
     <Folder Include="Dtos\ProductImage\" />
     <Folder Include="Repositories\ProductImage\" />
     <Folder Include="Services\ProductImage\" />
+    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 </Project>

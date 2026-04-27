@@ -3,53 +3,73 @@ using Shapper.Dtos;
 using Shapper.Dtos.FeaturedProducts;
 using Shapper.Models;
 using Shapper.Repositories.FeaturedProducts;
+using Shapper.Repositories.Products;
 
 namespace Shapper.Services.FeaturedProducts
 {
     public class FeaturedProductService : IFeaturedProductService
     {
         private readonly IFeaturedProductRepository _featuredProductRepository;
+        private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
 
         public FeaturedProductService(
             IFeaturedProductRepository featuredProductRepository,
-            IMapper mapper
-        )
+            IProductRepository productRepository,
+            IMapper mapper)
         {
             _featuredProductRepository = featuredProductRepository;
+            _productRepository = productRepository;
             _mapper = mapper;
         }
 
         public async Task<FeaturedProductResponseDto?> CreateAsync(FeaturedProductDto dto)
         {
-            var category = _mapper.Map<FeaturedProduct>(dto);
+            // Validar que el producto existe
+            var product = await _productRepository.GetByIdAsync(dto.ProductId);
+            if (product == null)
+                throw new InvalidOperationException($"Product with ID {dto.ProductId} does not exist.");
 
-            await _featuredProductRepository.AddAsync(category);
+            var featuredProduct = new FeaturedProduct
+            {
+                ProductId = dto.ProductId
+            };
 
-            return _mapper.Map<FeaturedProductResponseDto>(category);
+            await _featuredProductRepository.AddAsync(featuredProduct);
+
+            return new FeaturedProductResponseDto
+            {
+                Id = featuredProduct.Id,
+                ProductId = featuredProduct.ProductId
+            };
         }
 
-        public async Task<FeaturedProductDto?> GetByIdAsync(int id)
+        public async Task<FeaturedProductResponseDto?> GetByIdAsync(int id)
         {
-            var category = await _featuredProductRepository.GetByIdAsync(id);
-            return category == null ? null : _mapper.Map<FeaturedProductDto>(category);
+            var featuredProduct = await _featuredProductRepository.GetByIdAsync(id);
+            if (featuredProduct == null)
+                return null;
+
+            return new FeaturedProductResponseDto
+            {
+                Id = featuredProduct.Id,
+                ProductId = featuredProduct.ProductId
+            };
         }
 
-        public async Task<PagedResponseDto<FeaturedProductResponseDto>> GetPaginatedAsync(
-            int page,
-            int pageSize
-        )
+        public async Task<PagedResponseDto<FeaturedProductResponseDto>> GetPaginatedAsync(int page, int pageSize)
         {
             page = page <= 0 ? 1 : page;
             pageSize = pageSize <= 0 ? 10 : pageSize;
             pageSize = pageSize > 100 ? 100 : pageSize;
 
-            var (FeaturedProducts, totalCount) = await _featuredProductRepository.GetPaginatedAsync(
-                page,
-                pageSize
-            );
+            var (featuredProducts, totalCount) = await _featuredProductRepository.GetPaginatedAsync(page, pageSize);
 
-            var mapped = _mapper.Map<List<FeaturedProductResponseDto>>(FeaturedProducts);
+            var mapped = featuredProducts.Select(fp => new FeaturedProductResponseDto
+            {
+                Id = fp.Id,
+                ProductId = fp.ProductId
+            }).ToList();
 
             return new PagedResponseDto<FeaturedProductResponseDto>
             {
@@ -63,25 +83,32 @@ namespace Shapper.Services.FeaturedProducts
 
         public async Task<FeaturedProductResponseDto> UpdateAsync(int id, FeaturedProductDto dto)
         {
-            var existingOrder = await _featuredProductRepository.GetByIdAsync(id);
+            var existing = await _featuredProductRepository.GetByIdAsync(id);
+            if (existing == null)
+                throw new InvalidOperationException("Featured product not found.");
 
-            if (existingOrder == null)
-                throw new InvalidOperationException("FeaturedProduct not found.");
-            _mapper.Map(dto, existingOrder);
+            // Validar que el nuevo producto existe
+            var product = await _productRepository.GetByIdAsync(dto.ProductId);
+            if (product == null)
+                throw new InvalidOperationException($"Product with ID {dto.ProductId} does not exist.");
 
-            await _featuredProductRepository.UpdateAsync(existingOrder);
-            // Mapear entidad → response
-            return _mapper.Map<FeaturedProductResponseDto>(existingOrder);
+            existing.ProductId = dto.ProductId;
+            await _featuredProductRepository.UpdateAsync(existing);
+
+            return new FeaturedProductResponseDto
+            {
+                Id = existing.Id,
+                ProductId = existing.ProductId
+            };
         }
 
         public async Task DeleteAsync(int id)
         {
-            var category = await _featuredProductRepository.GetByIdAsync(id);
+            var featuredProduct = await _featuredProductRepository.GetByIdAsync(id);
+            if (featuredProduct == null)
+                throw new InvalidOperationException("Featured product not found.");
 
-            if (category == null)
-                throw new InvalidOperationException("FeaturedProduct not found.");
-
-            await _featuredProductRepository.DeleteAsync(category);
+            await _featuredProductRepository.DeleteAsync(featuredProduct);
         }
     }
 }

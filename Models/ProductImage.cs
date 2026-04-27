@@ -17,7 +17,9 @@ namespace Shapper.Models
         public string ImageUrl { get; set; } = string.Empty; // Protegido
 
         [MaxLength(250, ErrorMessage = "ResourceReference cannot exceed 250 characters.")]
-        public string ResourceReference { get; set; } = string.Empty; // Protegido
+        public string ResourceReference { get; set; } = string.Empty;
+
+        public string? Provider { get; set; }
 
         // Propiedad de navegación
         // Usamos virtual para Lazy Loading y null! para el compilador
