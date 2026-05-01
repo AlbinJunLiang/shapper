@@ -1,3 +1,9 @@
+# Shapper
+
+<p align="center">
+  <img src="https://github.com/AlbinJunLiang/shapper/blob/main/frontend/public/Shapper.png?raw=true" width="800"/>
+</p>
+
 # Recursos y accesos a los endpoints más relevantes
 
 ## Endpoints públicos
