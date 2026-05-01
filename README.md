@@ -9,29 +9,45 @@
 ## Endpoints públicos
 - Cualquiera puede ver estos endpoint, ya sea registrado o no.
 
-1-http://localhost:5127/api/Categories/with-price-range
-2-http://localhost:5127/api/Products/store?page=1&pageSize=20&featured=true
-3-http://localhost:5127/api/Store/code/ST-MANUAL01
-4-http://localhost:5127/api/Categories/?page=1&pageSize=8
-5-http://localhost:5127/api/Products/filter?minPrice=0&maxPrice=575&pageSize=8
-6-http://localhost:5127/api/Products/4
-7-http://localhost:5127/api/Faqs/?page=1&pageSize=100
-8-http://localhost:5127/api/Orders
-9-http://localhost:5127/api/payment/Checkout
-10-http://localhost:5127/api/payment/capture-payment?provider=paypal&token=07L70705VJ7452737
-11-http://localhost:5127/api/Products/search?term=s&count=10
 
 
+### 🗂️ Categories
+GET /api/categories/with-price-range  
+GET /api/categories?page=1&pageSize=8  
+
+### 🛍️ Products
+GET /api/products/store?page=1&pageSize=20&featured=true  
+GET /api/products/filter?minPrice=0&maxPrice=575&pageSize=8  
+GET /api/products/{id}  
+GET /api/products/search?term=s&count=10  
+
+### 🏪 Store
+GET /api/store/code/{code}  
+
+### ❓ FAQs
+GET /api/faqs?page=1&pageSize=100  
+
+### 📦 Orders
+POST /api/orders  
+
+### 💳 Payments
+POST /api/payment/checkout  
+GET /api/payment/capture-payment?provider=paypal&token={token}
 
 
 ## Endpoint solo usuario registrado y VERIFICADOS y acceso solo para el el propietario del recurso
-1-http://localhost:5127/api/Users POST
-2-http://localhost:5127/api/reviews DELETE
-3-http://localhost:5127/api/reviews/2 PUT
-4-http://localhost:5127/api/users/customer/LIANGALBIN9%40GMAIL.COM POST
-5-http://localhost:5127/api/users/customer/LIANGALBIN9%40GMAIL.COM PATCH
-6-http://localhost:5127/api/Orders/user/1?page=1&pageSize=10
-7-http://localhost:5127/api/Orders/reference/ORD-20260428-ED915593
+
+POST /api/users  
+POST /api/users/customer/{email}  
+PATCH /api/users/customer/{email}  
+
+### ⭐ Reviews
+DELETE /api/reviews/{id}  
+PUT /api/reviews/{id}  
+
+### 📦 Orders
+GET /api/orders/user/{userId}?page=1&pageSize=10  
+GET /api/orders/reference/{reference}  
 
 ## Solo para el correo del admin
 - Aplica para todo el módulo administrador
