@@ -1,7 +1,15 @@
-bin/
-obj/
-appsettings.json
-albinia.json
-.env
-ngrok.exe
-**/estructura_shapper.txt
+
+**/backend/appsettings.json
+**/backend/albinia.json
+**/backend/estructura_shapper.json
+**/backend/publish
+backend/bin/
+backend/obj/
+
+# FRONTEND ------------------
+**/frontend/node_modules
+**/frontend/dist
+frontend/.angular
+frontend/.vscode
+
+

@@ -1,0 +1,8 @@
+namespace Shapper.Services.ImageStorage
+{
+    public interface IImageService
+    {
+        Task<(string Path, string PublicId)> UploadImageAsync(IFormFile file);
+        Task<bool> DeleteImageAsync(string publicId);
+    }
+}
