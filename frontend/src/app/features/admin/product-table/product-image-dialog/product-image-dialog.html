@@ -1,0 +1,224 @@
+<div class="fixed inset-0 bg-black/60 flex justify-center items-center z-[1000] p-4">
+  <div
+    class="bg-white w-full max-w-[480px] h-[85vh] rounded-[28px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.15)] flex flex-col font-sans"
+  >
+    <!-- HEADER -->
+    <header class="mb-6 flex justify-between items-start">
+      <div>
+        <h1 class="text-xl font-semibold text-gray-900">Galería</h1>
+        <p class="text-xs text-gray-400 mt-1">
+          {{ existingImages.length + (newImage ? 1 : 0) }} archivos
+        </p>
+      </div>
+
+      <button mat-dialog-close class="w-9 h-9 flex items-center justify-center rounded-full">
+        <mat-icon class="text-gray-500 text-[20px]">close</mat-icon>
+      </button>
+    </header>
+
+    <div class="mb-6 flex flex-col gap-4">
+      <div class="flex flex-col gap-1">
+        <span class="text-[12px] text-gray-800 ml-1"> Origen de imagen </span>
+        <mat-radio-group #group="matRadioGroup" value="1" class="flex gap-5 p-1">
+          <mat-radio-button value="1" class="text-sm">Local</mat-radio-button>
+          <mat-radio-button value="2" class="text-sm">URL</mat-radio-button>
+          <mat-radio-button value="3" class="text-sm">Cloud</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      @if (group.value === '2') {
+        <div class="animate-in fade-in duration-300">
+          @let currentLength = urlInput.value.length;
+
+          <mat-form-field appearance="outline" class="w-full no-subscript-wrapper">
+            <mat-label>Enlace de la imagen</mat-label>
+            <mat-icon matPrefix class="text-gray-400 scale-75">link</mat-icon>
+
+            <input
+              matInput
+              #urlInput
+              type="text"
+              maxlength="800"
+              placeholder="https://..."
+              (input)="updateUrlPreview(urlInput.value)"
+              (keyup.enter)="addUrlImage(urlInput.value); urlInput.value = ''"
+            />
+
+            <mat-hint align="end" [class.text-red-500]="currentLength >= 800">
+              {{ currentLength }} / 800
+            </mat-hint>
+
+            <div matSuffix class="flex items-center pr-1">
+              <button
+                mat-icon-button
+                (click)="addUrlImage(urlInput.value); urlInput.value = ''"
+                [disabled]="currentLength === 0"
+                class="bg-gray-900 text-white w-8 h-8 rounded-lg flex items-center justify-center hover:bg-black transition-all shadow-sm"
+              >
+                <mat-icon class="text-[18px]">check</mat-icon>
+              </button>
+            </div>
+
+            @if (currentLength >= 800) {
+              <mat-hint align="start" class="text-red-500"> ¡Límite máximo alcanzado! </mat-hint>
+            }
+          </mat-form-field>
+        </div>
+      } @else {
+        <button
+          type="button"
+          (click)="fileInput.click()"
+          class="w-full h-12 flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100 hover:border-gray-300 transition-all animate-in fade-in duration-300"
+        >
+          <mat-icon class="scale-90">
+            {{ group.value === '3' ? 'cloud_upload' : 'add_circle_outline' }}
+          </mat-icon>
+          <span class="text-sm font-bold">
+            {{ group.value === '3' ? 'Subir a Cloudinary' : 'Seleccionar archivo' }}
+          </span>
+        </button>
+      }
+
+      <input
+        type="file"
+        #fileInput
+        class="hidden"
+        (change)="onFileSelected($event)"
+        accept="image/*"
+      />
+    </div>
+
+    @if (newImage) {
+      <div
+        class="mb-3 p-3 rounded-2xl bg-gray-50 flex items-center gap-3 animate-in fade-in duration-300"
+      >
+        <div class="w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
+          <img
+            [src]="newImage.preview"
+            (click)="openPreview(newImage.preview)"
+            class="w-full h-full object-cover cursor-pointer hover:scale-105 transition"
+          />
+        </div>
+
+        <div class="flex-1">
+          <span
+            class="w-12 h-5 flex items-center justify-center text-[10px] bg-gray-900 text-white rounded-full"
+          >
+            nueva
+          </span>
+        </div>
+        <button
+          (click)="removeNew()"
+          class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-200 transition"
+        >
+          <mat-icon class="material-icons text-gray-500">close</mat-icon>
+        </button>
+      </div>
+    }
+
+    <p class="text-xs text-gray-400 mt-1">
+      {{ existingImages.length + (newImage ? 1 : 0) }} archivos
+    </p>
+
+    <!-- SEPARADOR -->
+    <div class="flex items-center gap-3 mb-3 mt-2">
+      <div class="flex-1 h-[1px] bg-gray-200"></div>
+      <span class="text-[12px] text-gray-800 font-medium">Imágenes actuales</span>
+      <div class="flex-1 h-[1px] bg-gray-200"></div>
+    </div>
+
+    <!-- EXISTENTES -->
+
+    <div class="flex-1 overflow-y-auto space-y-2 pr-1 custom-scroll">
+      @if (productStore.isLoading()) {
+        <mat-spinner diameter="50"></mat-spinner>
+      } @else {
+        @for (img of existingImages(); track img.id; let first = $first) {
+          <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
+            <div class="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+              <img
+                [src]="img.imageUrl"
+                (click)="openPreview(img.imageUrl)"
+                class="w-full h-full object-cover cursor-pointer hover:scale-105 transition"
+              />
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-800 truncate">
+                {{ img.imageUrl.split('/').pop() }}
+              </p>
+
+              <div class="flex gap-2 mt-1">
+                @if (first) {
+                  <span
+                    class="w-13 h-5 flex items-center justify-center text-[10px] bg-gray-900 text-white rounded-full"
+                  >
+                    principal
+                  </span>
+                }
+              </div>
+            </div>
+
+            <button
+              (click)="deleteExisting(img)"
+              class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-200 transition"
+            >
+              <mat-icon class="text-gray-500 text-[20px]">delete</mat-icon>
+            </button>
+          </div>
+        }
+      }
+      <!-- EMPTY -->
+      @if (existingImages.length === 0 && !newImage) {
+        <div class="h-full flex items-center justify-center text-gray-400 text-sm">
+          Sin imágenes
+        </div>
+      }
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="mt-5 flex gap-2">
+      @if (!newImage) {
+        <button
+          (click)="close()"
+          class="flex-[2] py-2.5 rounded-xl text-sm font-semibold bg-gray-900 text-white hover:bg-gray-800 transition"
+        >
+          Cancelar
+        </button>
+      } @else {
+        <button
+          (click)="save(group.value)"
+          class="flex-[2] py-2.5 rounded-xl text-sm font-semibold bg-gray-900 text-white hover:bg-gray-800 transition flex items-center justify-center gap-2"
+        >
+          @if (!isLoading()) {
+            <mat-icon class="material-icons">save</mat-icon>
+            <span>Guardar nueva imagen</span>
+          } @else {
+            <mat-spinner class="spinner-wait" diameter="20"></mat-spinner>
+          }
+        </button>
+      }
+    </footer>
+  </div>
+</div>
+
+@if (previewImage) {
+  <div
+    class="fixed inset-0 bg-black/80 flex items-center justify-center z-[2000] p-4"
+    (click)="closePreview()"
+  >
+    <div class="relative max-w-[90vw] max-h-[85vh]" (click)="$event.stopPropagation()">
+      <button
+        (click)="closePreview()"
+        class="absolute -top-10 -right-7 w-9 h-9 flex items-center justify-center rounded-full bg-white hover:bg-white/30 transition"
+      >
+        <mat-icon class="text-white">close</mat-icon>
+      </button>
+
+      <img
+        [src]="previewImage"
+        class="max-w-[280px] max-h-[90vh] object-contain rounded-xl shadow-2xl"
+      />
+    </div>
+  </div>
+}

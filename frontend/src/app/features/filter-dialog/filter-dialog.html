@@ -1,0 +1,107 @@
+<div
+  class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center z-[1000] p-4 font-sans"
+>
+  <div
+    class="bg-white w-full max-w-[450px] max-h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+  >
+    <header
+      class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-10"
+    >
+      <h1 class="text-xl font-bold text-slate-800 tracking-tight">
+        {{ 'FLOATING.FILTER.TITLE' | translate }}
+      </h1>
+      <button
+        mat-dialog-close
+        class="absolute top-5 right-5 w-[30px] h-[30px] rounded-full bg-[#f8fafc] flex items-center justify-center font-bold text-lg hover:bg-slate-200"
+      >
+        <mat-icon class="text-gray-500 text-[10px]">close</mat-icon>
+      </button>
+    </header>
+
+    <div class="flex-1 overflow-y-auto p-5 space-y-2">
+      <section>
+        <div class="flex justify-between items-end mb-6">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">
+            {{ 'FLOATING.FILTER.PRICE.TITLE' | translate }}
+          </h3>
+          <div class="flex items-center gap-2 text-indigo-600 font-mono font-bold">
+            <span class="bg-indigo-50 px-2 py-1 rounded">{{currency}}{{ minPrice() }}</span>
+            <span class="text-slate-300">—</span>
+            <span class="bg-indigo-50 px-2 py-1 rounded">{{currency}}{{ maxPrice() }}</span>
+          </div>
+        </div>
+
+        <div class="slider-container">
+          <mat-slider
+            min="0"
+            max="{{ maxLimit.toString() }}"
+            step="5"
+            discrete
+            showTickMarks
+            class="price-slider"
+          >
+            <input
+              value="{{ minPrice().toString() }}"
+              matSliderStartThumb
+              (input)="updateMin($event)"
+            />
+            <input
+              value="{{ maxPrice().toString() }}"
+              matSliderEndThumb
+              (input)="updateMax($event)"
+            />
+          </mat-slider>
+        </div>
+      </section>
+
+      <hr class="border-slate-100" />
+
+      <section class="space-y-2">
+        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">
+          {{ 'FLOATING.FILTER.CATEGORIES.TITLE' | translate }}
+        </h3>
+
+        @for (cat of categories; track cat.name; let i = $index) {
+          <div class="group">
+            <mat-checkbox
+              [checked]="cat.completed"
+              [indeterminate]="isIndeterminate(i)"
+              (change)="updateParent($event.checked, i)"
+              class="font-semibold text-slate-700"
+            >
+              {{ cat.name }}
+            </mat-checkbox>
+
+            <div class="ml-7 mt-1 flex flex-col gap-1 border-l-2 border-slate-100 pl-4 py-1">
+              @for (sub of cat.subcategories; track sub.name; let j = $index) {
+                <mat-checkbox
+                  [checked]="sub.completed"
+                  (change)="updateChild($event.checked, i, j)"
+                  class="text-sm text-slate-500 hover:text-indigo-600 transition-colors"
+                >
+                  {{ sub.name }}
+                </mat-checkbox>
+              }
+            </div>
+          </div>
+        }
+      </section>
+    </div>
+
+    <footer class="p-4 bg-slate-50 border-t border-slate-100 flex gap-3">
+      <button
+        mat-dialog-close
+        class="flex-1 px-4 py-2.5 rounded-xl font-semibold text-slate-600 hover:bg-slate-200 transition-all"
+      >
+        {{ 'FLOATING.FILTER.ACTIONS.CANCEL' | translate }}
+      </button>
+
+      <button
+        (click)="filter()"
+        class="flex-1 px-4 py-2.5 rounded-xl font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-200 transition-all"
+      >
+        {{ 'FLOATING.FILTER.ACTIONS.APPLY' | translate }}
+      </button>
+    </footer>
+  </div>
+</div>

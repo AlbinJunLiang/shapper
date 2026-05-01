@@ -1,0 +1,117 @@
+<div class="w-[100%] max-w-[1200px] mx-auto py-1">
+  <div class="mb-4">
+    <h1 class="text-2xl font-semibold text-gray-800 mb-3">Registro de Usuarios</h1>
+    <div class="flex flex-col gap-2 mb-4"></div>
+
+    @if (totalItems() == 0) {
+      @if (isLoading()) {
+        <div class="absolute inset-0 flex items-center justify-center bg-white/70">
+          <mat-spinner diameter="50"></mat-spinner>
+        </div>
+      } @else {
+        <div class="flex flex-col items-center justify-center py-20 w-full text-gray-500">
+          <span class="text-lg font-medium">No hay datos registrados</span>
+        </div>
+      }
+    } @else {
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden p-2 md:p-4">
+        <div class="overflow-x-auto scrollbar-hide">
+          <table
+            style="background-color: rgb(255, 255, 255) !important"
+            mat-table
+            [dataSource]="pagedUsers()"
+            class="w-full min-w-[700px] bg-white"
+          >
+            <ng-container matColumnDef="action">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="px-2 py-2 font-bold text-gray-400 uppercase"
+              ></th>
+              <td mat-cell *matCellDef="let element" class="px-2 py-2 text-sm text-center">
+                <button
+                  mat-icon-button
+                  [matMenuTriggerFor]="menu"
+                  [matMenuTriggerData]="{ user: element }"
+                >
+                  <mat-icon color="primary">more_vert</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            @for (col of displayedColumns.filter(c => c !== 'action'); track col) {
+              <ng-container [matColumnDef]="col">
+                <th
+                  mat-header-cell
+                  *matHeaderCellDef
+                  class="px-6 py-6 font-bold text-gray-400 uppercase"
+                >
+                  {{ col | translate }}
+                </th>
+
+                <td mat-cell *matCellDef="let element" class="px-6 py-8 text-sm">
+                  <div class="flex items-center gap-2">
+                    @if (col === 'roleId') {
+                      <span>{{ roles(Number(element[col])) || '-' | translate }}</span>
+                    } @else if (col === 'id') {
+                      <span class="font-medium text-gray-700">{{ element[col] || '-' }}</span>
+                    } @else {
+                      <span>{{ element[col] || '-' }}</span>
+                    }
+                  </div>
+                </td>
+              </ng-container>
+            }
+
+            <mat-menu #menu="matMenu" class="minimal-menu">
+              <ng-template matMenuContent let-user="user">
+                @if (user.status === Status.ACTIVE) {
+                  <button mat-menu-item (click)="toggleUserStatus(user, Status.INACTIVE)">
+                    <mat-icon>pause_circle</mat-icon>
+                    <span>Desactivar usuario</span>
+                  </button>
+                } @else {
+                  <button mat-menu-item (click)="toggleUserStatus(user, Status.ACTIVE)">
+                    <mat-icon>play_arrow</mat-icon>
+                    <span>Activar usuario</span>
+                  </button>
+                }
+
+                @if (user.status === Status.BANNED) {
+                  <button mat-menu-item (click)="toggleUserStatus(user, Status.ACTIVE)">
+                    <mat-icon color="primary">lock_open</mat-icon>
+                    <span>Desbloquear usuario</span>
+                  </button>
+                } @else {
+                  <button mat-menu-item (click)="toggleUserStatus(user, Status.BANNED)">
+                    <mat-icon color="warn">block</mat-icon>
+                    <span>Bloquear usuario</span>
+                  </button>
+                }
+              </ng-template>
+            </mat-menu>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-transparent"></tr>
+            <tr
+              mat-row
+              *matRowDef="let row; columns: displayedColumns"
+              class="row-customize hover:bg-gray-50/50 transition-colors group"
+            ></tr>
+          </table>
+        </div>
+
+        <div class="px-6 py-4">
+          <mat-paginator
+            [length]="totalItems()"
+            [pageSize]="pageSize()"
+            [pageSizeOptions]="[1, 5, 20, 30, 50]"
+            (page)="onPageChange($event)"
+            showFirstLastButtons
+            class="!text-[11px] !font-bold !uppercase !tracking-widest bg-white"
+            style="background-color: rgb(255, 255, 255) !important"
+          >
+          </mat-paginator>
+        </div>
+      </div>
+    }
+  </div>
+</div>

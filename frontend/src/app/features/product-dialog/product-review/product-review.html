@@ -1,0 +1,247 @@
+<div class="border-t border-[#e2e8f0] pt-[15px] mt-[10px]">
+  <h3 class="text-[0.95rem] mb-[15px]">{{ 'REVIEWS.SUMMARY' | translate }}</h3>
+
+  <div class="flex items-center gap-5 mb-5 bg-[#f8fafc] p-[15px] rounded-[12px]">
+    <div class="text-center">
+      <div class="text-[2.2rem] font-bold text-[#1e293b] leading-none">
+        {{ reviewsData().productStats.averageRating || 0 }}
+      </div>
+
+      <div class="flex justify-center text-[0.8rem] my-1">
+        @for (i of [1, 2, 3, 4, 5]; track i) {
+          <div class="relative inline-block leading-none">
+            <span class="text-[#e2e8f0]">★</span>
+
+            <span
+              class="absolute top-0 left-0 overflow-hidden text-[#f59e0b] select-none"
+              [style.width]="getStarFill(i)"
+            >
+              ★
+            </span>
+          </div>
+        }
+      </div>
+
+      <small class="text-[#64748b] text-[0.7rem]">
+        {{
+          'REVIEWS.REVIEWS_COUNT'
+            | translate: { count: reviewsData().productStats.totalReviews }
+        }}
+      </small>
+    </div>
+
+    <div class="flex-grow flex flex-col gap-[5px]">
+      @for (starLevel of [5, 4, 3, 2, 1]; track starLevel) {
+        <div class="flex items-center gap-2 text-[0.75rem] text-[#64748b]">
+          <span class="w-2">{{ starLevel }}</span>
+          <div class="flex-grow h-[6px] bg-[#e2e8f0] rounded-full overflow-hidden">
+            <div
+              class="h-full bg-[#f59e0b] rounded-full transition-all duration-500"
+              [style.width.%]="getBarPercentage(starLevel)"
+            ></div>
+          </div>
+          <span class="w-4 text-right">{{ getStarCount(starLevel) }}</span>
+        </div>
+      }
+    </div>
+  </div>
+  @if (!writeReviewEnabled) {
+    <button
+      (click)="toggleReviewFrom()"
+      class="w-full p-[10px] bg-white border border-dashed border-[#cbd5e1] rounded-[8px] text-[#2563eb] font-semibold text-[0.85rem] mb-5 hover:bg-[#f1f5f9] hover:border-[#2563eb] transition-all"
+    >
+      {{ 'REVIEWS.WRITE_REVIEW' | translate }}
+    </button>
+  }
+
+  @if (writeReviewEnabled) {
+    <div
+      class="w-full max-w-md mx-auto bg-white border border-slate-100 rounded-2xl p-7 shadow-lg shadow-slate-100/50"
+    >
+      <div class="flex flex-col items-center gap-3 mb-4">
+        <label class="text-xs font-bold tracking-wider text-slate-800">
+          {{ 'REVIEWS.YOUR_RATING' | translate }}
+        </label>
+
+        <div class="flex justify-center gap-2 text-5xl cursor-pointer">
+          @for (star of [1, 2, 3, 4, 5]; track star) {
+            <span
+              (click)="setRating(star)"
+              [class.text-amber-400]="rating >= star"
+              [class.text-slate-200]="rating < star"
+              class="transition-all duration-200 hover:scale-125 active:scale-90"
+            >
+              ★
+            </span>
+          }
+        </div>
+
+        <span class="text-[12px] font-medium text-amber-600 h-5">
+          {{ ratingLabel }}
+        </span>
+      </div>
+      @if (reviewStore.isCheckingAccount()) {
+        <div class="skeleton-loader">
+          <p class="text-[11px] text-slate-400 font-medium tracking-wide uppercase">
+            {{ 'REVIEWS.STATES.CHECKING' | translate }}
+          </p>
+        </div>
+      } @else {
+        <div class="mb-6">
+          <textarea
+            #reviewInput="ngModel"
+            [(ngModel)]="reviewText"
+            name="review"
+            rows="4"
+            class="w-full border border-slate-200 rounded-xl p-4 text-base outline-none transition-colors focus:border-blue-500 placeholder:text-slate-400"
+            placeholder="{{ 'REVIEWS.PLACEHOLDER' | translate }}"
+          ></textarea>
+
+          @if ((reviewInput.touched || reviewInput.dirty) && isRatingMissing()) {
+            <span class="block text-red-500 text-[13px] mt-1">
+              {{ 'REVIEWS.VALIDATIONS.RATING_REQUIRED' | translate }}
+            </span>
+          }
+
+          @if ((reviewInput.touched || reviewInput.dirty) && isTextInvalid()) {
+            <span class="block text-red-500 text-[13px] mt-1">
+              {{ 'REVIEWS.VALIDATIONS.COMMENT_LENGTH' | translate: { min: 3, max: 300 } }}
+            </span>
+          }
+        </div>
+
+        <div class="flex items-center justify-end gap-3">
+          <button
+            (click)="cancel()"
+            class="px-5 py-2.5 text-sm text-slate-700 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors"
+          >
+            {{ 'REVIEWS.ACTIONS.CANCEL' | translate }}
+          </button>
+          <button
+            (click)="submit()"
+            [disabled]="isRatingMissing() || isTextInvalid() || reviewText.trim().length === 0"
+            class="px-8 py-2.5 text-sm text-white bg-blue-700 hover:bg-blue-800 active:scale-95 rounded-xl shadow-md shadow-blue-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
+          >
+            {{ 'REVIEWS.ACTIONS.SUBMIT' | translate }}
+          </button>
+        </div>
+      }
+    </div>
+  }
+  @if (!writeReviewEnabled) {
+    <div class="flex flex-wrap gap-2 py-4">
+      @if (authService.isLoggedIn()) {
+        <button
+          (click)="filterByMyReviews()"
+          class="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 text-xs rounded-xl hover:bg-indigo-50 hover:text-indigo-600 transition-all active:scale-95"
+        >
+          <mat-icon class="!text-[16px] !w-4 !h-4 !leading-4">person</mat-icon>
+          {{ 'REVIEWS.FILTERS.MY_REVIEW' | translate }}
+        </button>
+      }
+
+      <button
+        (click)="filterSortBy('recent')"
+        class="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 text-xs rounded-xl hover:bg-indigo-50 hover:text-indigo-600 transition-all active:scale-95"
+      >
+        <mat-icon class="!text-[16px] !w-4 !h-4 !leading-4">arrow_upward</mat-icon>
+        {{ 'REVIEWS.FILTERS.RECENT' | translate }}
+      </button>
+
+      <button
+        (click)="filterSortBy('top-rated')"
+        class="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 text-xs rounded-xl hover:bg-indigo-50 hover:text-indigo-600 transition-all active:scale-95"
+      >
+        <mat-icon class="!text-[16px] !w-4 !h-4 !leading-4">star</mat-icon>
+        {{ 'REVIEWS.FILTERS.TOP_RATED' | translate }}
+      </button>
+    </div>
+
+    <div class="space-y-0">
+      @if (reviewsData()) {
+        @if (reviewsList().length > 0) {
+          @for (
+            review of showAllReviews
+              ? reviewsList()
+              : reviewsList().slice(0, REVIEW_CONFIG.PAGE_SIZE);
+            track review.id
+          ) {
+            <div class="text-[0.85rem] py-3 border-b border-[#f1f5f9] group">
+              <div class="flex justify-between items-start gap-4">
+                <div class="flex-grow">
+                  <div class="font-bold mb-[2px] flex items-center gap-[5px]">
+                    <span class="text-[#f59e0b]">
+                      @for (star of [1, 2, 3, 4, 5]; track star) {
+                        {{ star <= review.rating ? '★' : '☆' }}
+                      }
+                    </span>
+                    {{ review.name }} {{ review.lastName }}
+
+                    @if (review.userId == currentUserId()) {
+                      <span
+                        class="text-[10px] bg-blue-50 text-blue-500 px-1.5 py-0.5 rounded ml-1 font-medium"
+                      >
+                        {{ 'REVIEWS.LABELS.YOU' | translate }}
+                      </span>
+                    }
+                  </div>
+                  <div>"{{ review.comment }}"</div>
+                </div>
+
+                @if (review.userId == currentUserId()) {
+                  <div
+                    class="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                  >
+                    <button
+                      (click)="editReview(review.id!)"
+                      class="p-2 text-blue-600 bg-blue-50 md:text-slate-400 md:bg-transparent md:hover:text-blue-600 md:hover:bg-blue-50 rounded-md transition-all"
+                    >
+                      <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">edit</mat-icon>
+                    </button>
+
+                    <button
+                      (click)="deleteReview(review.id!)"
+                      class="p-2 text-red-600 bg-red-50 md:text-slate-400 md:bg-transparent md:hover:text-red-600 md:hover:bg-red-50 rounded-md transition-all"
+                    >
+                      <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">delete_outline</mat-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        } @else {
+          <div class="py-6 text-center text-gray-500">
+            <p class="text-sm">{{ 'REVIEWS.STATES.NO_REVIEWS' | translate }}</p>
+          </div>
+        }
+      } @else {
+        <div class="py-6 text-center">
+          <div class="animate-pulse text-sm text-gray-400">
+            {{ 'REVIEWS.STATES.LOADING' | translate }}
+          </div>
+        </div>
+      }
+    </div>
+    <button
+      (click)="loadMore()"
+      [disabled]="reviewStore.isLoading()"
+      class="flex items-center justify-center gap-2 bg-none border-none text-[#2563eb] cursor-pointer font-bold mt-[10px] text-[0.85rem] w-full text-center hover:underline disabled:text-gray-400 disabled:cursor-not-allowed"
+    >
+      @if (reviewStore.isLoading()) {
+        <div class="flex items-center gap-2">
+          <mat-spinner diameter="18"></mat-spinner>
+          <span> {{ 'REVIEWS.STATES.LOADING' | translate }} </span>
+        </div>
+      } @else {
+        @if (showAllReviews && reviewStore.pagination().current >= reviewStore.pagination().total) {
+          <span> {{ 'REVIEWS.ACTIONS.SHOW_LESS' | translate }} </span>
+        } @else if (!showAllReviews) {
+          <span> {{ 'REVIEWS.ACTIONS.SHOW_MORE' | translate }} </span>
+        } @else {
+          <span> {{ 'REVIEWS.ACTIONS.LOAD_MORE' | translate }} </span>
+        }
+      }
+    </button>
+  }
+</div>

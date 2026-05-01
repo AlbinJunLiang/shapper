@@ -1,0 +1,225 @@
+<mat-stepper [linear]="isLinear" labelPosition="bottom" #stepper class="custom-stepper">
+  <mat-step [stepControl]="firstFormGroup" [editable]="isFirstStepEditable">
+    <ng-template matStepLabel> {{ 'REGISTER.DATOS' | translate }} </ng-template>
+
+    <form
+      [formGroup]="firstFormGroup"
+      class="pt-2 px-2 flex flex-col items-center space-y-4 w-full"
+    >
+      <div class="relative w-full mt-2">
+        @if (firstFormGroup.get('name')?.touched && firstFormGroup.get('name')?.invalid) {
+          <span class="absolute bottom-full mb-1 left-1 text-red-500 text-[12px] font-medium leading-none animate-fade-in">
+            @if (firstFormGroup.get('name')?.hasError('required')) {
+              {{ 'REGISTER.NAME_REQUIRED' | translate }}
+            } @else if (firstFormGroup.get('name')?.hasError('maxlength')) {
+              {{ 'REGISTER.NAME_MAX' | translate }}
+            }
+          </span>
+        }
+
+        <input
+          type="text"
+          formControlName="name"
+          [placeholder]="'REGISTER.NAME_PLACEHOLDER' | translate"
+          class="placeholder:text-gray-500 w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300 transition-all"
+          [class.border-red-500]="
+            firstFormGroup.get('name')?.touched && firstFormGroup.get('name')?.invalid
+          "
+        />
+      </div>
+
+      <div class="relative w-full mt-2">
+        @if (firstFormGroup.get('firstLastName')?.touched && firstFormGroup.get('firstLastName')?.invalid) {
+          <span class="absolute bottom-full mb-1 left-1 text-red-500 text-[12px] font-medium leading-none animate-fade-in">
+            @if (firstFormGroup.get('firstLastName')?.hasError('required')) {
+              {{ 'REGISTER.FIRST_LASTNAME_REQUIRED' | translate }}
+            } @else if (firstFormGroup.get('firstLastName')?.hasError('maxlength')) {
+              {{ 'REGISTER.LASTNAME_MAX' | translate }}
+            }
+          </span>
+        }
+
+        <input
+          type="text"
+          formControlName="firstLastName"
+          [placeholder]="'REGISTER.FIRST_LASTNAME_PLACEHOLDER' | translate"
+          class="placeholder:text-gray-500 w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300 transition-all"
+          [class.border-red-500]="
+            firstFormGroup.get('firstLastName')?.touched &&
+            firstFormGroup.get('firstLastName')?.invalid
+          "
+        />
+      </div>
+
+      <div class="relative w-full mt-2">
+        @if (firstFormGroup.get('secondLastName')?.touched && firstFormGroup.get('secondLastName')?.hasError('maxlength')) {
+          <span class="absolute bottom-full mb-1 left-1 text-red-500 text-[12px] font-medium leading-none animate-fade-in">
+            {{ 'REGISTER.LASTNAME_MAX' | translate }}
+          </span>
+        }
+
+        <input
+          type="text"
+          formControlName="secondLastName"
+          [placeholder]="'REGISTER.SECOND_LASTNAME_PLACEHOLDER' | translate"
+          class="placeholder:text-gray-500 w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300 transition-all"
+          [class.border-red-500]="
+            firstFormGroup.get('secondLastName')?.touched &&
+            firstFormGroup.get('secondLastName')?.hasError('maxlength')
+          "
+        />
+      </div>
+
+      <div class="mt-2 flex gap-3 w-full justify-center px-2">
+        <button
+          (click)="goingBackToRegister()"
+          mat-stroked-button
+          matStepperPrevious
+          class="flex-1 !rounded-xl !py-6 !border-slate-300 !text-slate-600 hover:!bg-slate-50 transition-all font-medium"
+        >
+          {{ 'REGISTER.BACK' | translate }}
+        </button>
+
+        <button
+          [disabled]="firstFormGroup.invalid"
+          mat-flat-button
+          matStepperNext
+          class="flex-[2] !bg-slate-800 !text-white !rounded-xl !py-6 font-bold shadow-lg hover:!bg-slate-900 active:scale-95 transition-all disabled:!bg-slate-300 disabled:!text-slate-500 disabled:cursor-not-allowed"
+        >
+          {{ 'REGISTER.NEXT' | translate }}
+        </button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [stepControl]="secondFormGroup" [editable]="false">
+    <ng-template matStepLabel> {{ 'REGISTER.CREDENTIALS' | translate }} </ng-template>
+
+    <form
+      [formGroup]="secondFormGroup"
+      class="pt-2 px-2 flex flex-col items-center space-y-4 w-full"
+    >
+      <div class="relative w-full mt-2.5">
+        @if (secondFormGroup.get('email')?.touched && secondFormGroup.get('email')?.invalid) {
+          <span class="absolute bottom-full mb-1 left-1 text-red-500 text-[12px] font-medium leading-none animate-fade-in">
+            {{
+              secondFormGroup.get('email')?.hasError('required')
+                ? ('REGISTER.EMAIL_REQUIRED' | translate)
+                : ('REGISTER.EMAIL_INVALID' | translate)
+            }}
+          </span>
+        }
+
+        <input
+          type="email"
+          formControlName="email"
+          [placeholder]="'REGISTER.EMAIL_PLACEHOLDER' | translate"
+          class="placeholder:text-gray-500 w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300 transition-all"
+          [class.border-red-500]="
+            secondFormGroup.get('email')?.invalid && secondFormGroup.get('email')?.touched
+          "
+        />
+      </div>
+
+      <div class="relative w-full mt-2">
+        @if (secondFormGroup.get('password')?.touched && secondFormGroup.get('password')?.errors) {
+          @if (secondFormGroup.get('password')?.hasError('required')) {
+            <span class="absolute bottom-full mb-1 left-1 text-red-500 text-[12px] font-medium leading-none">
+              {{ 'REGISTER.PASSWORD_REQUIRED' | translate }}
+            </span>
+          } @else if (secondFormGroup.get('password')?.errors?.['minlength']) {
+            <span class="absolute bottom-full mb-1 left-1 text-red-500 text-[12px] font-medium leading-none">
+              {{ 'REGISTER.PASSWORD_MIN' | translate : { min: secondFormGroup.get('password')?.errors?.['minlength'].requiredLength } }}
+            </span>
+          }
+        }
+
+        <input
+          [type]="hidePassword() ? 'password' : 'text'"
+          formControlName="password"
+          [placeholder]="'REGISTER.PASSWORD_PLACEHOLDER' | translate"
+          class="placeholder:text-gray-500 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-300"
+        />
+
+        <button
+          type="button"
+          (click)="togglePassword()"
+          class="absolute right-4 top-1/2 -translate-y-[42%] text-slate-400 hover:text-gray-500 transition-colors"
+          tabindex="-1"
+        >
+          <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </div>
+
+      <div class="relative w-full mt-2">
+        @if (secondFormGroup.get('confirmPassword')?.touched && (secondFormGroup.get('confirmPassword')?.invalid || secondFormGroup.hasError('mustMatch'))) {
+          <span class="absolute bottom-full mb-1 left-1 text-red-500 text-[12px] font-medium leading-none animate-fade-in">
+            {{
+              secondFormGroup.get('confirmPassword')?.hasError('required')
+                ? ('REGISTER.CONFIRM_REQUIRED' | translate)
+                : ('REGISTER.PASSWORD_MISMATCH' | translate)
+            }}
+          </span>
+        }
+
+        <input
+          [type]="hideConfirmPassword() ? 'password' : 'text'"
+          formControlName="confirmPassword"
+          [placeholder]="'REGISTER.CONFIRM_PLACEHOLDER' | translate"
+          class="placeholder:text-gray-500 w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-300 transition-all"
+        />
+
+        <button
+          type="button"
+          (click)="toggleConfirm()"
+          class="absolute right-4 top-1/2 -translate-y-[42%] text-slate-400 hover:text-gray-500 transition-colors"
+          tabindex="-1"
+        >
+          <mat-icon>{{ hideConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </div>
+
+      <div class="mt-2 flex gap-3 w-full justify-center px-2">
+        <button
+          (click)="goToFirstStep()"
+          mat-stroked-button
+          matStepperPrevious
+          class="flex-1 !rounded-xl !py-6 !border-slate-300 !text-slate-600 hover:!bg-slate-50 transition-all font-medium"
+        >
+          {{ 'REGISTER.BACK' | translate }}
+        </button>
+
+        <button
+          mat-flat-button
+          [disabled]="secondFormGroup.invalid"
+          (click)="register()"
+          class="flex-[2] !bg-slate-800 !text-white !rounded-xl !py-6 font-bold shadow-lg hover:!bg-slate-900 active:scale-95 transition-all disabled:!bg-slate-300 disabled:!text-slate-500 disabled:cursor-not-allowed"
+        >
+          @if (!isLoading()) {
+            {{ 'REGISTER.SIGN_UP' | translate }}
+          } @else {
+            <mat-spinner diameter="20" color="accent"></mat-spinner>
+          }
+        </button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step>
+    <ng-template matStepLabel> {{ 'REGISTER.VERIFY' | translate }} </ng-template>
+
+    <div class="p-8 text-center">
+      <mat-icon class="text-green-500 !w-12 !h-12 !text-5xl mb-4">mail</mat-icon>
+
+      <p class="text-slate-600 mb-6 font-medium">
+        {{ 'REGISTER.VERIFY_MESSAGE' | translate }}
+      </p>
+
+      <div class="flex justify-center gap-3">
+        <button mat-stroked-button color="warn" (click)="close()" class="!rounded-lg">
+          {{ 'REGISTER.CLOSE' | translate }}
+        </button>
+      </div>
+    </div>
+  </mat-step>
+</mat-stepper>

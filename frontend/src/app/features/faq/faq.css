@@ -1,0 +1,33 @@
+/* Reset de bordes y sombras nativas */
+mat-expansion-panel {
+  overflow: hidden !important;
+  background: white !important;
+}
+
+/* Espaciado entre tarjetas sin que el acordeón las pegue */
+mat-expansion-panel + mat-expansion-panel {
+  margin-top: 1.5rem !important;
+}
+
+/* Animación de apertura más fluida */
+::ng-deep .mat-expansion-panel-content {
+  transition: visibility 0s, height 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Limpiar el hover por defecto gris de Material */
+::ng-deep .mat-expansion-panel-header:hover {
+  background: transparent !important;
+}
+
+/* Estilo del texto cuando el panel está abierto */
+.mat-expansion-panel-header.mat-expanded mat-panel-title {
+  color: #003097; /* Azul SaaS (blue-600) */
+  transition: color 0.3s ease;
+}
+
+/* Eliminar la línea de enfoque (focus) que se ve fea */
+::ng-deep .mat-expansion-panel-header.cdk-program-focused,
+::ng-deep .mat-expansion-panel-header.cdk-keyboard-focused,
+::ng-deep .mat-expansion-panel-header.cdk-focused {
+  background: transparent !important;
+}

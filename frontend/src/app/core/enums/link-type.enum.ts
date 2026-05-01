@@ -1,0 +1,6 @@
+export enum LinkType {
+  PAYMENT = 'PAYMENT',
+  SOCIAL_MEDIA = 'SOCIAL MEDIA',
+  RESOURCE = 'RESOURCE',
+  OTHER = 'OTHER'
+}

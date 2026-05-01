@@ -1,0 +1,132 @@
+<mat-toolbar class="flex items-center px-4 bg-blue-600 text-white">
+  <!-- Logo -->
+  <img
+    draggable="false"
+    (contextmenu)="$event.preventDefault()"
+    [src]="imageUrl()"
+    alt="Shapper Logo"
+    class="h-8 ml-1 select-none"
+  />
+
+  <button
+    class="btn-toolbar ml-3 px-4 py-1 text-gray-700 rounded-full hover:bg-gray-300 transition-colors text-base font-medium"
+    routerLink="/home"
+  >
+    {{ 'TOOLBAR.HOME' | translate }}
+  </button>
+
+  @if (userStore.userSyncData()?.data?.id === Role.ADMIN) {
+    <button
+      routerLink="/admin"
+      class="btn-toolbar ml-3 px-4 py-1 text-gray-700 rounded-full hover:bg-gray-300 transition-colors text-base font-medium"
+    >
+      {{ 'TOOLBAR.ADMINISTRATOR' | translate }}
+    </button>
+  }
+
+  @if (authService.isLoggedIn()) {
+    <button
+      routerLink="/orders"
+      class="btn-toolbar ml-3 px-4 py-1 text-gray-700 rounded-full hover:bg-gray-300 transition-colors text-base font-medium"
+    >
+      {{ 'TOOLBAR.ORDERS' | translate }}
+    </button>
+  }
+
+  <button
+    routerLink="/products"
+    class="btn-toolbar ml-3 px-4 py-1 text-gray-700 rounded-full hover:bg-gray-300 transition-colors text-base font-medium"
+  >
+    {{ 'TOOLBAR.PRODUCTS' | translate }}
+  </button>
+
+  <button
+    [matMenuTriggerFor]="menu"
+    class="btn-toolbar ml-3 px-4 py-1 text-gray-700 rounded-full hover:bg-gray-300 transition-colors text-base font-medium"
+  >
+    {{ 'TOOLBAR.LANGUAGE' | translate }}
+  </button>
+
+  <mat-menu #menu="matMenu" class="minimal-menu">
+    <div class="px-4 py-2 text-xs text-gray-900 tracking-wider">
+      {{ 'LANG_MENU.TITLE' | translate }}
+    </div>
+
+    <button
+      (click)="toggleLang()"
+      mat-menu-item
+      class="!flex !items-center !gap-3 hover:!bg-slate-50"
+    >
+      <span class="text-sm font-medium text-slate-700">(ES) Español</span>
+    </button>
+
+    <button
+      (click)="toggleLang()"
+      mat-menu-item
+      class="!flex !items-center !gap-3 hover:!bg-slate-50"
+    >
+      <span class="text-sm font-medium text-slate-700">(US) English</span>
+    </button>
+  </mat-menu>
+
+  <span class="flex-1"></span>
+
+  @if (!authService.isLoggedIn()) {
+    <button
+      (click)="openAuthDialog('login')"
+      class="btn-toolbar ml-3 px-4 py-1 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors text-base font-medium"
+    >
+      {{ 'AUTH.LOGIN' | translate }}
+    </button>
+
+    <button
+      (click)="openAuthDialog('register')"
+      class="btn-toolbar btn-logout ml-3 mr-4 px-4 py-1 bg-gray-700 text-white rounded-full hover:bg-gray-700 transition-colors text-base font-medium"
+    >
+      {{ 'AUTH.REGISTER' | translate }}
+    </button>
+  } @else {
+    <button
+      routerLink="/user-information"
+      class="hidden md:flex items-center justify-center gap-2 ml-3 px-4 py-1.5 text-gray-700 rounded-full transition-all text-base font-medium"
+    >
+      <mat-icon class="!flex items-center justify-center !w-5 !h-5 !text-[20px]"> person </mat-icon>
+
+      <span class="leading-none">
+        {{ userStore.getUserName() || authService.user()?.displayName || 'Usuario' }}
+      </span>
+    </button>
+  }
+
+  @if (currentPath.toLowerCase() !== 'home') {
+    <button mat-icon-button class="p-2 hover:bg-blue-500 rounded mobile-only" routerLink="/home">
+      <mat-icon>home</mat-icon>
+    </button>
+  } @else {
+    <button
+      mat-icon-button
+      class="p-2 hover:bg-blue-500 rounded mobile-only"
+      routerLink="/products"
+    >
+      <mat-icon>category_search</mat-icon>
+    </button>
+  }
+
+  <button
+    [matMenuTriggerFor]="menu"
+    mat-icon-button
+    aria-label="Language"
+    class="p-2 hover:bg-blue-500 rounded mobile-only"
+  >
+    <mat-icon>language</mat-icon>
+  </button>
+
+  <button
+    (click)="showSlidePanel.toggle()"
+    mat-icon-button
+    [class.bg-blue-800]="showSlidePanel.isOpen()"
+    class="p-2 hover:bg-blue-500 rounded"
+  >
+    <mat-icon>{{ showSlidePanel.isOpen() ? 'close' : 'menu' }}</mat-icon>
+  </button>
+</mat-toolbar>

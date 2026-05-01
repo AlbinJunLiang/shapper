@@ -1,0 +1,11 @@
+<div class="min-h-screen !bg-[#fdfdfd]">
+  <app-toolbar></app-toolbar>
+  <app-slide-panel></app-slide-panel>
+  <div class="pb-10"><router-outlet></router-outlet></div>
+
+  @if (filterStore.categories(); as categories) {
+    <app-floating-info-panel></app-floating-info-panel>
+  }
+</div>
+
+<app-footer></app-footer>

@@ -1,0 +1,81 @@
+<div class="flex justify-center items-center mt-8 p-4">
+  <div 
+    class="w-full max-w-lg" 
+    matAutocompleteOrigin 
+    #origin="matAutocompleteOrigin"
+  >
+    <div
+      class="group flex items-center bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 px-4 py-1 focus-within:border-gray-400"
+    >
+      <button
+        mat-icon-button
+        (click)="performSearch(); trigger.openPanel(); searchInput.focus()"
+        class="text-gray-400"
+        type="button"
+      >
+        <mat-icon>search</mat-icon>
+      </button>
+
+      <input
+        #searchInput
+        #trigger="matAutocompleteTrigger"
+        type="text"
+        placeholder="{{ 'SEARCHER.PLACEHOLDER' | translate }}"
+        [formControl]="searchControl"
+        [matAutocomplete]="auto"
+        [matAutocompleteConnectedTo]="origin"
+        (keydown.enter)="performSearch(); trigger.openPanel()"
+        class="flex-1 px-4 py-3 bg-transparent text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-0 text-sm"
+      />
+
+      @if (searchControl.value) {
+        <button
+          mat-icon-button
+          (click)="searchControl.setValue(''); searchInput.focus()"
+          class="text-gray-400 hover:text-gray-600"
+          type="button"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </div>
+
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      [displayWith]="displayFn"
+      (optionSelected)="onProductSelected($event)"
+      class="custom-search-panel"
+    >
+      @for (prod of filteredProducts(); track prod.id) {
+        <mat-option [value]="prod" class="search-option-row !h-auto !leading-none">
+          <div class="flex items-center gap-3 py-3 w-full overflow-hidden">
+            <img
+              [src]="prod.images[0]?.imageUrl"
+              class="w-12 h-12 flex-shrink-0 rounded-xl object-cover border border-gray-100"
+              [alt]="prod.name"
+            />
+
+            <div class="flex flex-col min-w-0 flex-1 leading-tight">
+              <span class="text-sm font-semibold text-gray-900 truncate">
+                {{ prod.name }}
+              </span>
+              <span class="text-xs text-gray-500"> 
+                Disponibles: {{ prod.quantity }} 
+              </span>
+            </div>
+
+            <span class="ml-auto text-sm font-bold text-gray-900 flex-shrink-0">
+              {{ prod.newPrice | currency }}
+            </span>
+          </div>
+        </mat-option>
+      } @empty {
+        @if (searchTerm().length > 1) {
+          <mat-option disabled class="text-center py-4 text-gray-400 text-xs">
+            Clic en la lupa para buscar "{{ searchTerm() }}"
+          </mat-option>
+        }
+      }
+    </mat-autocomplete>
+  </div>
+</div>

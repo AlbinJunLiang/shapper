@@ -1,0 +1,95 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import 'tailwindcss';
+
+html {
+  background-color: #fdfdfd !important;
+}
+/* Minimal panel style */
+.minimal-menu.mat-mdc-menu-panel {
+  background-color: #ffffff !important;
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important; /* Very light gray border */
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
+  min-width: 140px !important;
+  margin-top: 4px !important;
+}
+
+/* Remove Material's default content padding */
+.minimal-menu .mat-mdc-menu-content {
+  padding: 4px 0 !important;
+}
+
+/* Reset button height and text */
+.minimal-menu .mat-mdc-menu-item {
+  min-height: 40px !important;
+  height: 40px !important;
+  padding: 0 16px !important;
+}
+
+/* Hide the focus gray overlay */
+.minimal-menu .mat-mdc-focus-indicator {
+  display: none !important;
+}
+
+.price-slider {
+  width: 100%;
+}
+
+.price-slider .mdc-slider__track--active_fill {
+  border-color: #4f46e5 !important;
+}
+
+.price-slider .mdc-slider__track--inactive {
+  background-color: #c7d2fe !important;
+}
+
+.price-slider .mdc-slider__thumb-knob {
+  border-color: #4f46e5 !important;
+  background-color: #4f46e5 !important;
+}
+
+.price-slider .mdc-slider__value-indicator {
+  background-color: #4f46e5 !important;
+}
+
+.price-slider .mdc-slider__value-indicator-text {
+  color: white !important;
+}
+
+/* 1. Atacamos las variables de Material */
+mat-chip.mat-mdc-chip {
+  --mdc-chip-outline-color: transparent !important;
+  --mdc-chip-outline-width: 0px !important;
+  border: none !important;
+}
+
+/* 2. Quitamos el borde del contenedor interno (que es el que suele sobrar) */
+::ng-deep .mdc-chip__pill,
+::ng-deep .mat-mdc-chip-container {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 3. Eliminamos el estado de enfoque que crea un borde al hacer click */
+::ng-deep .mat-mdc-chip .mdc-chip__ripple {
+  display: none !important;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.active-nav-item {
+  background-color: #d4d6da !important; /* Es el equivalente a gray-900 */
+  color: #000000 !important;
+
+}
+
+/* Estilo para el icono dentro del botón activo */
+.active-nav-item mat-icon {
+  color: #000000 !important;
+}

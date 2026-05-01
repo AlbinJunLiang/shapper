@@ -1,0 +1,189 @@
+<div class="w-[92%] max-w-[1100px] mx-auto py-4">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-2xl font-semibold text-gray-800">Información de la tienda</h1>
+    <p class="text-gray-500 mt-1">Ajuste de la información general de la tienda.</p>
+  </div>
+
+  @if(!storeService.isLoading()){
+
+  
+  <!-- Card -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+    <form [formGroup]="formGroup" class="space-y-10">
+      <!-- Grid 1 -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <label class="text-[12px] font-bold tracking-widest text-gray-800"> Nombre </label>
+
+          <div>
+            @if (formGroup.get('name')?.touched && formGroup.get('name')?.errors) {
+              @if (formGroup.get('name')?.errors?.['required']) {
+                <span class="text-red-500 text-[11px] block">El nombre es obligatorio</span>
+              } @else if (formGroup.get('name')?.errors?.['maxlength']) {
+                <span class="text-red-500 text-[11px] block">Máximo 300 caracteres.</span>
+              }
+            }
+          </div>
+
+          <input
+            formControlName="name"
+            type="text"
+            placeholder="Nombre"
+            class="w-full mt-2 px-0 py-2 border-b border-gray-200 bg-transparent text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-black transition"
+          />
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="text-[12px] font-bold tracking-widest text-gray-800"> Descripción </label>
+
+          <div>
+            @if (formGroup.get('description')?.touched && formGroup.get('description')?.errors) {
+              @if (formGroup.get('description')?.errors?.['required']) {
+                <span class="text-red-500 text-[11px] block">Debe poner la descripción.</span>
+              } @else if (formGroup.get('description')?.errors?.['maxlength']) {
+                <span class="text-red-500 text-[11px] block">Máximo 300 caracteres.</span>
+              }
+            }
+          </div>
+
+          <input
+            formControlName="description"
+            type="text"
+            placeholder="Ramirez Herrera"
+            class="w-full mt-2 px-0 py-2 border-b border-gray-200 bg-transparent text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-black transition"
+          />
+        </div>
+      </div>
+
+      <!-- Grid 2 -->
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <label class="text-[12px] font-bold tracking-widest text-gray-800"> Teléfono </label>
+          <div>
+            @if (formGroup.get('phoneNumber')?.touched && formGroup.get('phoneNumber')?.errors) {
+              @if (formGroup.get('phoneNumber')?.errors?.['required']) {
+                <span class="text-red-500 text-[11px] block">El teléfono es obligatorio</span>
+              } @else if (formGroup.get('phoneNumber')?.errors?.['pattern']) {
+                <span class="text-red-500 text-[11px] block">Solo se permiten números</span>
+              } @else if (formGroup.get('phoneNumber')?.errors?.['maxlength']) {
+                <span class="text-red-500 text-[11px] block">Máximo 15 dígitos</span>
+              }
+            }
+          </div>
+          <input
+            formControlName="phoneNumber"
+            type="tel"
+            placeholder="88888888"
+            class="w-full mt-2 px-0 py-2 border-b border-gray-200 bg-transparent text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-black transition"
+          />
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="text-[12px] font-bold tracking-widest text-gray-800"> Dirección </label>
+          <div>
+            @if (formGroup.get('address')?.touched && formGroup.get('address')?.errors) {
+              @if (formGroup.get('address')?.errors?.['required']) {
+                <span class="text-red-500 text-[11px] block">Debe poner la dirección.</span>
+              } @else if (formGroup.get('address')?.errors?.['maxlength']) {
+                <span class="text-red-500 text-[11px] block">Máximo 300 caracteres.</span>
+              }
+            }
+          </div>
+          <input
+            formControlName="address"
+            type="text"
+            placeholder="Provincia, Cantón, Distrito..."
+            class="w-full mt-2 px-0 py-2 border-b border-gray-200 bg-transparent text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-black transition"
+          />
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <label class="text-[12px] font-bold tracking-widest text-gray-800">
+            Código de tienda
+          </label>
+          <p class="mt-2 text-sm text-gray-400">
+            {{ storeInformation()?.storeCode ?? 'None' }}
+          </p>
+        </div>
+
+        <div class="md:col-span-2">
+          <div>
+            <label class="text-[12px] font-bold text-gray-800"> Correo de la tienda: </label>
+
+            <div>
+              @if (formGroup.get('email')?.touched && formGroup.get('email')?.errors) {
+                @if (formGroup.get('email')?.errors?.['required']) {
+                  <span class="text-red-500 text-[11px] block">El correo es obligatorio</span>
+                } @else if (formGroup.get('email')?.errors?.['email']) {
+                  <span class="text-red-500 text-[11px] block">Formato de correo inválido</span>
+                } @else if (formGroup.get('email')?.errors?.['maxlength']) {
+                  <span class="text-red-500 text-[11px] block">Máximo 300 caracteres</span>
+                }
+              }
+            </div>
+            <input
+              formControlName="email"
+              type="email"
+              placeholder="email"
+              class="w-full mt-2 px-0 py-2 border-b border-gray-200 bg-transparent text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-black transition"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6">
+        <button
+          type="button"
+          (click)="setForm()"
+          class="px-8 py-2.5 border border-gray-300 text-gray-700 text-sm rounded-xl font-semibold hover:bg-gray-50 transition active:scale-95 order-2 sm:order-1"
+        >
+          Cancelar
+        </button>
+
+        <button
+          (click)="updateStore()"
+          [disabled]="storeService.isLoading() || formGroup.invalid"
+          class="px-8 py-2.5 bg-black text-white text-sm rounded-xl font-semibold hover:bg-gray-800 transition active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed order-1 sm:order-2"
+        >
+          @if (storeService.isLoading()) {
+            <span class="flex items-center gap-2">
+              <svg
+                class="animate-spin h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>     </svg>
+              Guardando...
+            </span>
+          } @else {
+            Guardar Cambios
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+}@else {
+        <div class="absolute inset-0 flex items-center justify-center bg-white/70">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+}
+</div>

@@ -1,0 +1,141 @@
+<div class="w-[92%] max-w-[1100px] mx-auto py-14">
+  <div class="mb-5">
+    <p class="text-[11px] uppercase tracking-[0.4em] text-gray-400 font-semibold mb-3">
+      {{ 'ORDERS_TABLE.VIEW' | translate }}
+    </p>
+    <h2 class="text-3xl font-light tracking-tight text-gray-900">
+      {{ 'ORDERS_TABLE.TITLE' | translate }}
+    </h2>
+  </div>
+  @if (totalItems() == 0) {
+    @if (isLoading()) {
+      <div class="absolute inset-0 flex items-center justify-center bg-white/70">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+    } @else {
+      <div class="flex flex-col items-center justify-center py-20 w-full text-gray-500">
+        <span class="text-lg font-medium"> {{ 'ORDERS_TABLE.NO_ORDERS' | translate }} </span>
+      </div>
+    }
+  } @else {
+    <div class="flex justify-between items-center mb-2 px-2">
+      <p class="text-xs text-gray-700 font-light">
+        {{ 'ORDERS_TABLE.LAST_60_DAYS' | translate }}
+      </p>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden p-2 md:p-4">
+      <div class="overflow-x-auto scrollbar-hide">
+        <table
+          style="background-color: rgb(255, 255, 255) !important"
+          mat-table
+          [dataSource]="dataSource"
+          class="w-full min-w-[700px] bg-white"
+        >
+          <ng-container matColumnDef="reference">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              class="px-6 py-6 text-[12px] font-bold tracking-[0.2em] text-gray-400 border-b border-gray-50"
+            >
+              {{ 'ORDERS_TABLE.REFERENCE' | translate }}
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              class="px-2 py-3 md:px-6 md:py-8 text-xs md:text-sm font-medium text-gray-900 border-b border-gray-50/50"
+            >
+              {{ element.reference }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="date">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              class="px-6 py-6 text-[12px] font-bold tracking-[0.2em] text-gray-400 border-b border-gray-50"
+            >
+              {{ 'ORDERS_TABLE.DATE' | translate }}
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              class="px-6 py-8 text-sm text-gray-500 border-b border-gray-50/50 font-light"
+            >
+              {{ element.date | date: 'dd/MM/yyyy HH:mm' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              class="px-6 py-6 text-[12px] font-bold tracking-[0.2em] text-gray-400 border-b border-gray-50"
+            >
+              {{ 'ORDERS_TABLE.STATUS' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element" class="px-6 py-8 border-b border-gray-50/50">
+              <span
+                class="inline-flex items-center text-[11px] font-bold uppercase tracking-widest text-black"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-black mr-2"></span>
+                {{ orderStatus(element.status) | translate }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="total">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              class="px-6 py-6 text-right text-[12px] font-bold tracking-[0.2em] text-gray-400 border-b border-gray-50"
+            >
+              {{ 'ORDERS_TABLE.TOTAL' | translate }}
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              class="px-6 py-8 text-sm text-right font-semibold text-gray-900 border-b border-gray-50/50 tracking-tight"
+            >
+              {{currency}}{{ element.total.toFixed(2) }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-transparent"></tr>
+          <tr
+            (click)="openDetails(row)"
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            class="row-customize hover:bg-gray-50/50 transition-colors cursor-pointer group"
+          ></tr>
+        </table>
+      </div>
+
+      <div class="px-6 py-4">
+        <mat-paginator
+          [length]="totalItems()"
+          [pageSize]="pageSize()"
+          [pageSizeOptions]="[1, 10, 25, 50]"
+          (page)="onPageChange($event)"
+          showFirstLastButtons
+          class="!text-[11px] !font-bold !uppercase !tracking-widest bg-white"
+          style="background-color: rgb(255, 255, 255) !important"
+        >
+        </mat-paginator>
+        <div class="flex justify-end pt-2">
+          <button
+            (click)="refresh()"
+            [disabled]="isLoading()"
+            class="px-8 py-2.5 bg-black text-white text-sm rounded-xl hover:bg-gray-800 transition active:scale-95"
+          >
+            @if (isLoading()) {
+              {{ 'ORDERS_TABLE.LOADING' | translate }}
+            } @else {
+              {{ 'ORDERS_TABLE.REFRESH' | translate }}
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

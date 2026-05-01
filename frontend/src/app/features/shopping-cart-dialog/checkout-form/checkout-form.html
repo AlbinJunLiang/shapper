@@ -1,0 +1,228 @@
+<form [formGroup]="form">
+  <div class="p-4 flex flex-col gap-4">
+    <!-- Input de texto -->
+    <div class="flex flex-col gap-2">
+      <label class="text-gray-700 font-semibold mb-1">
+        {{ 'CHECKOUT.SHIPPING_METHOD' | translate }}
+      </label>
+
+      <div class="flex gap-4">
+        <label class="flex items-center gap-2">
+          <input
+            type="radio"
+            formControlName="shippingMethod"
+            value="HOME"
+            class="accent-blue-500"
+          />
+          {{ 'CHECKOUT.HOME_DELIVERY' | translate }}
+        </label>
+
+        <label class="flex items-center gap-2">
+          <input
+            type="radio"
+            formControlName="shippingMethod"
+            value="STORE"
+            class="accent-blue-500"
+          />
+          {{ 'CHECKOUT.PICKUP_STORE' | translate }}
+        </label>
+      </div>
+      @if (form.get('shippingMethod')?.invalid) {
+        <span class="text-red-500 text-xs">
+          {{ 'COMMON.SELECT_OPTION_REQUIRED' | translate }}
+        </span>
+      }
+    </div>
+
+    <div class="flex flex-col gap-2 md:flex-row md:gap-4">
+      <div class="flex-1 flex flex-col">
+        <label class="text-gray-700 font-semibold mb-1">{{
+          'USER_PROFILE.EMAIL' | translate
+        }}</label>
+
+        <input
+          formControlName="email"
+          type="email"
+          placeholder="hello@gmail.com"
+          class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors duration-200"
+        />
+
+        @if (form.get('email')?.touched && form.get('email')?.errors) {
+          @if (form.get('email')?.errors?.['required']) {
+            <span class="text-red-500 text-xs"> {{ 'COMMON.REQUIRED' | translate }} </span>
+          }
+
+          @if (form.get('email')?.errors?.['email']) {
+            <span class="text-red-500 text-xs">{{ 'COMMON.INVALID_FORMAT' | translate }}</span>
+          }
+        }
+      </div>
+
+      <!-- Número de teléfono -->
+      <div class="flex-1 flex flex-col">
+        <label class="text-gray-700 font-semibold mb-1">{{
+          'USER_PROFILE.PHONE' | translate
+        }}</label>
+        <input
+          formControlName="phoneNumber"
+          type="text"
+          placeholder="#"
+          class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors duration-200"
+        />
+        @if (form.get('phoneNumber')?.touched && form.get('phoneNumber')?.errors) {
+          @if (form.get('phoneNumber')?.errors?.['required']) {
+            <span class="text-red-500 text-xs"> {{ 'COMMON.REQUIRED' | translate }} </span>
+          }
+
+          @if (form.get('phoneNumber')?.errors?.['minlength']) {
+            <span class="text-red-500 text-xs">
+              {{ 'COMMON.MIN_CHARACTERS' | translate: { count: 4 } }}
+            </span>
+          }
+
+          @if (form.get('phoneNumber')?.errors?.['maxlength']) {
+            <span class="text-red-500 text-xs">
+              {{ 'COMMON.MAX_CHARACTERS' | translate: { count: 20 } }}
+            </span>
+          }
+
+          @if (form.get('phoneNumber')?.errors?.['pattern']) {
+            <span class="text-red-500 text-xs">
+              {{ 'COMMON.ONLY_NUMBERS' | translate: { count: 20 } }}
+            </span>
+          }
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4 md:flex-row md:gap-4">
+      <!-- Correo electrónico -->
+      <div class="flex-1 flex flex-col">
+        <label class="text-gray-700 font-semibold mb-1">{{
+          'USER_PROFILE.NAME' | translate
+        }}</label>
+        <input
+          formControlName="name"
+          type="text"
+          placeholder="John Doe"
+          class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors duration-200"
+        />
+
+        @if (form.get('name')?.touched && form.get('name')?.errors) {
+          @if (form.get('name')?.errors?.['required']) {
+            <span class="text-red-500 text-xs"> {{ 'COMMON.REQUIRED' | translate }} </span>
+          }
+
+          @if (form.get('name')?.errors?.['maxlength']) {
+            <span class="text-red-500 text-xs">
+              {{ 'COMMON.MAX_CHARACTERS' | translate: { count: 100 } }}</span
+            >
+          }
+        }
+      </div>
+
+      <!-- Número de teléfono -->
+      <div class="flex-1 flex flex-col">
+        <label class="text-gray-700 font-semibold mb-1">{{
+          'USER_PROFILE.LAST_NAME' | translate
+        }}</label>
+        <input
+          formControlName="lastName"
+          type="text"
+          placeholder="Smith"
+          class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors duration-200"
+        />
+
+        @if (form.get('lastName')?.touched && form.get('lastName')?.errors) {
+          @if (form.get('lastName')?.errors?.['required']) {
+            <span class="text-red-500 text-xs"> {{ 'COMMON.REQUIRED' | translate }} </span>
+          }
+
+          @if (form.get('lastName')?.errors?.['maxlength']) {
+            <span class="text-red-500 text-xs">
+              {{ 'COMMON.MAX_CHARACTERS' | translate: { count: 100 } }}</span
+            >
+          }
+        }
+      </div>
+    </div>
+    <!-- Textarea -->
+
+    @if (shippingOption == 'HOME' || shippingOption == '') {
+      <div class="flex flex-col">
+        <label class="text-gray-700 font-semibold mb-1">{{
+          'USER_PROFILE.ADDRESS' | translate
+        }}</label>
+        <input
+          formControlName="address"
+          type="text"
+          [placeholder]="'USER_PROFILE.ADDRESS' | translate"
+          class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors duration-200"
+        />
+
+        @if (form.get('address')?.touched && form.get('address')?.errors) {
+          @if (form.get('address')?.errors?.['required']) {
+            <span class="text-red-500 text-xs"> {{ 'COMMON.REQUIRED' | translate }} </span>
+          }
+
+          @if (form.get('address')?.errors?.['maxlength']) {
+            <span class="text-red-500 text-xs">
+              {{ 'COMMON.MAX_CHARACTERS' | translate: { count: 300 } }}</span
+            >
+          }
+        }
+      </div>
+    }
+
+    <div #lastSection class="flex flex-col gap-4 md:flex-row md:gap-4">
+      <div class="flex-1 flex flex-col">
+        <label class="text-gray-700 font-semibold mb-1"> {{ 'CHECKOUT.PLACE' | translate }} </label>
+        <select
+          formControlName="place"
+          (change)="onLocationChange($event)"
+          [attr.disabled]="isLoading() ? true : null"
+          class="w-full p-2 border border-gray-300 rounded-lg ..."
+        >
+          @if (isLoading()) {
+            <option>Cargando lugares...</option>
+          } @else {
+            <option value="">{{'CHECKOUT.SELECT_PLACE' |translate}}</option>
+            @for (loc of activeLocations(); track loc.id) {
+              <option [value]="loc.id">{{ loc.name }} — {{currency}}{{ loc.cost }}</option>
+            }
+          }
+        </select>
+        @if (form.get('place')?.touched && form.get('place')?.errors?.['required']) {
+          <span class="text-red-500 text-xs">
+            {{ 'COMMON.SELECT_OPTION_REQUIRED' | translate }}
+          </span>
+        }
+      </div>
+      @if (shippingOption == 'HOME' || shippingOption == '') {
+        <div class="flex-1 flex flex-col">
+          <label class="text-gray-700 font-semibold mb-1">{{
+            'CHECKOUT.POSTAL_CODE' | translate
+          }}</label>
+          <input
+            formControlName="postalCode"
+            type="text"
+            placeholder="12345"
+            class="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-colors duration-200"
+          />
+
+          @if (form.get('postalCode')?.touched && form.get('postalCode')?.errors) {
+            @if (form.get('postalCode')?.errors?.['required']) {
+              <span class="text-red-500 text-xs"> {{ 'COMMON.REQUIRED' | translate }} </span>
+            }
+
+            @if (form.get('postalCode')?.errors?.['maxlength']) {
+              <span class="text-red-500 text-xs">
+                {{ 'COMMON.MAX_CHARACTERS' | translate: { count: 15 } }}</span
+              >
+            }
+          }
+        </div>
+      }
+    </div>
+  </div>
+</form>

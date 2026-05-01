@@ -1,0 +1,1 @@
+export type PaymentMethodType = 'stripe' | 'whatsapp' | 'paypal' | 'none';

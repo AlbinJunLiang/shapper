@@ -1,0 +1,132 @@
+@if (checkoutForm()) {
+  <div class="space-y-4">
+    <!-- INFORMACIÓN -->
+    <div>
+      <label class="text-gray-700 font-semibold text-sm block mb-2 mt-2">
+        {{ 'CHECKOUT.INFO_CONTACT' | translate }}
+      </label>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 animate-in fade-in duration-300">
+        <div class="bg-slate-50 p-2 rounded-md text-sm">
+          <span class="text-slate-500 text-xs block">
+            {{ 'CHECKOUT.SHIPPING_METHOD' | translate }}
+          </span>
+          <span class="block truncate" [title]="checkoutForm().shippingMethod">
+            {{ checkoutForm().shippingMethod }}
+          </span>
+        </div>
+
+        <div class="bg-slate-50 p-2 rounded-md text-sm">
+          <span class="text-slate-500 text-xs block"> {{ 'USER_PROFILE.EMAIL' | translate }} </span>
+          <span class="block truncate" [title]="checkoutForm().email">
+            {{ checkoutForm().email }}
+          </span>
+        </div>
+
+        <div class="bg-slate-50 p-2 rounded-md text-sm">
+          <span class="text-slate-500 text-xs block"> {{ 'USER_PROFILE.NAME' | translate }} </span>
+          <span class="block truncate" [title]="checkoutForm().name">
+            {{ checkoutForm().name }}
+          </span>
+        </div>
+
+        <div class="bg-slate-50 p-2 rounded-md text-sm">
+          <span class="text-slate-500 text-xs block">
+            {{ 'USER_PROFILE.LAST_NAME' | translate }}
+          </span>
+          <span class="block truncate" [title]="checkoutForm().lastName">
+            {{ checkoutForm().lastName }}
+          </span>
+        </div>
+
+        <div class="bg-slate-50 p-2 rounded-md text-sm">
+          <span class="text-slate-500 text-xs block"> {{ 'USER_PROFILE.PHONE' | translate }} </span>
+          <span class="block truncate" [title]="checkoutForm().phoneNumber">
+            {{ checkoutForm().phoneNumber }}
+          </span>
+        </div>
+
+        <div class="bg-slate-50 p-2 rounded-md text-sm">
+          <span class="text-slate-500 text-xs block"> {{ 'CHECKOUT.PLACE' | translate }} </span>
+          <span class="block truncate" [title]="getLocationName(checkoutForm().place)">
+            {{ getLocationName(checkoutForm().place) }}
+          </span>
+        </div>
+
+        @if (checkoutForm().shippingMethod === 'HOME') {
+          <div class="bg-slate-50 p-2 rounded-md text-sm">
+            <span class="text-slate-500 text-xs block">
+              {{ 'USER_PROFILE.ADDRESS' | translate }}
+            </span>
+            <span class="block truncate" [title]="checkoutForm().address">
+              {{ checkoutForm().address }}
+            </span>
+          </div>
+
+          <div class="bg-slate-50 p-2 rounded-md text-sm">
+            <span class="text-slate-500 text-xs block">
+              {{ 'CHECKOUT.POSTAL_CODE' | translate }}
+            </span>
+            <span class="block truncate" [title]="checkoutForm().postalCode">
+              {{ checkoutForm().postalCode }}
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- PAGO -->
+    <form [formGroup]="form">
+      <div #paymentSection>
+        <label class="text-gray-700 font-semibold text-sm block mb-2">
+          {{ 'CHECKOUT.PAYMENT_METHOD' | translate }}
+        </label>
+
+        <div class="space-y-2">
+          <label
+            class="flex items-center gap-3 p-2 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition"
+          >
+            <input
+              formControlName="paymentMethod"
+              type="radio"
+              name="paymentMethod"
+              value="stripe"
+              class="accent-blue-500"
+            />
+            <span class="text-sm">{{ 'CHECKOUT.CARD' | translate }} (Visa / Mastercard)</span>
+          </label>
+
+          <label
+            class="flex items-center gap-3 p-2 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition"
+          >
+            <input
+              formControlName="paymentMethod"
+              type="radio"
+              name="paymentMethod"
+              value="whatsapp"
+              class="accent-green-500"
+            />
+            <span class="text-sm">WhatsApp (SINPE MÓVIL)</span>
+          </label>
+
+          <label
+            class="flex items-center gap-3 p-2 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition"
+          >
+            <input
+              formControlName="paymentMethod"
+              type="radio"
+              name="paymentMethod"
+              value="paypal"
+              class="accent-blue-500"
+            />
+            <span class="text-sm">PayPal</span>
+          </label>
+        </div>
+        @if (form.get('paymentMethod')?.invalid && form.get('paymentMethod')?.touched) {
+          <small class="text-red-500 text-xs"
+            >{{ 'CHECKOUT.SHIPPING_METHOD_REQUIRED' | translate }}
+          </small>
+        }
+      </div>
+    </form>
+  </div>
+}

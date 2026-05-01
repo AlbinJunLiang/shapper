@@ -1,0 +1,90 @@
+<app-searcher></app-searcher>
+
+<div class="max-w-7xl mx-auto py-10 px-4 relative group/carousel">
+  <div class="mb-8">
+    <h2 class="text-xs uppercase tracking-[0.4em] text-[rgb(80,59,246)] mb-2">
+      {{ 'FEATURED_PRODUCT.TITLE_SMALL' | translate }}
+    </h2>
+    <h3 class="text-3xl font-light text-gray-800 select-none">
+      {{ 'FEATURED_PRODUCT.TITLE_MAIN' | translate }}
+    </h3>
+  </div>
+
+  <button
+    (click)="scroll(-1)"
+    class="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-gray-100 opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 hidden md:block"
+  >
+    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.5"
+        d="M15 19l-7-7 7-7"
+      ></path>
+    </svg>
+  </button>
+
+  <div
+    #carouselRef
+    class="flex overflow-x-auto space-x-6 no-scrollbar scroll-smooth snap-x snap-mandatory px-10"
+    (mouseenter)="pauseAutoScroll()"
+    (mouseleave)="resumeAutoScroll()"
+    (touchstart)="pauseAutoScroll()"
+    (touchend)="resumeAutoScroll()"
+  >
+    @for (product of products(); track $index) {
+      <div class="flex-none w-72 snap-start group cursor-pointer">
+        <div
+          class="relative overflow-hidden rounded-2xl bg-gray-50 aspect-[3.5/4] mb-4 border border-gray-100"
+        >
+          @if (product.images && product.images.length > 0) {
+            <img
+              [src]="product.images[0]?.imageUrl || 'assets/placeholder.png'"
+              [alt]="product.name"
+              class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+              loading="lazy"
+            />
+          } @else {
+            <div
+              class="flex flex-col items-center justify-center w-full h-full bg-gray-100 text-gray-500"
+            >
+              <i class="bi bi-camera-video-off mb-2"></i>
+              <span class="material-icons text-[40px] mb-2 opacity-30">image_not_supported</span>
+              <span class="text-[10px] font-bold tracking-widest text-gray-500">{{
+                'FEATURED_PRODUCT.EMPTY_IMAGE' | translate
+              }}</span>
+            </div>
+          }
+          <div
+            class="absolute bottom-4 left-4 right-4 translate-y-14 group-hover:translate-y-0 transition-all duration-300 z-30"
+          >
+            <button
+              (click)="showProduct(product)"
+              class="w-full py-3 bg-white/95 backdrop-blur-sm text-gray-800 text-[10px] tracking-[0.2em] uppercase rounded-lg shadow-sm border border-gray-100 cursor-pointer active:scale-95 transition-transform"
+            >
+              {{ 'FEATURED_PRODUCT.BUTTON_VIEW_DETAILS' | translate }}
+            </button>
+          </div>
+        </div>
+        <h4 class="text-lg font-light text-gray-800 tracking-tight leading-tight">
+          {{ product.name }}
+        </h4>
+        <p class="text-gray-600 font-light mt-1">${{ product.price }}</p>
+      </div>
+    }
+  </div>
+
+  <button
+    (click)="scroll(1)"
+    class="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-gray-100 opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 hidden md:block"
+  >
+    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.5"
+        d="M9 5l7 7-7 7"
+      ></path>
+    </svg>
+  </button>
+</div>

@@ -1,0 +1,45 @@
+<div>
+  <button
+    (click)="showSlidePanel.goToPage('products')"
+    [class.active-nav-item]="showSlidePanel.currentUrl() === '/products'"
+    class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+  >
+    <mat-icon class="absolute left-4">shopping_basket</mat-icon>
+    <span class="font-medium">{{ 'NAV.PRODUCTS' | translate }}</span>
+  </button>
+
+  <button
+    (click)="openCartDialog()"
+    class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+  >
+    <mat-icon class="absolute left-4">shopping_cart</mat-icon>
+    <span class="font-medium">{{ 'NAV.VIEW_CART' | translate }}</span>
+  </button>
+
+  <button
+    (click)="openFilterDialog()"
+    class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+  >
+    <mat-icon class="absolute left-4">filter_list</mat-icon>
+    <span class="font-medium">{{ 'NAV.FILTER_PRODUCTS' | translate }}</span>
+  </button>
+
+  <button
+    (click)="resetCart()"
+    class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+  >
+    <mat-icon class="absolute left-4">remove_shopping_cart</mat-icon>
+    <span class="font-medium">{{ 'NAV.CLEAR_CART' | translate }}</span>
+  </button>
+
+  @if (authService.isLoggedIn()) {
+    <button
+      (click)="showSlidePanel.goToPage('orders')"
+      [class.active-nav-item]="showSlidePanel.currentUrl() === '/orders'"
+      class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+    >
+      <mat-icon class="absolute left-4">list_alt</mat-icon>
+      <span class="font-medium">{{ 'NAV.ORDERS' | translate }}</span>
+    </button>
+  }
+</div>

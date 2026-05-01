@@ -1,0 +1,71 @@
+<form
+  [formGroup]="faqForm"
+  class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100 mx-auto w-full"
+>
+  <h2 class="text-xl font-bold text-gray-800 mb-6">
+    {{ editableFaq() ? 'Actualizar FAQ' : 'Nuevo FAQ' }}
+  </h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="flex flex-col gap-1 md:col-span-2">
+      <label class="text-sm text-gray-600 ml-1">Pregunta</label>
+      <mat-form-field appearance="outline" class="w-full">
+        <input matInput formControlName="question" placeholder="Foods, Clothes..." />
+        <mat-icon matSuffix class="text-gray-400">help</mat-icon>
+        @if (faqForm.get('question')?.errors?.['required']) {
+          <mat-error>La pregunta es obligatorio</mat-error>
+        }
+        @if (faqForm.get('question')?.errors?.['minlength']) {
+          <mat-error>Debe tener al menos 3 caracteres</mat-error>
+        }
+
+        @if (faqForm.get('question')?.errors?.['maxlength']) {
+          <mat-error>No puede ser más de 100 caracteres</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-col gap-1 md:col-span-2">
+      <label class="text-sm text-gray-600 ml-1">Respuesta</label>
+      <mat-form-field appearance="outline" class="w-full">
+        <input matInput formControlName="answer" placeholder="About it..." />
+        <mat-icon matSuffix class="text-gray-400">abc</mat-icon>
+
+        @if (faqForm.get('answer')?.errors?.['required']) {
+          <mat-error>La respuesta es obligatorio</mat-error>
+        }
+
+        @if (faqForm.get('answer')?.errors?.['maxlength']) {
+          <mat-error>No puede ser más de 300 caracteres</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-col gap-1 md:col-span-2">
+      <label class="text-sm text-gray-600 ml-1">Estado</label>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-select formControlName="status">
+          <mat-option [value]="'ACTIVE'">Activo</mat-option>
+          <mat-option [value]="'INACTIVE'">Inactivo</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="flex justify-end gap-3 mt-8">
+    <button (click)="onCancel()" type="button" mat-button class="!rounded-lg !px-6">
+      Cancelar
+    </button>
+    <button
+      (click)="createFaq()"
+      mat-flat-button
+      class="!bg-gray-900 !text-white !px-8 !py-2 !rounded-lg hover:!bg-gray-800 transition-all"
+    >
+      @if (!faqStore.isLoading()) {
+        {{ editableFaq() ? 'Actualizar' : 'Guardar' }}
+      } @else {
+        <mat-spinner diameter="20"></mat-spinner>
+      }
+    </button>
+  </div>
+</form>

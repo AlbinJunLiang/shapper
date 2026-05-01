@@ -1,0 +1,60 @@
+
+
+.custom-stepper {
+    background-color: transparent;
+  --mat-stepper-header-selected-state-icon-background-color: #1e1f36;
+  --mat-stepper-header-done-state-icon-background-color: #10b981;
+  --mat-stepper-header-edit-state-icon-background-color: #27285c;
+  
+  /* Para que el label también cambie */
+  --mat-stepper-header-label-text-selected-state-color: #262736;
+}
+
+::ng-deep .mat-step-header .mat-step-icon:not(.mat-step-icon-selected):not(.mat-step-icon-state-done) {
+  background-color: #e2e8f0 !important;
+  color: #64748b !important;
+}
+
+/* Color del texto (label) inactivo */
+::ng-deep .mat-step-label:not(.mat-step-label-active):not(.mat-step-label-selected) {
+  color: #94a3b8 !important;
+}
+
+/* Quita el fondo gris al pasar el mouse (hover) */
+::ng-deep .mat-step-header:hover {
+  background-color: transparent !important;
+}
+
+/* Opcional: Quita el efecto de "onda" (ripple) cuando haces clic */
+::ng-deep .mat-step-header .mat-ripple {
+  display: none !important;
+}
+
+/* Quita el fondo cuando el paso tiene el foco del teclado */
+::ng-deep .mat-step-header.cdk-program-focused,
+::ng-deep .mat-step-header.cdk-focused {
+  background-color: transparent !important;
+}
+
+
+/* Esto obliga al contenido del stepper a usar el 100% del ancho del diálogo */
+::ng-deep .custom-stepper .mat-horizontal-content-container {
+  padding: 0 !important; /* Eliminamos el margen lateral de 24px que viene por defecto */
+}
+
+/* Opcional: Centrar el contenido si el diálogo es muy ancho */
+::ng-deep .custom-stepper .mat-horizontal-stepper-content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+::ng-deep .mat-step-header .mat-step-icon-state-done,
+::ng-deep .mat-step-header .mat-step-icon-state-edit {
+  background-color: #2ade23 !important; /* Slate-800 para Shapper */
+  color: white !important;
+}
+
+::ng-deep .mat-step-header {
+  pointer-events: none;
+padding: 18px 16px !important;}

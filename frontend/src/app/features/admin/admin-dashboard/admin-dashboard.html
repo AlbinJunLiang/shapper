@@ -1,0 +1,57 @@
+<div class="mb-8">
+  <h1 class="text-2xl font-semibold text-gray-800">Panel de control</h1>
+  <p class="text-gray-500 mt-1">Resumen general de la tienda.</p>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+  <button [routerLink]="['/admin/store-info']" 
+    class="p-6 bg-white border border-gray-200 rounded-xl hover:border-gray-400 transition text-left">
+    
+    <div class="w-12 h-12 bg-gray-100 text-gray-600 rounded-lg flex items-center justify-center mb-4">
+      <mat-icon>settings</mat-icon>
+    </div>
+
+    <h3 class="text-lg font-semibold text-gray-800">Configuración</h3>
+    <p class="text-sm text-gray-500 mt-1">
+      Datos generales de la tienda.
+    </p>
+  </button>
+
+  <button [routerLink]="['/admin/products']"
+    class="p-6 bg-white border border-gray-200 rounded-xl hover:border-gray-400 transition text-left">
+    
+    <div class="w-12 h-12 bg-gray-100 text-gray-600 rounded-lg flex items-center justify-center mb-4">
+      <mat-icon>inventory_2</mat-icon>
+    </div>
+
+    <h3 class="text-lg font-semibold text-gray-800">Productos</h3>
+    <p class="text-sm text-gray-500 mt-1">
+      Gestión de inventario.
+    </p>
+  </button>
+
+  <button [routerLink]="['/admin/orders']"
+    class="p-6 bg-white border border-gray-200 rounded-xl hover:border-gray-400 transition text-left">
+    
+    <div class="w-12 h-12 bg-gray-100 text-gray-600 rounded-lg flex items-center justify-center mb-4">
+      <mat-icon>shopping_cart</mat-icon>
+    </div>
+
+    <h3 class="text-lg font-semibold text-gray-800">Órdenes</h3>
+    <p class="text-sm text-gray-500 mt-1">
+      Pedidos y facturación.
+    </p>
+  </button>
+
+</div>
+
+<div class="mt-12 p-6 bg-gray-50 border border-dashed border-gray-300 rounded-2xl flex flex-col sm:flex-row items-center justify-between">
+  <div class="text-center sm:text-left">
+    <h4 class="font-bold text-gray-800">¿Necesitas ayuda con Shapper?</h4>
+    <p class="text-sm text-gray-500">Consulta la documentación técnica o contacta a soporte.</p>
+  </div>
+  <button (click)="openGuide()" class="mt-4 sm:mt-0 px-6 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">
+    Ver Guía
+  </button>
+</div>

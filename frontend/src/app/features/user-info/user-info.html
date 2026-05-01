@@ -1,0 +1,180 @@
+<div class="w-[92%] max-w-[1100px] mx-auto py-14">
+  <!-- Header -->
+  <div class="mb-6">
+    <h2 class="text-3xl font-light tracking-tight text-gray-900">
+      {{ 'USER_PROFILE.TITLE' | translate }}
+    </h2>
+  </div>
+
+  <!-- Card -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+    <form [formGroup]="formGroup" class="space-y-10">
+      <!-- Grid 1 -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <label class="text-[12px] font-bold tracking-widest text-gray-800">
+            {{ 'USER_PROFILE.NAME' | translate }}
+          </label>
+
+          <div>
+            @if (formGroup.get('name')?.touched && formGroup.get('name')?.errors) {
+              @if (formGroup.get('name')?.errors?.['required']) {
+                <span class="text-red-500 text-[11px] block">
+                  {{ 'USER_PROFILE.NAME_REQUIRED' | translate }}
+                </span>
+              } @else if (formGroup.get('name')?.errors?.['maxlength']) {
+                <span class="text-red-500 text-[11px] block">
+                  {{ 'USER_PROFILE.MAX_LENGTH' | translate:{ value: 300 } }}
+                </span>
+              }
+            }
+          </div>
+
+          <input
+            formControlName="name"
+            type="text"
+            [placeholder]="'USER_PROFILE.PLACEHOLDERS.NAME' | translate"
+            class="w-full mt-2 px-0 py-2 border-b border-gray-200 bg-transparent text-sm text-gray-900 placeholder-gray-600 focus:outline-none focus:border-black transition"
+          />
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="text-[12px] font-bold tracking-widest text-gray-800">
+            {{ 'USER_PROFILE.LAST_NAME' | translate }}
+          </label>
+
+          <div>
+            @if (formGroup.get('lastName')?.touched && formGroup.get('lastName')?.errors) {
+              @if (formGroup.get('lastName')?.errors?.['required']) {
+                <span class="text-red-500 text-[11px] block">
+                  {{ 'USER_PROFILE.LAST_NAME_REQUIRED' | translate }}
+                </span>
+              } @else if (formGroup.get('lastName')?.errors?.['maxlength']) {
+                <span class="text-red-500 text-[11px] block">
+                  {{ 'USER_PROFILE.MAX_LENGTH' | translate:{ value: 300 } }}
+                </span>
+              }
+            }
+          </div>
+
+          <input
+            formControlName="lastName"
+            type="text"
+            [placeholder]="'USER_PROFILE.PLACEHOLDERS.LAST_NAME' | translate"
+            class="w-full mt-2 px-0 py-2 border-b border-gray-200 bg-transparent text-sm text-gray-900 placeholder-gray-600 focus:outline-none focus:border-black transition"
+          />
+        </div>
+      </div>
+
+      <!-- Grid 2 -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <label class="text-[12px] font-bold tracking-widest text-gray-800">
+            {{ 'USER_PROFILE.PHONE' | translate }}
+          </label>
+
+          <div>
+            @if (formGroup.get('phoneNumber')?.touched && formGroup.get('phoneNumber')?.errors) {
+              @if (formGroup.get('phoneNumber')?.errors?.['required']) {
+                <span class="text-red-500 text-[11px] block">
+                  {{ 'USER_PROFILE.PHONE_REQUIRED' | translate }}
+                </span>
+              } @else if (formGroup.get('phoneNumber')?.errors?.['pattern']) {
+                <span class="text-red-500 text-[11px] block">
+                  {{ 'USER_PROFILE.ONLY_NUMBERS' | translate }}
+                </span>
+              } @else if (formGroup.get('phoneNumber')?.errors?.['maxlength']) {
+                <span class="text-red-500 text-[11px] block">
+                  {{ 'USER_PROFILE.MAX_DIGITS' | translate:{ value: 15 } }}
+                </span>
+              }
+            }
+          </div>
+
+          <input
+            formControlName="phoneNumber"
+            type="tel"
+            [placeholder]="'USER_PROFILE.PLACEHOLDERS.PHONE' | translate"
+            class="w-full mt-2 px-0 py-2 border-b border-gray-200 bg-transparent text-sm text-gray-900 placeholder-gray-600 focus:outline-none focus:border-black transition"
+          />
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="text-[12px] font-bold tracking-widest text-gray-800">
+            {{ 'USER_PROFILE.ADDRESS' | translate }}
+          </label>
+
+          <div>
+            @if (formGroup.get('address')?.touched && formGroup.get('address')?.errors) {
+              @if (formGroup.get('address')?.errors?.['required']) {
+                <span class="text-red-500 text-[11px] block">
+                  {{ 'USER_PROFILE.ADDRESS_REQUIRED' | translate }}
+                </span>
+              } @else if (formGroup.get('address')?.errors?.['maxlength']) {
+                <span class="text-red-500 text-[11px] block">
+                  {{ 'USER_PROFILE.MAX_LENGTH' | translate:{ value: 300 } }}
+                </span>
+              }
+            }
+          </div>
+
+          <input
+            formControlName="address"
+            type="text"
+            [placeholder]="'USER_PROFILE.PLACEHOLDERS.ADDRESS' | translate"
+            class="w-full mt-2 px-0 py-2 border-b border-gray-200 bg-transparent text-sm text-gray-900 placeholder-gray-600 focus:outline-none focus:border-black transition"
+          />
+        </div>
+      </div>
+
+      <!-- Email + Seguridad -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <label class="text-[12px] font-bold tracking-widest text-gray-800">
+            {{ 'USER_PROFILE.EMAIL' | translate }}
+          </label>
+
+          <p
+            (click)="notifyService.show('USER_INFORMATION.EMAIL_UPDATE_FORBIDDEN')"
+            class="mt-2 text-sm text-gray-600"
+          >
+            {{ getUserData()?.email }}
+          </p>
+        </div>
+
+        <div class="flex items-end justify-between">
+          <div style="cursor: pointer">
+            <label class="text-[12px] font-bold text-gray-800">
+              {{ 'USER_PROFILE.SECURITY' | translate }}
+            </label>
+            <p class="mt-2 text-sm text-gray-600">
+              {{ 'USER_PROFILE.CHANGE_PASSWORD_DESC' | translate }}
+            </p>
+          </div>
+
+          <button
+            (click)="openDialog('0ms', '0ms')"
+            type="button"
+            class="text-xs font-semibold text-black hover:opacity-60 transition"
+          >
+            {{ 'USER_PROFILE.BUTTONS.CHANGE' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end pt-6">
+        <button
+          (click)="updateUser()"
+          class="px-8 py-2.5 bg-black text-white text-sm rounded-xl hover:bg-gray-800 transition active:scale-95"
+        >
+          @if (userStore.isLoading()) {
+            {{ 'USER_PROFILE.UPDATING' | translate }}
+          } @else {
+            {{ 'USER_PROFILE.BUTTONS.SAVE' | translate }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+mat-toolbar {
+  background-color: white;
+  color: white;
+}
+
+.btn-toolbar {
+  cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  .btn-toolbar {
+    display: none; 
+  }
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .mobile-only {
+    display: inline-flex;
+  }
+}

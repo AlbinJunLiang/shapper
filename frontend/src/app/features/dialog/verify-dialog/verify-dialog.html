@@ -1,0 +1,26 @@
+<div class="p-2"> 
+  <h2 class="mt-4 text-xl font-extrabold text-slate-900 text-center leading-tight tracking-tight">
+    {{ data.title | translate }}
+  </h2>
+
+  <mat-dialog-content class="!text-slate-800 mt-2 text-center !text-sm !font-normal !leading-snug !px-6">
+    {{ data.message | translate: data.params || {} }}
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="mt-6 flex justify-center gap-3 !pb-4 !px-6">
+    <button
+      mat-dialog-close
+      class="flex-1 text-slate-500 tracking-widest py-3 rounded-xl hover:bg-slate-100 transition-all active:scale-95"
+    >
+      {{ 'ACTIONS.CANCEL' | translate }}
+    </button>
+
+    <button
+      [mat-dialog-close]="true"
+      cdkFocusInitial
+      class="flex-1 bg-black text-white tracking-widest py-3 rounded-xl hover:bg-slate-800 shadow-sm transition-all active:scale-95"
+    >
+      {{ 'ACTIONS.OK' | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

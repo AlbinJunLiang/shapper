@@ -1,0 +1,52 @@
+/* 1. Contenedor principal del panel de autocompletado */
+::ng-deep .custom-search-panel {
+  max-height: 350px !important; /* Mantiene la altura de ~5 elementos */
+  max-width: 95%;
+  background-color: white !important;
+  border-radius: 16px !important;
+  margin-top: 5px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+  transform: translateX(10px) !important;
+  
+  /* Habilita el scroll pero oculta la barra visualmente */
+  overflow-y: auto !important;
+  scrollbar-width: none; /* Oculta en Firefox */
+  -ms-overflow-style: none; /* Oculta en Internet Explorer y Edge */
+}
+
+/* 2. Oculta la barra en Chrome, Safari y navegadores basados en Webkit */
+::ng-deep .custom-search-panel::-webkit-scrollbar {
+  display: none; 
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* 3. Estilo de las filas (opcional: un sutil hover para saber que hay más) */
+.search-option-row {
+  height: 70px !important;
+  border-bottom: 1px solid #f9fafb;
+  transition: background-color 0.2s;
+}
+
+/* Elimina el contorno azul nativo del navegador */
+input:focus, 
+input:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Elimina el efecto de sombreado que a veces pone Angular Material al abrir el panel */
+::ng-deep .mat-mdc-autocomplete-panel {
+  outline: none !important;
+}
+/* Esto asegura que el contenido interno de Material use el 100% del ancho */
+::ng-deep .search-option-row .mdc-list-item__primary-text {
+  width: 100% !important;
+  display: block !important;
+}
+
+::ng-deep .search-option-row .mat-mdc-option-text {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center;
+}

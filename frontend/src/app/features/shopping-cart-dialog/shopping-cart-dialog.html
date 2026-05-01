@@ -1,0 +1,116 @@
+<div
+  class="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000] p-4 font-['Segoe_UI',sans-serif]"
+>
+  <div
+    class="bg-white w-full max-w-[500px] h-[90vh] mh-[90vh] rounded-[16px] p-6 relative shadow-xl flex flex-col"
+  >
+    <header class="mb-4 pr-[30px]">
+      <h1 class="text-xl font-bold text-slate-800 tracking-tight">
+        {{ 'CART.TITLE' | translate }}
+      </h1>
+
+      <button
+        mat-dialog-close
+        class="absolute w-6 h-6 top-5 right-5 w-[30px] h-[30px] rounded-full bg-[#f8fafc] flex items-center justify-center hover:bg-slate-200"
+        [disabled]="this.tabIndex === 3"
+      >
+        <mat-icon class="text-gray-500 text-[10px]">close</mat-icon>
+      </button>
+    </header>
+    @if (isLoading() == false) {
+      <div class="flex flex-col gap-3 overflow-y-auto flex-1 pr-1">
+        <mat-tab-group [(selectedIndex)]="tabIndex" fitInkBarToContent>
+          <mat-tab [disabled]="isListDisabled" [label]="'CART.TABS.LIST' | translate">
+            @for (product of cartStorage.cartItems(); track product.name) {
+              <app-product-added-card [productAdded]="product"> </app-product-added-card>
+            }
+          </mat-tab>
+
+          <mat-tab
+            [label]="'CART.TABS.INFO' | translate"
+            [disabled]="isVerificationDisabled || isCartEmpty()"
+          >
+            <app-checkout-form (onPlaceSelected)="updateShippingCost($event)"></app-checkout-form>
+          </mat-tab>
+
+          <mat-tab
+            [label]="'CART.TABS.PAY' | translate"
+            [disabled]="isPaymentDisabled || isCartEmpty() || !isFormValid()"
+          >
+            <app-order-payment-card
+              [disabled]="tabIndex > 2"
+              (methodChanged)="updatePaymentMethod($any($event))"
+              [checkoutForm]="this.checkoutFormData"
+            ></app-order-payment-card
+          ></mat-tab>
+        </mat-tab-group>
+      </div>
+
+      <!-- Productos -->
+
+      <!-- Divider -->
+      <div class="border-t border-gray-200 my-4"></div>
+
+      <!-- Totales -->
+      <div class="flex justify-between items-center mb-1 text-sm font-semibold">
+        <span> {{ 'CART.SUBTOTAL' | translate }} </span>
+        <span>{{currency}}{{ cartStorage.totalAmount().toFixed(2) }}</span>
+      </div>
+
+      <div class="flex justify-between items-center mb-1 text-sm font-semibold">
+        <span> {{ 'CART.SHIPPING' | translate }} </span>
+        <span>{{currency}}{{ shippingCost().toFixed(2) }} </span>
+      </div>
+
+      <div class="flex justify-between items-center mb-4 text-[1.1rem] font-bold text-gray-900">
+        <span> {{ 'CART.TOTAL' | translate }} </span>
+        <span>{{currency}}{{ (shippingCost() + cartStorage.totalAmount()).toFixed(2) }}</span>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex gap-2">
+        <button
+          class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 p-[12px] rounded-[10px] font-semibold transition-colors"
+          mat-dialog-close
+        >
+          {{ 'CART.CONTINUE_SHOPPING' | translate }}
+        </button>
+
+        <button
+          (click)="nextTab()"
+          [class]="
+            paymentMethodSelected() == 'whatsapp'
+              ? 'flex-[1.5] bg-[rgb(55,188,105)] hover:bg-[#16a34a] text-white p-[12px] rounded-[10px] font-semibold transition-colors'
+              : 'flex-[1.5] bg-[rgb(20,89,104)] hover:bg-[rgb(15,80,100)] text-white p-[12px] rounded-[10px] font-semibold transition-colors'
+          "
+        >
+          @switch (tabIndex) {
+            @case (0) {
+              {{ 'CART.NEXT' | translate }}
+            }
+            @case (1) {
+              {{ 'CART.VERIFY' | translate }}
+            }
+            @case (2) {
+              @if (paymentMethodSelected() == 'whatsapp') {
+                <span class="mr-2"> {{ 'CART.REQUEST' | translate }} </span>
+              } @else {
+                <span class="mr-2"> {{ 'CART.PAY' | translate }} </span>
+              }
+            }
+            @default {
+              <div class="flex h-2 w-full items-center justify-center">
+                <span class="mr-2"> {{ 'CART.PROCESSING' | translate }} </span>
+                <mat-spinner class="spinner-wait" diameter="20"></mat-spinner>
+              </div>
+            }
+          }
+        </button>
+      </div>
+    } @else {
+      <div class="absolute inset-0 flex items-center justify-center bg-white/70">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+    }
+  </div>
+</div>

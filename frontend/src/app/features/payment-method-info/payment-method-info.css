@@ -1,0 +1,45 @@
+.scroller-container {
+  width: 100%;
+  overflow: hidden;
+  /* Efecto de desvanecido suave a los lados para que no "corten" de golpe */
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.scroller-track {
+  display: flex;
+  width: max-content;
+  flex-wrap: nowrap;
+  /* 20s es una velocidad media, puedes subirlo a 30s si quieres que vaya más lento */
+  animation: scroll-color 20s linear infinite;
+}
+
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 5rem; /* Espacio generoso entre logos */
+  padding: 0 2.5rem;
+  flex-shrink: 0;
+}
+
+.logo-group img {
+  height: 2.8rem; /* Tamaño un poco más grande */
+  width: 7.5rem;  /* Ancho consistente para evitar saltos */
+  object-fit: contain;
+  user-select: none;
+  /* Sin filtros para que se vea el color original */
+}
+
+/* Pausar al pasar el ratón para facilitar la lectura */
+.scroller-container:hover .scroller-track {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-color {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}

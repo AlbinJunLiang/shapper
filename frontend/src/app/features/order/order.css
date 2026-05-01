@@ -1,0 +1,7 @@
+.row-customize {
+    background-color: rgb(255, 255, 255);
+}
+
+.row-customize:hover {
+    background-color: rgb(250, 250, 250);
+}

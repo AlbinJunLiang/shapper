@@ -1,0 +1,108 @@
+<div>
+  <button
+    (click)="showSlidePanel.goToPage('/admin/store-info')"
+    [class.active-nav-item]="showSlidePanel.currentUrl() === '/admin/store-info'"
+    class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+  >
+    <mat-icon class="absolute left-4">store</mat-icon>
+
+    <span class="font-medium">Información de la tienda</span>
+  </button>
+
+  <button
+    (click)="showSlidePanel.goToPage('/admin/links')"
+    [class.active-nav-item]="showSlidePanel.currentUrl() === '/admin/links'"
+    class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+  >
+    <mat-icon class="absolute left-4">link</mat-icon>
+
+    <span class="font-medium">Ajuste de enlaces</span>
+  </button>
+
+  <button
+    (click)="showSlidePanel.goToPage('/admin/orders')"
+    [class.active-nav-item]="showSlidePanel.currentUrl() === '/admin/orders'"
+    class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+  >
+    <mat-icon class="absolute left-4">checklist_rtl</mat-icon>
+
+    <span class="font-medium">Solicitudes de pedidos</span>
+  </button>
+  <button
+    (click)="showSlidePanel.goToPage('/admin/users')"
+    [class.active-nav-item]="showSlidePanel.currentUrl() === '/admin/users'"
+    class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+  >
+    <mat-icon class="absolute left-4">person</mat-icon>
+
+    <span class="font-medium">Gestión de usuarios</span>
+  </button>
+
+  <button
+    (click)="showSlidePanel.goToPage('/admin/products')"
+    [class.active-nav-item]="showSlidePanel.currentUrl() === '/admin/products'"
+    class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+  >
+    <mat-icon class="absolute left-4">edit_square</mat-icon>
+
+    <span class="font-medium">Gestión de productos</span>
+  </button>
+
+  <button
+    (click)="showSlidePanel.goToPage('/admin/categories')"
+    [class.active-nav-item]="showSlidePanel.currentUrl() === '/admin/categories'"
+    class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+  >
+    <mat-icon class="absolute left-4">category</mat-icon>
+
+    <span class="font-medium">Gestión de categorías</span>
+  </button>
+
+  <button
+    (click)="showSlidePanel.goToPage('/admin/subcategories')"
+    [class.active-nav-item]="showSlidePanel.currentUrl() === '/admin/subcategories'"
+    class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+  >
+    <mat-icon class="absolute left-4">trolley</mat-icon>
+
+    <span class="font-medium">Gestión de subcategorías</span>
+  </button>
+
+  <button
+    (click)="showSlidePanel.goToPage('/admin/featured')"
+    [class.active-nav-item]="showSlidePanel.currentUrl() === '/admin/featured'"
+    class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+  >
+    <mat-icon class="absolute left-4">inventory_2</mat-icon>
+    <span class="font-medium">Productos destacados</span>
+  </button>
+
+  <button
+    (click)="showSlidePanel.goToPage('/admin/locations')"
+    [class.active-nav-item]="showSlidePanel.currentUrl() === '/admin/locations'"
+    class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+  >
+    <mat-icon class="absolute left-4">edit_location</mat-icon>
+    <span class="font-medium">Ajuste de ubicaciones</span>
+  </button>
+
+  <button
+    (click)="showSlidePanel.goToPage('/admin/order-payments')"
+    [class.active-nav-item]="showSlidePanel.currentUrl() === '/admin/order-payments'"
+    class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+  >
+    <mat-icon class="absolute left-4">payments</mat-icon>
+
+    <span class="font-medium">Registro de pagos</span>
+  </button>
+
+  <button
+    (click)="showSlidePanel.goToPage('/admin/faqs')"
+    [class.active-nav-item]="showSlidePanel.currentUrl() === '/admin/faqs'"
+    class="relative w-full py-3 text-gray-700 rounded hover:bg-gray-300 mt-2 flex items-center justify-center"
+  >
+    <mat-icon class="absolute left-4">help</mat-icon>
+
+    <span class="font-medium">Registro de FAQs</span>
+  </button>
+</div>

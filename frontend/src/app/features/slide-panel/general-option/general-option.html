@@ -1,0 +1,71 @@
+<div>
+  @if (!authService.isLoggedIn()) {
+    <button
+      (click)="openAuthDialog('login')"
+      class="w-full py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 mt-2"
+    >
+      {{ 'AUTH.LOGIN' | translate }}
+    </button>
+  }
+
+  @if (!authService.isLoggedIn()) {
+    <button
+      (click)="loginWithGoogle()"
+      [disabled]="authActionService.isLoggingIn()"
+      class="w-full py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 mt-2 flex items-center justify-center transition-all shadow-sm"
+    >
+      @if (authActionService.isLoggingIn()) {
+        <mat-spinner diameter="20" class="mr-3"></mat-spinner>
+        <span class="font-medium">
+          {{ 'AUTH.CONNECTING_GOOGLE' | translate }}
+        </span>
+      } @else {
+        <img src="google.svg" alt="Google Logo" class="w-5 h-5 mr-3" />
+        <span class="font-medium">
+          {{ 'AUTH.CONTINUE_GOOGLE' | translate }}
+        </span>
+      }
+    </button>
+
+    <button
+      (click)="openAuthDialog('register')"
+      class="w-full py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 mt-2"
+    >
+      {{ 'AUTH.REGISTER' | translate }}
+    </button>
+  }
+
+  @if (authService.isLoggedIn()) {
+    <button
+      (click)="onLogout()"
+      class="w-full py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 mt-2"
+    >
+      {{ 'AUTH.LOGOUT' | translate }}
+    </button>
+
+    @if (!verifyStatus()) {
+      <button
+        (click)="checkStatus()"
+        [disabled]="isLoading()"
+        class="w-full py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 mt-2 disabled:opacity-50"
+      >
+        @if (isLoading()) {
+          <span>{{ 'COMMON.LOADING' | translate }}</span>
+        } @else {
+          <span>{{ 'AUTH.VERIFY' | translate }}</span>
+        }
+      </button>
+    }
+  }
+
+  @if (authService.isLoggedIn()) {
+    <button
+      (click)="showSlidePanel.goToPage('user-information')"
+      class="w-full py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 mt-2"
+    >
+      {{ 'USER_PROFILE.MY_INFO' | translate }}
+    </button>
+  }
+
+  <div class="my-4 border-t border-gray-200 w-full"></div>
+</div>

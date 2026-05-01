@@ -1,0 +1,104 @@
+@if (order(); as data) {
+  <div
+    class="bg-white w-full rounded-[16px] p-6 relative flex flex-col font-['Segoe_UI',sans-serif]"
+  >
+    <header class="relative mb-6 pb-4 border-b border-slate-100">
+      <div class="px-10 text-center">
+        <h1 class="text-xl font-bold text-slate-800 leading-tight">
+          {{ 'ORDER_DETAILS.TITLE' | translate }}
+          <span class="block text-sm font-medium text-blue-800 mt-1">
+            {{ data.orderReference }}
+          </span>
+        </h1>
+      </div>
+
+      <div class="mt-3 px-6 text-center">
+        <p class="text-[11px] text-slate-500 font-normal leading-relaxed max-w-[280px] mx-auto">
+          {{ 'ORDER_DETAILS.REFERENCE_NOTE' | translate }}
+        </p>
+      </div>
+      <button
+        mat-dialog-close
+        class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-[#f8fafc] flex items-center justify-center font-bold text-lg text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition-all duration-200 shadow-sm border border-slate-100"
+        aria-label="Cerrar"
+      >
+        &times;
+      </button>
+    </header>
+    <div class="text-sm text-slate-600 mb-6 space-y-3">
+      <div class="flex justify-between border-b border-slate-50 pb-2">
+        <span class="font-medium text-slate-600"> {{ 'ORDER_DETAILS.DATE' | translate }} :</span>
+        <span class="text-slate-800 font-semibold">{{
+          data.createdAt | date: 'dd/MM/yyyy HH:mm'
+        }}</span>
+      </div>
+      <div class="flex justify-between border-b border-slate-50 pb-2">
+        <span class="font-medium text-slate-600"> {{ 'ORDER_DETAILS.STATUS' | translate }} :</span>
+        <span class="text-slate-800 font-semibold uppercase">{{
+          orderStatus(data.status) | translate
+        }}</span>
+      </div>
+      <div class="flex justify-between pt-2">
+        <span class="font-medium text-slate-600">
+          {{ 'ORDER_DETAILS.SUBTOTAL' | translate }} :</span
+        >
+        <span class="text-black font-bold text-lg">{{ data.subtotal | currency: currency }}</span>
+      </div>
+      <div class="flex justify-between pt-2">
+        <span class="font-medium text-slate-600">
+          {{ 'ORDER_DETAILS.SHIPPING' | translate }} :</span
+        >
+        <span class="text-black font-bold text-lg">{{ data.shippingCost | currency: currency }}</span>
+      </div>
+      <div class="flex justify-between pt-2">
+        <span class="font-medium text-slate-600"> {{ 'ORDER_DETAILS.TAX' | translate }} :</span>
+        <span class="text-black font-bold text-lg">{{ data.totalTax | currency: currency }}</span>
+      </div>
+      <div class="flex justify-between pt-2">
+        <span class="font-medium text-slate-600">
+          {{ 'ORDER_DETAILS.DISCOUNT' | translate }} :</span
+        >
+        <span class="text-black font-bold text-lg">{{ data.totalDiscount | currency : currency}}</span>
+      </div>
+      <div class="flex justify-between pt-2">
+        <span class="font-medium text-slate-600"> {{ 'ORDER_DETAILS.TOTAL' | translate }} :</span>
+        <span class="text-black font-bold text-lg">{{ data.total | currency: currency }}</span>
+      </div>
+    </div>
+
+    <button
+      (click)="onGeneratePDF()"
+      class="w-full mb-3 border border-gray-300 text-gray-700 p-[10px] rounded-[10px] font-semibold hover:bg-gray-100 transition flex items-center justify-center gap-2"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+        ></path>
+      </svg>
+      {{ 'ORDER_DETAILS.GENERATE_PDF' | translate }}
+    </button>
+
+    <div class="flex gap-2">
+      <button
+        mat-dialog-close
+        class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 p-[10px] rounded-[10px] font-semibold transition"
+      >
+        {{ 'ORDER_DETAILS.CLOSE' | translate }}
+      </button>
+
+      <button
+        [mat-dialog-close]="true"
+        class="flex-1 bg-black text-white p-[10px] rounded-[10px] font-bold hover:bg-slate-800 transition"
+      >
+        {{ 'ORDER_DETAILS.ACCEPT' | translate }}
+      </button>
+    </div>
+  </div>
+} @else {
+  <div class="w-full h-[350px] flex flex-col items-center justify-center bg-white rounded-[16px]">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+}

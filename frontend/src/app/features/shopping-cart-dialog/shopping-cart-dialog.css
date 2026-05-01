@@ -1,0 +1,7 @@
+/* En tu componente.css */
+
+
+/* Solo afectará al spinner con esa clase específica */
+:host ::ng-deep mat-spinner.spinner-wait circle {
+  stroke: white !important;
+}

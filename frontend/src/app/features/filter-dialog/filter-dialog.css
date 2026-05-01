@@ -1,0 +1,35 @@
+.slider-container {
+  width: 95%;
+}
+
+.price-slider {
+  width: 95%;
+  display: block;
+}
+
+/* Angular Material MDC slider interno */
+.price-slider .mdc-slider {
+  width: 95%;
+}
+
+/* Reduce el espacio entre cada checkbox */
+mat-checkbox {
+  display: flex !important;
+  margin-bottom: -15px; /* Ajusta este valor según necesites */
+}
+
+/* Reduce el área de clic interna (touch target) */
+::ng-deep .mdc-form-field {
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}
+
+/* 2. Color de fondo cuando está SELECCIONADO o INDETERMINADO */
+::ng-deep .mdc-checkbox .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background,
+::ng-deep
+  .mdc-checkbox
+  .mdc-checkbox__native-control:enabled:indeterminate
+  ~ .mdc-checkbox__background {
+  background-color: #4f46e5 !important; /* indigo-600 */
+  border-color: #4f46e5 !important;
+}

@@ -1,0 +1,33 @@
+<div class="max-w-6xl mx-auto mt-16 px-6">
+  <h2 class="text-3xl font-bold text-gray-900 mb-10 text-left tracking-tight">
+    {{'FAQ.TITLE' | translate}}
+  </h2>
+
+  <div class="flex flex-col gap-6">
+    @for (faq of faqStore.faqs(); track faq.question) {
+      <mat-expansion-panel
+        class="!shadow-sm !rounded-1xl border border-gray-100 bg-white hover:border-blue-100 transition-all duration-300 !m-0"
+        hideToggle="false"
+      >
+        <mat-expansion-panel-header class="!h-20 !px-8">
+          <mat-panel-title class="text-base font-semibold text-gray-800 flex items-center gap-3">
+            <mat-icon class="text-blue-500 opacity-70">help_outline</mat-icon>
+            <span>{{ faq.question }}</span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="px-8 pb-8 pt-2">
+          <div class="h-px bg-gray-50 mb-6 w-full"></div>
+          <p class="text-base text-gray-600 leading-relaxed">
+            {{ faq.answer }}
+          </p>
+        </div>
+      </mat-expansion-panel>
+    } @empty {
+      <div class="text-center py-12 border-2 border-dashed border-gray-100 rounded-2xl">
+        <p class="text-gray-400">    {{'FAQ.EMPTY' | translate}}
+</p>
+      </div>
+    }
+  </div>
+</div>

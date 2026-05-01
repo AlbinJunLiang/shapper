@@ -1,0 +1,270 @@
+<form
+  [formGroup]="productForm"
+  class="p-6 bg-white rounded-2xl shadow-sm border border-gray-100 mx-auto w-full"
+>
+  <h2 class="text-xl font-bold text-gray-800 mb-6"></h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="flex flex-col gap-1">
+      <label class="text-sm text-gray-600 ml-1">Nombre</label>
+      <mat-form-field appearance="outline" class="w-full">
+        <input matInput formControlName="name" placeholder="Foods, Clothes..." />
+        <mat-icon matSuffix class="text-gray-400">abc</mat-icon>
+        @if (productForm.get('name')?.invalid && productForm.get('name')?.touched) {
+          <div class="flex flex-col">
+            @if (productForm.get('name')?.hasError('required')) {
+              <mat-error class="text-[12px]">El nombre es obligatorio</mat-error>
+            } @else if (productForm.get('name')?.hasError('minlength')) {
+              <mat-error class="text-[12px]">Mínimo 3 caracteres</mat-error>
+            } @else if (productForm.get('name')?.hasError('maxlength')) {
+              <mat-error class="text-[12px]">Máximo 100 caracteres</mat-error>
+            }
+          </div>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-sm text-gray-600 ml-1">Descripción</label>
+      <mat-form-field appearance="outline" class="w-full">
+        <input matInput formControlName="description" placeholder="About it..." />
+        <mat-icon matSuffix class="text-gray-400">description</mat-icon>
+        @if (productForm.get('description')?.touched) {
+          @if (productForm.get('description')?.errors?.['maxlength']) {
+            <mat-error class="text-[12px]">No puede ser más de 300 caracteres</mat-error>
+          }
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-sm text-gray-600 ml-1">Precio</label>
+      <mat-form-field appearance="outline" class="w-full">
+        <span matTextPrefix class="text-gray-500 mr-1">$</span>
+
+        <input type="number" matInput formControlName="price" />
+        @if (productForm.get('price')?.errors?.['min']) {
+          <mat-error>No puede ser menor a 0</mat-error>
+        } @else if (productForm.get('price')?.errors?.['max']) {
+          <mat-error>Solo se permite cifras menores a 100000000000000</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-sm text-gray-600 ml-1">Impuesto</label>
+      <mat-form-field appearance="outline" class="w-full">
+        <input type="number" matInput formControlName="taxAmount" />
+        <span matSuffix class="text-gray-500 mr-5">%</span>
+        @if (productForm.get('taxAmount')?.touched) {
+          @if (productForm.get('taxAmount')?.errors?.['required']) {
+            <mat-error class="text-[12px]">Ingrese un impuesto válido</mat-error>
+          } @else if (productForm.get('taxAmount')?.errors?.['min']) {
+            <mat-error class="text-[12px]">No puede ser menor a 0</mat-error>
+          } @else if (productForm.get('taxAmount')?.errors?.['max']) {
+            <mat-error class="text-[12px]">No puede ser mayor a 100</mat-error>
+          } @else if (productForm.get('taxAmount')?.errors?.['pattern']) {
+            <mat-error class="text-[12px]">Máximo 2 dígitos enteros y 2 decimales</mat-error>
+          }
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-sm text-gray-600 ml-1">Descuento</label>
+      <mat-form-field appearance="outline" class="w-full">
+        <input type="number" matInput formControlName="discount" />
+        <span matSuffix class="text-gray-500 mr-5">%</span>
+        @if (productForm.get('discount')?.touched) {
+          @if (productForm.get('discount')?.errors?.['required']) {
+            <mat-error class="text-[12px]">Ingrese un descuento válido</mat-error>
+          } @else if (productForm.get('discount')?.errors?.['min']) {
+            <mat-error class="text-[12px]">No puede ser menor a 0</mat-error>
+          } @else if (productForm.get('discount')?.errors?.['max']) {
+            <mat-error class="text-[12px]">No puede ser mayor a 100</mat-error>
+          } @else if (productForm.get('discount')?.errors?.['pattern']) {
+            <mat-error class="text-[12px]">Máximo 2 dígitos enteros y 2 decimales</mat-error>
+          }
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-sm text-gray-600 ml-1">Cantidad</label>
+      <mat-form-field appearance="outline" class="w-full">
+        <input type="number" matInput formControlName="quantity" />
+        <span matSuffix class="text-gray-500 mr-5">#</span>
+        @if (productForm.get('quantity')?.touched) {
+          @if (productForm.get('quantity')?.errors?.['min']) {
+            <mat-error class="text-[12px]">No puede ser menor a 0</mat-error>
+          } @else if (productForm.get('quantity')?.errors?.['max']) {
+            <mat-error class="text-[12px]"
+              >Solo se permite cifras menores a 100000000000000</mat-error
+            >
+          }
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-sm text-gray-600 ml-1">Estado</label>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-select formControlName="status">
+          <mat-option [value]="Status.ACTIVE">Activo</mat-option>
+          <mat-option [value]="Status.INACTIVE">Inactivo</mat-option>
+          <mat-option [value]="Status.DISCONTINUED">Discontinuado</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-sm text-gray-600 ml-1">Subcategoría</label>
+
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <input
+          type="text"
+          matInput
+          (input)="onKey($event)"
+          formControlName="subcategoryId"
+          [matAutocomplete]="auto"
+          placeholder="Escribe para filtrar..."
+        />
+
+        <mat-icon matSuffix class="text-gray-400">filter_list</mat-icon>
+
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          [displayWith]="displayFn.bind(this)"
+          (optionSelected)="onSubcategorySelected($event)"
+        >
+          @for (cat of filteredsubcategories(); track cat.id) {
+            <mat-option [value]="cat.id">
+              {{ cat.name }}
+            </mat-option>
+          }
+        </mat-autocomplete>
+
+        @if (
+          productForm.get('subcategoryId')?.touched && productForm.get('subcategoryId')?.invalid
+        ) {
+          @if (productForm.get('subcategoryId')?.hasError('invalidAutocomplete')) {
+            <mat-error class="text-[11px]"
+              >Debes seleccionar una opción <strong>válida</strong></mat-error
+            >
+          } @else if (productForm.get('subcategoryId')?.hasError('required')) {
+            <mat-error class="text-[11px]"
+              >La subcategoría es <strong>obligatoria</strong></mat-error
+            >
+          }
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="md:col-span-2 mt-8 py-6 border-t border-gray-100 antialiased">
+      <h3 class="text-lg font-bold text-gray-800 mb-6 ml-1">Especificaciones del producto</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium text-gray-600 ml-1">Atributo</label>
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <input
+              matInput
+              [formControl]="detailTitle"
+              placeholder="Ej: Material o Color"
+              maxlength="101"
+            />
+
+            @if (detailTitle.invalid && (detailTitle.touched || detailTitle.dirty)) {
+              @if (detailTitle.hasError('pattern')) {
+                <mat-error class="text-[12px]">Solo letras y sin espacios</mat-error>
+              } @else if (detailTitle.hasError('maxlength')) {
+                <mat-error class="text-[12px]">Máximo 100 caracteres</mat-error>
+              }
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-medium text-gray-600 ml-1">Valor</label>
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <input
+              matInput
+              [formControl]="detailValue"
+              placeholder="Ej: Algodón 100%"
+              maxlength="101"
+            />
+
+            @if (detailValue.invalid && (detailValue.touched || detailValue.dirty)) {
+              @if (detailValue.hasError('maxlength')) {
+                <mat-error class="text-[12px]">Máximo 100 caracteres</mat-error>
+              }
+
+              @if (detailValue.hasError('required')) {
+                <mat-error class="text-[12px]">El valor es obligatorio</mat-error>
+              }
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="flex justify-center mt-5">
+        <button
+          type="button"
+          (click)="addDetail()"
+          class="w-full md:w-auto h-[42px] px-12 text-[14px] text-white bg-gray-900 rounded-xl hover:bg-black active:scale-95 transition-all shadow-md flex items-center justify-center"
+        >
+          Añadir especificación
+        </button>
+      </div>
+
+      <div class="mt-8 border border-gray-100 rounded-2xl overflow-hidden bg-white shadow-sm">
+        @for (item of detailsList(); track $index) {
+          <div
+            class="flex items-center justify-between px-6 py-4 border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors"
+          >
+            <div class="flex flex-col text-left min-w-0 pr-4">
+              <span class="text-[12px] text-gray-800 mb-0.5">
+                {{ item.title }}
+              </span>
+              <span class="text-sm text-gray-700 font-medium break-words">
+                {{ item.value }}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              (click)="removeDetail($index)"
+              class="flex-shrink-0 w-9 h-9 flex items-center justify-center text-gray-600 hover:text-red-500 transition-all rounded-full hover:bg-red-50"
+            >
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </div>
+        } @empty {
+          <div class="p-10 text-center bg-gray-50/20">
+            <span class="text-sm text-gray-400 italic"
+              >No has añadido detalles técnicos todavía</span
+            >
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="flex justify-end gap-3 mt-8">
+    <button (click)="onCancel()" type="button" mat-button class="!rounded-lg !px-6">
+      Cancelar
+    </button>
+
+    <button
+      (click)="createProduct()"
+      mat-flat-button
+      class="!bg-gray-900 !text-white !px-8 !py-2 !rounded-lg hover:!bg-gray-800 transition-all"
+    >
+      @if (!productStore.isLoading()) {
+        {{ editableProduct() ? 'Actualizar' : 'Guardar' }}
+      } @else {
+        <mat-spinner diameter="20"></mat-spinner>
+      }
+    </button>
+  </div>
+</form>

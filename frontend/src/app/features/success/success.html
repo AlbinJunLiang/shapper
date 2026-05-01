@@ -1,0 +1,19 @@
+<div class="flex flex-col items-center justify-start h-screen bg-white pt-[25vh]">  
+  <div class="relative overflow-hidden shine-wrapper mb-2">
+    <mat-icon class="icon-display">
+      check_circle
+    </mat-icon>
+    <div class="shine-line"></div>
+  </div>
+
+  <h1 class="text-2xl font-medium text-gray-800">
+    {{ 'PAYMENT.SUCCESS' | translate }}
+  </h1>
+
+  <button 
+    (click)="goToOrder()"
+    class="mt-4 text-gray-600 hover:text-gray-600 text-sm underline font-light">
+    {{ 'PAYMENT.VIEW_ORDER' | translate }}
+  </button>
+
+</div>

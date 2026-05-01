@@ -1,0 +1,112 @@
+<footer class="bg-gray-900 text-gray-300 py-10">
+  @if (!storeService.isLoading()) {
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Sección de contacto -->
+      <div>
+        <h3 class="text-gray-200 text-lg font-semibold mb-4">
+          {{ 'FOOTER.CONTACT' | translate }}
+        </h3>
+
+        <p class="mb-2">
+          {{ 'FOOTER.EMAIL' | translate }}:
+          {{ storeInformation()?.email || 'helloworld@gmail.com' }}
+        </p>
+
+        <p class="mb-2">
+          {{ 'FOOTER.PHONE' | translate }}:
+          {{ storeInformation()?.phoneNumber || '8888888' }}
+        </p>
+
+        <p class="mb-2">
+          {{ 'FOOTER.ADDRESS' | translate }}:
+          {{ storeInformation()?.mainLocation || 'Unknown' }}
+        </p>
+      </div>
+
+      <!-- Sección de enlaces -->
+      <div>
+        <h3 class="text-gray-200 text-lg font-semibold mb-4">
+          {{ 'FOOTER.LINKS.TITLE' | translate }}
+        </h3>
+
+        <ul class="space-y-2">
+          <li>
+            <a (click)="goToPage('')" class="hover:text-blue-500 transition-colors">
+              {{ 'FOOTER.LINKS.HOME' | translate }}
+            </a>
+          </li>
+
+          <li>
+            <a (click)="goToPage('/faqs')" class="hover:text-blue-500 transition-colors">
+              {{ 'FOOTER.LINKS.FAQS' | translate }}
+            </a>
+          </li>
+
+          <li>
+            <a (click)="goToPage('/products')" class="hover:text-blue-500 transition-colors">
+              {{ 'FOOTER.LINKS.PRODUCTS' | translate }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-gray-200 text-lg font-semibold mb-4 text-center md:text-left">
+          {{ 'FOOTER.FOLLOW_US' | translate }}
+        </h3>
+
+        <div class="flex items-center justify-center md:justify-start gap-6">
+          <a
+            (click)="showMessage(LinkName.FACEBOOK)"
+            class="group flex items-center justify-center transition-all duration-300 transform hover:scale-110"
+            aria-label="Facebook"
+            role="button"
+          >
+            <img
+              src="facebook-icon.svg"
+              class="w-8 h-8 object-contain opacity-80 group-hover:opacity-100 group-hover:brightness-110 transition-all"
+              alt="Facebook"
+            />
+          </a>
+
+          <a
+            (click)="showMessage(LinkName.TWITTER)"
+            class="group flex items-center justify-center transition-all duration-300 transform hover:scale-110"
+            aria-label="Twitter"
+            role="button"
+          >
+            <img
+              src="twitter.svg"
+              class="w-8 h-8 object-contain opacity-80 group-hover:opacity-100 transition-all"
+              alt="Twitter"
+            />
+          </a>
+
+          <a
+            (click)="showMessage(LinkName.INSTAGRAM)"
+            class="group flex items-center justify-center transition-all duration-300 transform hover:scale-110"
+            aria-label="Instagram"
+            role="button"
+          >
+            <img
+              src="instagram-icon.svg"
+              class="w-8 h-8 object-contain opacity-80 group-hover:opacity-100 transition-all"
+              alt="Instagram"
+            />
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-gray-500 text-sm">
+      &copy; {{ currentYear() }} Shapper.
+      {{ 'FOOTER.COPYRIGHT' | translate }}
+    </div>
+
+    <div class="mt-8 flex items-center justify-center gap-2 text-gray-400 text-[12px] italic">
+      <img src="favicon.ico" alt="Angular Icon" class="w-4 h-4 object-contain brightness-110" />
+
+      <p>{{ 'FOOTER.DEVELOPED_IN' | translate }}</p>
+    </div>
+  }
+</footer>

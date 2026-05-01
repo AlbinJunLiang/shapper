@@ -1,0 +1,26 @@
+/* Ocultar scrollbar para Chrome, Safari y Opera */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Ocultar scrollbar para IE, Edge y Firefox */
+.no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+
+/* Eliminamos el borde, la sombra y el outline de enfoque */
+:host ::ng-deep .mat-mdc-standard-chip {
+  --mdc-chip-container-elevation: 0;
+  --mdc-chip-outline-width: 0;
+  --mdc-chip-outline-color: transparent;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* También para el estado enfocado */
+:host ::ng-deep .mat-mdc-chip.mdc-ripple-upgraded--background-focused::before {
+  content: none !important;
+}

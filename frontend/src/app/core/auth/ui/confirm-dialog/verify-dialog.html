@@ -1,0 +1,82 @@
+<div class="fixed inset-0 bg-slate-900/60 flex justify-center items-center z-[1000] p-4">
+  <div
+    class="bg-white w-full max-w-[380px] h-[420px] rounded-[28px] relative shadow-2xl flex flex-col animate-in fade-in zoom-in duration-300 overflow-hidden"
+  >
+    <button
+      mat-dialog-close
+      class="absolute top-5 right-5 w-9 h-9 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 transition-colors text-2xl z-20"
+    >
+      &times;
+    </button>
+
+    <div class="p-10 flex flex-col items-center justify-between h-full text-center">
+      @if (step() === 'initial') {
+        <div class="flex flex-col items-center flex-1 justify-center w-full">
+          <div
+            class="w-20 h-20 bg-purple-50 border border-purple-100 rounded-2xl flex items-center justify-center mb-6"
+          >
+            <mat-icon
+              style="width: 40px; height: 40px; font-size: 40px"
+              class="text-slate-800 flex items-center justify-center"
+            >
+              mail
+            </mat-icon>
+          </div>
+
+          <h2 class="text-2xl font-bold text-slate-800 mb-2">
+            {{ 'VERIFY_EMAIL.TITLE_VERIFY' | translate }}
+          </h2>
+
+          <p class="text-sm text-slate-500 leading-relaxed px-2">
+            {{ 'VERIFY_EMAIL.DESCRIPTION_VERIFY' | translate }}
+          </p>
+        </div>
+
+        <button
+          (click)="sendVerification()"
+          class="w-full py-4 bg-slate-800 text-white rounded-xl hover:bg-slate-900 transition-all active:scale-[0.98] shadow-lg shadow-slate-200"
+        >
+          {{ 'VERIFY_EMAIL.SEND_BUTTON' | translate }}
+        </button>
+      } @else {
+        <div class="flex flex-col items-center flex-1 justify-center w-full">
+          <div
+            class="w-20 h-20 bg-purple-50 border border-purple-100 rounded-2xl flex items-center justify-center mb-6"
+          >
+            <mat-icon
+              style="width: 40px; height: 40px; font-size: 40px"
+              class="text-purple-600 flex items-center justify-center"
+            >
+              mark_email_read
+            </mat-icon>
+          </div>
+
+          <h2 class="text-2xl font-bold text-slate-800 mb-1">
+            {{ 'VERIFY_EMAIL.TITLE_SENT' | translate }}
+          </h2>
+
+          <p class="text-sm text-slate-500 px-4">
+            {{ 'VERIFY_EMAIL.DESCRIPTION_SENT' | translate }}
+          </p>
+
+          <p class="text-sm text-slate-500 mb-4 font-medium">
+            {{ 'VERIFY_EMAIL.RESEND_TEXT' | translate }}
+          </p>
+
+          <div class="w-full py-3 bg-slate-50 border border-slate-200 rounded-xl mb-2">
+            <span class="text-2xl font-mono font-bold text-slate-700 tracking-[0.2em]">
+              {{ countdown() }}
+            </span>
+          </div>
+        </div>
+
+        <button
+          mat-dialog-close
+          class="w-full py-4 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-900 transition-all active:scale-[0.98] shadow-lg shadow-slate-200"
+        >
+          {{ 'VERIFY_EMAIL.CONFIRM_BUTTON' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+</div>
