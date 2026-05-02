@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5127/api',
+  apiUrl: 'https://shapper.somee.com/api',
   cartStorageKey: 'my_cart_data',
   storeReference: 'ST-MANUAL01',
   currency: '$',
