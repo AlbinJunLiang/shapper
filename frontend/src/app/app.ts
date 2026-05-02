@@ -27,7 +27,7 @@ import { MatProgressSpinner } from "@angular/material/progress-spinner";
   selector: 'app-root',
   imports: [RouterOutlet, MatToolbarModule, MatButtonModule,
     MatIconModule, Toolbar, SlidePanel,
-    Footer, CommonModule, MatProgressSpinner],
+    Footer, CommonModule, MatProgressSpinner, FloatingInfoPanel],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

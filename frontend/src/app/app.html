@@ -3,12 +3,17 @@
     <mat-spinner diameter="50"></mat-spinner>
   </div>
 } @else {
-  <div class="min-h-screen flex flex-col  !bg-[#fdfdfd]">
+  <div class="min-h-screen flex flex-col !bg-[#fdfdfd]">
     <app-toolbar></app-toolbar>
     <div class="flex-grow">
-       <app-slide-panel></app-slide-panel>
-       <router-outlet></router-outlet>
+      <app-slide-panel></app-slide-panel>
+      <router-outlet></router-outlet>
     </div>
+
+    @if (filterStore.categories(); as categories) {
+      <app-floating-info-panel></app-floating-info-panel>
+    }
+
     <app-footer></app-footer>
   </div>
 }

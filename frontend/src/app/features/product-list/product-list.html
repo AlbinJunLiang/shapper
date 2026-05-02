@@ -8,8 +8,7 @@
     <h3 class="text-3xl font-light text-gray-800">{{ 'PRODUCT_LIST.SUBTITLE' | translate }}</h3>
   </div>
 
-  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10 md:gap-y-14">
-    @if (products().length === 0) {
+      @if (products().length === 0) {
       <p class="text-gray-600">
         {{ 'PRODUCT_LIST.NO_PRODUCTS' | translate }}
         <a
@@ -20,33 +19,15 @@
         </a>
       </p>
     } @else {
+
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10 md:gap-y-14">
       @for (product of products(); track $index) {
         <div class="flex flex-col">
           <div
             class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col h-full"
           >
             <div class="relative aspect-[4/3.5] overflow-hidden bg-gray-50 group">
-              <!--
-            
-            @if (product.status.toUpperCase() !== 'ACTIVE' || product.quantity === 0 || product.discount > 0) {
-              <span
-                class="absolute top-[10px] left-[10px] px-2 py-[3px] rounded-[4px] font-bold text-[10px] z-[10] text-white uppercase tracking-wider shadow-sm select-none"
-                [class.bg-orange-600]="product.status.toUpperCase() !== 'ACTIVE'"
-                [class.bg-red-500]="product.status.toUpperCase() === 'ACTIVE' && product.quantity === 0"
-                [class.bg-green-600]="
-                  product.status.toUpperCase() === 'ACTIVE' && product.quantity > 0 && product.discount > 0
-                "
-              >
-                @if (product.status.toUpperCase() !== 'ACTIVE') {
-                  No disponible
-                } @else if (product.quantity === 0) {
-                  Sin existencias
-                } @else if (product.discount > 0) {
-                  OFERTA -{{ product.discount }}%
-                }
-              </span>
-            }     
-        -->
+      
               @if (product.images && product.images.length > 0) {
                 <img
                   #imgRef
@@ -124,8 +105,8 @@
           </div>
         </div>
       }
-    }
   </div>
+}
 
   <!-- PAGINADOR -->
   <div class="flex items-center justify-center gap-8 mt-10 text-sm text-gray-500">
