@@ -240,6 +240,18 @@ Configurar el archivo **appSettings.json** con las siguientes claves:
     "ImageStorageUrl": ""
   }
 }
+
+Es nesario también agregar los host pdonde se encuentra la solicitud de pago:
+```json
+ "PaymentSettings": {
+    "AllowedHosts": [
+      "http://localhost:4200/success",
+      "http://localhost:5127/index.html",
+      "http://localhost:5127/cancel.html",
+    ]
+ }
+```
+
 ```
 
 Dentro del código:
