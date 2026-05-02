@@ -342,10 +342,14 @@ Si esta usando github pages, debe crear el archivo **404.html** para que enrute 
 <script>
   sessionStorage.redirect = location.pathname;
 </script>
-<meta http-equiv="refresh" content="0;URL='/'" />
+<meta http-equiv="refresh" content="0;URL='/shapper/'" />
 ```
 
 Agrega esto al inicio de la etiqueta head en el index.html
+
+```html
+<base href="/shapper/">
+```
 ```javascript
 <script>
   (function() {

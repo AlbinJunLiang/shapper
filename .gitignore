@@ -10,8 +10,8 @@ backend/.vs
 # FRONTEND ------------------
 **/frontend/node_modules
 **/frontend/dist
+**/frontend/docs
 frontend/.angular
 frontend/.vscode
-**/frontend/docs
 
 
