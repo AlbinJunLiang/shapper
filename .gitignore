@@ -5,6 +5,7 @@
 **/backend/publish
 backend/bin/
 backend/obj/
+backend/.vs
 
 # FRONTEND ------------------
 **/frontend/node_modules

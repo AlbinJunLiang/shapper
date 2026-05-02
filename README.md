@@ -324,6 +324,9 @@ Desde la terminal y en la ubicación del proyecto ejecutar:
 
 ```bash
 ng build --configuration=production
+
+# Algunos casos importa mucho que sea con el mismo nombre del proyecto
+ng build --configuration production --output-path docs --base-href "/shapper/" 
 ```
 
 En caso de que tenga node.js instalado y http-server puede probar desde la ubicación de la carpeta public del proyecto con el comando:
@@ -332,6 +335,29 @@ En caso de que tenga node.js instalado y http-server puede probar desde la ubica
 http-server -p 8080 -c-1 --spa
 ```
 
+
+Si esta usando github pages, debe crear el archivo **404.html** para que enrute bien:
+
+```html
+<script>
+  sessionStorage.redirect = location.pathname;
+</script>
+<meta http-equiv="refresh" content="0;URL='/'" />
+```
+
+Agrega esto al inicio de la etiqueta head en el index.html
+```javascript
+<script>
+  (function() {
+    const redirect = sessionStorage.redirect;
+    if (redirect) {
+      sessionStorage.removeItem('redirect');
+      history.replaceState(null, null, redirect);
+    }
+  })();
+</script>
+
+```
 
 # Recursos y accesos a los endpoints más relevantes
 
