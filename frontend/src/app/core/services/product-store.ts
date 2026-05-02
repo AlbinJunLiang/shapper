@@ -1,14 +1,14 @@
 import { inject, Injectable, signal, computed } from '@angular/core';
 import { Product } from '../interfaces/product.interface';
 import { ProductService } from './product-service';
-import { ProductResponse } from '../interfaces/product-response.interface';
+import { PagedProduct } from '../interfaces/paged-product.interface';
 import { ProductRequest } from '../interfaces/product-request.interface';
 import { finalize, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ProductStore {
     private productService = inject(ProductService);
-    private _apiResponse = signal<ProductResponse>({
+    private _apiResponse = signal<PagedProduct>({
         totalCount: 0,
         totalPages: 0,
         page: 1,

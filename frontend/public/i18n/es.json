@@ -12,7 +12,9 @@
     "PRODUCTS": "Productos"
   },
   "SEARCHER": {
-    "PLACEHOLDER": "¿Qué estás buscando hoy?"
+    "PLACEHOLDER": "¿Qué estás buscando hoy?",
+    "CLICK_TO_SEARCH": "Clic en la lupa para buscar \"{{ value }}\"",
+    "NO_RESULTS": "No se encontraron productos para \"{{ value }}\""
   },
   "CART": {
     "EMPTY": "Carrito vacío",
@@ -41,7 +43,7 @@
     "INVALID_CREDENTIAL": "Error de credenciales. Inténtalo de nuevo.",
     "TOO_MANY_REQUESTS": "Demasiados intentos. Intenta más tarde.",
     "WELCOME": "¡Bienvenido, {{name}}!",
-    "LOGOUT": "Cerrar Sesión",
+    "LOGOUT": "Sesión cerrada",
     "VERIFIED_ACCOUNT": "La cuenta ya ha sido verificada."
   },
   "ORDER_STATUS": {
@@ -171,6 +173,7 @@
     "REVIEWS": "Reseñas",
     "QUANTITY": "Cantidad",
     "ADD_TO_CART": "Agregar al carrito",
+    "ADD": "Agregar",
     "CANCEL": "Cancelar",
     "DESCRIPTION": "Descripción",
     "TECHNICAL_SPECS": "Especificaciones técnicas",

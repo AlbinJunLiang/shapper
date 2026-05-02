@@ -1,11 +1,5 @@
 <app-carousel></app-carousel>
-@if (categoryStore.isLoading()) {
-  <div class="flex flex-col h-[400px] items-center justify-center text-gray-500">
-    <div class="flex items-center">
-      <mat-spinner diameter="50" color="primary"></mat-spinner>
-    </div>
-  </div>
-} @else {
+
   <app-category-viewer [categories]="categories()" [PAGE_SIZE]="PAGE_SIZE"> </app-category-viewer>
-}
+
 <app-payment-method-info />

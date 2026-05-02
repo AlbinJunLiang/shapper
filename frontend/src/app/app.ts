@@ -13,20 +13,21 @@ import { FilterStore } from './core/services/filter-storage';
 import { UserStore } from './core/services/user-store';
 import { DialogService } from './core/services/dialog.service';
 import { StoreService } from './core/services/store-service';
-import { environment } from '../environments/environment.development';
 import { Title } from '@angular/platform-browser';
 import { DOCUMENT } from '@angular/common';
 import { updateFavicon } from './core/shared/utils/favicon.util';
 import { LinkType } from './core/enums/link-type.enum';
 import { LinkName } from './core/enums/link-name.enum';
 import { Status } from './core/enums/status.enum';
+import { HomeStore } from './core/services/home-store';
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
 
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, MatToolbarModule, MatButtonModule,
-    MatIconModule, Toolbar, SlidePanel, FloatingInfoPanel,
-    Footer, CommonModule],
+    MatIconModule, Toolbar, SlidePanel,
+    Footer, CommonModule, MatProgressSpinner],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -37,6 +38,7 @@ export class App {
   public storeService = inject(StoreService);
   protected filterStore = inject(FilterStore);
   private userStore = inject(UserStore);
+  protected homeStore = inject(HomeStore);
   private confirmDialogService = inject(DialogService);
   private titleService = inject(Title);
   private document = inject(DOCUMENT);
@@ -49,9 +51,9 @@ export class App {
   });
 
   constructor() {
-    this.filterStore.loadCategoriesFilter();
+    this.homeStore.loadHomeData();
     this.userStore.initSync();
-    this.storeService.loadStore(environment.storeReference);
+
 
     effect(() => {
       const store = this.storeService.storeData();

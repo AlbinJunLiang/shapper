@@ -49,4 +49,11 @@ input:active {
   width: 100% !important;
   display: flex !important;
   align-items: center;
+  
+}
+
+.truncate-text {
+  white-space: normal !important;    
+  word-break: break-word;          
+  overflow-wrap: anywhere;  
 }

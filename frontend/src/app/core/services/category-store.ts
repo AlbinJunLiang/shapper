@@ -10,10 +10,11 @@ export class CategoryStore {
     private categoryService = inject(CategoryService);
 
     private _categories = signal<CategoriesResponse[]>([]);
-    private _loading = signal<boolean>(false);
     private _totalCategories = signal<number>(0);
 
     public categories = computed(() => this._categories());
+    private _loading = signal<boolean>(false);
+
     public isLoading = computed(() => this._loading());
     public totalCategories = computed(() => this._totalCategories());
 
@@ -106,5 +107,10 @@ export class CategoryStore {
             // 2. Retornamos la unión de lo viejo con lo verdaderamente nuevo
             return [...prev, ...uniqueNew];
         });
+    }
+
+    setCategories(newData: PagedCategories) {
+        this._categories.set(newData.data);
+        this._totalCategories.set(newData.totalCount);
     }
 }

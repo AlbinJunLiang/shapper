@@ -8,7 +8,8 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-category-viewer',
   imports: [TranslateModule],
-  templateUrl: './category-viewer.html'})
+  templateUrl: './category-viewer.html'
+})
 export class CategoryViewer {
 
   categories = input.required<CategoriesResponse[]>();
@@ -20,7 +21,7 @@ export class CategoryViewer {
   canLoadMore = computed(() => {
     return this.categories().length < this.categoryStore.totalCategories();
   });
-  
+
 
   imageError: { [key: number]: boolean } = {};
 
@@ -29,7 +30,6 @@ export class CategoryViewer {
   }
 
   loadMore() {
-    console.log(this.actualPage())
     if (this.categories().length < this.categoryStore.totalCategories()) {
       this.actualPage.update(prev => prev + 1);
       this.categoryStore.loadCategories(this.actualPage(), this.PAGE_SIZE());

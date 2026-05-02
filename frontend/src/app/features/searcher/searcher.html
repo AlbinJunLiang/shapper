@@ -1,9 +1,5 @@
 <div class="flex justify-center items-center mt-8 p-4">
-  <div 
-    class="w-full max-w-lg" 
-    matAutocompleteOrigin 
-    #origin="matAutocompleteOrigin"
-  >
+  <div class="w-full max-w-lg" matAutocompleteOrigin #origin="matAutocompleteOrigin">
     <div
       class="group flex items-center bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 px-4 py-1 focus-within:border-gray-400"
     >
@@ -59,9 +55,7 @@
               <span class="text-sm font-semibold text-gray-900 truncate">
                 {{ prod.name }}
               </span>
-              <span class="text-xs text-gray-500"> 
-                Disponibles: {{ prod.quantity }} 
-              </span>
+              <span class="text-xs text-gray-500"> Disponibles: {{ prod.quantity }} </span>
             </div>
 
             <span class="ml-auto text-sm font-bold text-gray-900 flex-shrink-0">
@@ -70,9 +64,25 @@
           </div>
         </mat-option>
       } @empty {
-        @if (searchTerm().length > 1) {
-          <mat-option disabled class="text-center py-4 text-gray-400 text-xs">
-            Clic en la lupa para buscar "{{ searchTerm() }}"
+        @if (searchTerm().length > 1 && !hasSearched()) {
+          <mat-option disabled class="py-4 text-gray-400 text-xs">
+            <span
+              class="truncate-text"
+              [title]="'SEARCHER.CLICK_TO_SEARCH' | translate: { value: searchTerm() }"
+            >
+              {{ 'SEARCHER.CLICK_TO_SEARCH' | translate: { value: searchTerm() } }}
+            </span>
+          </mat-option>
+        }
+
+        @if (searchTerm().length > 1 && hasSearched()) {
+          <mat-option disabled class="py-4 text-gray-400 text-xs">
+            <span
+              class="truncate-text"
+              [title]="'SEARCHER.NO_RESULTS' | translate: { value: searchTerm() }"
+            >
+              {{ 'SEARCHER.NO_RESULTS' | translate: { value: searchTerm() } }}
+            </span>
           </mat-option>
         }
       }

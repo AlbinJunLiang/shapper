@@ -30,33 +30,39 @@ export class Searcher implements OnInit {
   private productStore = inject(ProductStore);
   public products = this.productStore.products;
   public searchTerm = signal('');
+  public hasSearched = signal(false);
+
   public filteredProducts = computed(() => {
     const term = this.searchTerm().toLowerCase();
+
     return this.products().filter((p: Product) =>
       p.name.toLowerCase().includes(term) ||
       p.description.toLowerCase().includes(term)
     ).slice(0, 10);
   });
-
   ngOnInit() {
-    // Sincronizamos el input con nuestro Signa de término
     this.searchControl.valueChanges.pipe(
       debounceTime(200),
       distinctUntilChanged()
     ).subscribe(value => {
       const term = typeof value === 'string' ? value : value?.name;
       this.searchTerm.set(term || '');
+
+      this.hasSearched.set(false);
     });
   }
+
 
   async performSearch() {
     const value = this.searchControl.value;
     const term = typeof value === 'string' ? value : value?.name;
 
     if (term) {
+      this.hasSearched.set(true);
       this.productStore.loadSearchProducts(term, 10);
     }
   }
+
 
   displayFn(product: Product): string {
     return product && product.name ? product.name : '';

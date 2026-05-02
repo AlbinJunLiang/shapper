@@ -115,8 +115,10 @@
                 class="w-full py-2 text-sm font-medium rounded-lg flex items-center justify-center gap-1 select-none transition-all duration-200 /* Estado Activo */ bg-gray-900 text-white hover:bg-black cursor-pointer shadow-sm active:scale-95 active:shadow-inner /* Estado Inhabilitado (Mantiene el estilo pero cambia el tono) */ disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed disabled:active:scale-100 disabled:shadow-none"
               >
                 <span class="material-icons text-[16px]">add</span>
-                <span class="hidden sm:inline"> Agregar al carrito </span>
-                <span class="sm:hidden"> Agregar </span>
+                <span class="hidden sm:inline">
+                  {{ 'PRODUCT_MODAL.ADD_TO_CART' | translate }}
+                </span>
+                <span class="sm:hidden"> {{ 'PRODUCT_MODAL.ADD' | translate }} </span>
               </button>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import { Product } from "./product.interface";
 
-export interface ProductResponse {
+export interface PagedProduct {
     totalCount: number;
     totalPages: number;
     page: number;

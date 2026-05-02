@@ -1,11 +1,14 @@
-<div class="min-h-screen !bg-[#fdfdfd]">
-  <app-toolbar></app-toolbar>
-  <app-slide-panel></app-slide-panel>
-  <div class="pb-10"><router-outlet></router-outlet></div>
-
-  @if (filterStore.categories(); as categories) {
-    <app-floating-info-panel></app-floating-info-panel>
-  }
-</div>
-
-<app-footer></app-footer>
+@if (homeStore.isLoading()) {
+  <div class="flex h-screen items-center justify-center">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+} @else {
+  <div class="min-h-screen flex flex-col  !bg-[#fdfdfd]">
+    <app-toolbar></app-toolbar>
+    <div class="flex-grow">
+       <app-slide-panel></app-slide-panel>
+       <router-outlet></router-outlet>
+    </div>
+    <app-footer></app-footer>
+  </div>
+}

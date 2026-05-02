@@ -12,7 +12,9 @@
     "PRODUCTS": "Products"
   },
   "SEARCHER": {
-    "PLACEHOLDER": "What can we help you find?"
+    "PLACEHOLDER": "What can we help you find?",
+    "CLICK_TO_SEARCH": "Click on the magnifying glass to search for \"{{ value }}\"",
+    "NO_RESULTS": "No products found for \"{{ value }}\""
   },
   "CART": {
     "EMPTY": "Your cart is empty.",
@@ -170,6 +172,7 @@
     "REVIEWS": "Reviews",
     "QUANTITY": "Quantity",
     "ADD_TO_CART": "Add to cart",
+    "ADD": "Add",
     "CANCEL": "Cancel",
     "DESCRIPTION": "Description",
     "TECHNICAL_SPECS": "Technical specifications",
