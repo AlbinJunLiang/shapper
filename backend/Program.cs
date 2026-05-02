@@ -23,6 +23,7 @@ using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 var status = builder.Environment.IsDevelopment();
+var adminEmail = builder.Configuration["AdminSettings:AdminEmail"] ?? "";
 
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
@@ -91,7 +92,6 @@ builder.Services.AddSingleton(provider =>
     return new CloudinaryDotNet.Cloudinary(url);
 });
 
-
 builder.Services.AddScoped<LocalImageStrategy>();
 builder.Services.AddScoped<CloudinaryImageStrategy>();
 builder.Services.AddScoped<ImageStrategyFactory>();
@@ -131,8 +131,6 @@ builder.Services.AddSwaggerGen(c =>
     );
 });
 
-
-
 builder
     .Services.AddAuthentication(options =>
     {
@@ -150,29 +148,30 @@ builder.Services.AddAuthorization(options =>
         "AdminOnly",
         policy =>
         {
-            policy.RequireClaim(ClaimTypes.Email, "liangalbin9@gmail.com");
+            policy.RequireClaim(ClaimTypes.Email, adminEmail);
         }
     );
 });
 
-var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
-    ?? new[] { "http://localhost:4200", "http://localhost:8080" };
+var allowedOrigins =
+    builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? new[]
+    {
+        "http://localhost:4200",
+        "http://localhost:8080",
+    };
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigins", policy =>
-    {
-        policy.WithOrigins(allowedOrigins)
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
-    });
+    options.AddPolicy(
+        "AllowSpecificOrigins",
+        policy =>
+        {
+            policy.WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+        }
+    );
 });
 
 var app = builder.Build();
-
-
-
 
 app.UseCors("AllowSpecificOrigins");
 
