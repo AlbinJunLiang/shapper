@@ -182,7 +182,9 @@ const generatePDF = (
     styles,
   };
 
-pdfMake.createPdf(docDefinition).download();
+  pdfMake.createPdf(docDefinition).download(
+    `Order-${order.orderReference}.pdf`
+  );
 };
 
 export default generatePDF;
