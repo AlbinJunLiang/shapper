@@ -18,7 +18,7 @@ export class SubcategoryStore {
     public totalSubcategories = computed(() => this._totalSubcategories());
 
 
-    getSubcategories(page: number = 1, pageSize: number = 8) {
+    getSubcategories(page: number = 1, pageSize: number = 100) {
         if (this._loading()) return;
         this._loading.set(true);
 

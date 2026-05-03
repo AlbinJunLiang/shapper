@@ -12,7 +12,10 @@ namespace Shapper.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ILogger<CategoriesController> _logger;
 
-        public CategoriesController(ICategoryService categoryService, ILogger<CategoriesController> logger)
+        public CategoriesController(
+            ICategoryService categoryService,
+            ILogger<CategoriesController> logger
+        )
         {
             _categoryService = categoryService;
             _logger = logger;
@@ -25,7 +28,14 @@ namespace Shapper.Controllers
             try
             {
                 var category = await _categoryService.CreateAsync(dto);
-                return Ok(new { success = true, message = "Category created successfully", data = category });
+                return Ok(
+                    new
+                    {
+                        success = true,
+                        message = "Category created successfully",
+                        data = category,
+                    }
+                );
             }
             catch (InvalidOperationException ex)
             {
@@ -51,16 +61,18 @@ namespace Shapper.Controllers
             return Ok(new { success = true, data = category });
         }
 
-
-
         [HttpGet]
         public async Task<IActionResult> GetPaginatedAsync(int page = 1, int pageSize = 10)
         {
             if (page <= 0)
-                return BadRequest(new { success = false, message = "Page number must be greater than 0." });
+                return BadRequest(
+                    new { success = false, message = "Page number must be greater than 0." }
+                );
 
             if (pageSize <= 0 || pageSize > 100)
-                return BadRequest(new { success = false, message = "Page size must be between 1 and 100." });
+                return BadRequest(
+                    new { success = false, message = "Page size must be between 1 and 100." }
+                );
 
             var result = await _categoryService.GetPaginatedAsync(page, pageSize);
             return Ok(result);
@@ -83,7 +95,14 @@ namespace Shapper.Controllers
             try
             {
                 var category = await _categoryService.UpdateAsync(id, dto);
-                return Ok(new { success = true, message = "Category updated successfully", data = category });
+                return Ok(
+                    new
+                    {
+                        success = true,
+                        message = "Category updated successfully",
+                        data = category,
+                    }
+                );
             }
             catch (InvalidOperationException ex)
             {

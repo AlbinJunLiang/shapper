@@ -39,8 +39,20 @@ export class ProductService {
       );
   }
 
-  filterProducts(filters: any): Observable<any> {
-    const params = new HttpParams({ fromObject: filters });
+
+  filterProducts(
+    filters: any,
+    page: number = 1,
+    pageSize: number = 8
+  ): Observable<any> {
+
+    const params = new HttpParams({
+      fromObject: {
+        ...filters,
+        page,
+        pageSize
+      }
+    });
 
     return this.http.get<any>(`${this.apiUrl}/Products/filter`, {
       params,
@@ -49,7 +61,6 @@ export class ProductService {
       catchError((err) => throwError(() => err))
     );
   }
-
 
   searchProducts(term: string, count: number = 5) {
     const url = `${this.apiUrl}/Products/search?term=${term}&count=${count}`;

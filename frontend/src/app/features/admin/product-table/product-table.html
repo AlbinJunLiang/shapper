@@ -122,7 +122,7 @@
 
           <div class="px-6 py-4">
             <mat-paginator
-              [length]="productStore.pagination().total"
+              [length]="totalItems()"
               [pageSize]="pageSize()"
               [pageSizeOptions]="[1, 5, 20, 30, 50]"
               (page)="onPageChange($event)"

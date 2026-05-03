@@ -189,7 +189,6 @@ export class ProductForm {
 
           },
           error: (err) => {
-            console.log(err)
             this.dialog.open(VerifyDialog, {
               width: '350px',
               data: {
@@ -206,7 +205,6 @@ export class ProductForm {
           next: (res) => {
             this.notify.show("Producto creado!");
             this.isFormOpen.set(false);
-            this.productStore.loadProducts();
           },
           error: (err) => {
             console.log(err)

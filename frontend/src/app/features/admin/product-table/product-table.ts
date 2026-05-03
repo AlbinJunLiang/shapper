@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatHeaderCellDef, MatHeaderRowDef, MatRowDef, MatTableModule, MatColumnDef } from '@angular/material/table';
@@ -36,6 +36,11 @@ export class ProductTable {
   private notify = inject(NotificationService);
 
 
+  protected totalItems = computed(() => this.productStore.apiResponse().totalCount);
+
+  protected pageIndex = computed(() => this.productStore.apiResponse().page - 1);
+
+
   ngOnInit(): void {
     this.loadProducts();
   }
@@ -45,11 +50,11 @@ export class ProductTable {
   }
 
   onPageChange(event: PageEvent): void {
-    this.currentPage.set(event.pageIndex + 1);
-    this.pageSize.set(event.pageSize);
-    this.loadProducts();
+    this.productStore.loadProductsAdmin(
+      event.pageIndex + 1,
+      event.pageSize
+    );
   }
-
 
   openImageManager(product: Product) {
     this.dialog.open(ProductImageDialog, {

@@ -1,135 +1,142 @@
 <app-searcher></app-searcher>
 
 <div class="max-w-7xl mx-auto py-10 px-6">
-  <div class="mb-14">
-    <h2 class="text-xs uppercase tracking-[0.4em] text-[rgb(80,59,246)] mb-2">
-      {{ 'PRODUCT_LIST.TITLE' | translate }}
-    </h2>
-    <h3 class="text-3xl font-light text-gray-800">{{ 'PRODUCT_LIST.SUBTITLE' | translate }}</h3>
-  </div>
+  @if (!productStore.isLoading()) {
+    <div class="mb-14">
+      <h2 class="text-xs uppercase tracking-[0.4em] text-[rgb(80,59,246)] mb-2">
+        {{ 'PRODUCT_LIST.TITLE' | translate }}
+      </h2>
+      <h3 class="text-3xl font-light text-gray-800">{{ 'PRODUCT_LIST.SUBTITLE' | translate }}</h3>
+    </div>
+    @if (productStore.products().length === 0) {
+      <p class="text-gray-600">
+        {{ 'PRODUCT_LIST.NO_PRODUCTS' | translate }}
+        <a
+          routerLink="/home"
+          class="text-blue-700 hover:text-blue-900 hover:underline transition-colors duration-200 cursor-pointer"
+        >
+          {{ 'PRODUCT_LIST.GO_BACK' | translate }}
+        </a>
+      </p>
+    } @else {
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10 md:gap-y-14">
+        @for (product of productsWithTax(); track $index) {
+          <div class="flex flex-col">
+            <div
+              class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col h-full"
+            >
+              <div class="relative aspect-[4/3.5] overflow-hidden bg-gray-50 group">
+                @if (product.images && product.images.length > 0) {
+                  <img
+                    #imgRef
+                    [src]="product.images[0].imageUrl"
+                    [alt]="product.name"
+                    class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+                    (error)="
+                      imgRef.classList.add('hidden');
+                      fallback.classList.remove('hidden');
+                      fallback.classList.add('flex')
+                    "
+                  />
+                }
 
-  @if (products().length === 0) {
-    <p class="text-gray-600">
-      {{ 'PRODUCT_LIST.NO_PRODUCTS' | translate }}
-      <a
-        routerLink="/home"
-        class="text-blue-700 hover:text-blue-900 hover:underline transition-colors duration-200 cursor-pointer"
-      >
-        {{ 'PRODUCT_LIST.GO_BACK' | translate }}
-      </a>
-    </p>
-  } @else {
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10 md:gap-y-14">
-      @for (product of productsWithTax(); track $index) {
-        <div class="flex flex-col">
-          <div
-            class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col h-full"
-          >
-            <div class="relative aspect-[4/3.5] overflow-hidden bg-gray-50 group">
-              @if (product.images && product.images.length > 0) {
-                <img
-                  #imgRef
-                  [src]="product.images[0].imageUrl"
-                  [alt]="product.name"
-                  class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
-                  (error)="
-                    imgRef.classList.add('hidden');
-                    fallback.classList.remove('hidden');
-                    fallback.classList.add('flex')
-                  "
-                />
-              }
+                <div
+                  #fallback
+                  [class.flex]="!product.images || product.images.length === 0"
+                  [class.hidden]="product.images && product.images.length > 0"
+                  class="absolute inset-0 flex-col items-center justify-center bg-gray-100 text-gray-400 border-2 border-dashed border-gray-200"
+                >
+                  <span class="material-icons text-[40px] mb-2 opacity-30"
+                    >image_not_supported</span
+                  >
+                  <span class="text-[12px] tracking-widest">{{
+                    'PRODUCT_MODAL.NOT_AVAILABLE' | translate
+                  }}</span>
+                </div>
 
-              <div
-                #fallback
-                [class.flex]="!product.images || product.images.length === 0"
-                [class.hidden]="product.images && product.images.length > 0"
-                class="absolute inset-0 flex-col items-center justify-center bg-gray-100 text-gray-400 border-2 border-dashed border-gray-200"
-              >
-                <span class="material-icons text-[40px] mb-2 opacity-30">image_not_supported</span>
-                <span class="text-[12px] tracking-widest">{{
-                  'PRODUCT_MODAL.NOT_AVAILABLE' | translate
-                }}</span>
+                <div
+                  class="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 backdrop-blur-none group-hover:backdrop-blur-[1px] transition duration-500"
+                >
+                  <button
+                    (click)="showProduct(product)"
+                    type="button"
+                    class="flex items-center justify-center w-12 h-12 rounded-full bg-white/90 shadow-lg opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 hover:scale-110 transition-all duration-300"
+                  >
+                    <span class="material-icons text-gray-700">search</span>
+                  </button>
+                </div>
               </div>
 
-              <div
-                class="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 backdrop-blur-none group-hover:backdrop-blur-[1px] transition duration-500"
-              >
+              <div class="p-3 flex flex-col flex-grow">
+                <div class="flex-grow flex flex-col gap-1 mb-2">
+                  <h4
+                    class="text-gray-800 text-sm font-medium leading-tight line-clamp-2 min-h-[15px] md:min-h-[18px]"
+                  >
+                    {{ product.name }}
+                  </h4>
+
+                  <div class="flex flex-row items-baseline gap-2 mt-auto">
+                    <span class="text-lg font-bold text-gray-900">
+                      {{ product.newPrice | currency: currency }}
+                    </span>
+                    @if (product.discount > 0) {
+                      <span
+                        class="text-[15px] text-gray-400 line-through truncate block max-w-[100px]"
+                      >
+                        {{ product.totalDisplayPrice | currency: currency }}
+                      </span>
+                    }
+                  </div>
+                </div>
                 <button
                   (click)="showProduct(product)"
-                  type="button"
-                  class="flex items-center justify-center w-12 h-12 rounded-full bg-white/90 shadow-lg opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 hover:scale-110 transition-all duration-300"
+                  [disabled]="
+                    product.status.toUpperCase() !== Status.ACTIVE || product.quantity === 0
+                  "
+                  class="w-full py-2 text-sm font-medium rounded-lg flex items-center justify-center gap-1 select-none transition-all duration-200 /* Estado Activo */ bg-gray-900 text-white hover:bg-black cursor-pointer shadow-sm active:scale-95 active:shadow-inner /* Estado Inhabilitado (Mantiene el estilo pero cambia el tono) */ disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed disabled:active:scale-100 disabled:shadow-none"
                 >
-                  <span class="material-icons text-gray-700">search</span>
+                  <span class="material-icons text-[16px]">add</span>
+                  <span class="hidden sm:inline">
+                    {{ 'PRODUCT_MODAL.ADD_TO_CART' | translate }}
+                  </span>
+                  <span class="sm:hidden"> {{ 'PRODUCT_MODAL.ADD' | translate }} </span>
                 </button>
               </div>
             </div>
-
-            <div class="p-3 flex flex-col flex-grow">
-              <div class="flex-grow flex flex-col gap-1 mb-2">
-                <h4
-                  class="text-gray-800 text-sm font-medium leading-tight line-clamp-2 min-h-[15px] md:min-h-[18px]"
-                >
-                  {{ product.name }}
-                </h4>
-
-                <div class="flex flex-row items-baseline gap-2 mt-auto">
-                  <span class="text-lg font-bold text-gray-900">
-                    {{ product.newPrice | currency: currency }}
-                  </span>
-                  @if (product.discount > 0) {
-                    <span
-                      class="text-[15px] text-gray-400 line-through truncate block max-w-[100px]"
-                    >
-                      {{ product.totalDisplayPrice | currency: currency }}
-                    </span>
-                  }
-                </div>
-              </div>
-              <button
-                (click)="showProduct(product)"
-                [disabled]="
-                  product.status.toUpperCase() !== Status.ACTIVE || product.quantity === 0
-                "
-                class="w-full py-2 text-sm font-medium rounded-lg flex items-center justify-center gap-1 select-none transition-all duration-200 /* Estado Activo */ bg-gray-900 text-white hover:bg-black cursor-pointer shadow-sm active:scale-95 active:shadow-inner /* Estado Inhabilitado (Mantiene el estilo pero cambia el tono) */ disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed disabled:active:scale-100 disabled:shadow-none"
-              >
-                <span class="material-icons text-[16px]">add</span>
-                <span class="hidden sm:inline">
-                  {{ 'PRODUCT_MODAL.ADD_TO_CART' | translate }}
-                </span>
-                <span class="sm:hidden"> {{ 'PRODUCT_MODAL.ADD' | translate }} </span>
-              </button>
-            </div>
           </div>
-        </div>
-      }
+        }
+      </div>
+    }
+
+    <!-- PAGINADOR -->
+    <div class="flex items-center justify-center gap-8 mt-10 text-sm text-gray-500">
+      <button
+        (click)="prevPage()"
+        [disabled]="currentPage() === 1"
+        class="flex items-center gap-1 hover:text-black transition-colors disabled:opacity-30 disabled:cursor-default"
+      >
+        {{ 'PRODUCT_LIST.BACK' | translate }}
+      </button>
+
+      <span class="font-medium text-gray-400">
+        {{ startItem() }} - {{ endItem() }} <span class="mx-1 text-gray-300">/</span>
+        {{ this.totalItems() }}
+      </span>
+
+      <button
+        (click)="nextPage()"
+        [disabled]="currentPage() >= totalPages()"
+        class="flex items-center gap-1 transition-all duration-300 text-gray-600 hover:text-black disabled:opacity-40 disabled:cursor-not-allowed disabled:grayscale disabled:pointer-events-none"
+      >
+        {{ 'PRODUCT_LIST.NEXT' | translate }}
+        <span class="material-icons text-[18px]">chevron_right</span>
+      </button>
+    </div>
+  } @else {
+    <div class="flex items-center justify-center">
+      <mat-spinner diameter="50"></mat-spinner>
     </div>
   }
-
-  <!-- PAGINADOR -->
-  <div class="flex items-center justify-center gap-8 mt-10 text-sm text-gray-500">
-    <button
-      (click)="prevPage()"
-      [disabled]="currentPage() === 1"
-      class="flex items-center gap-1 hover:text-black transition-colors disabled:opacity-30 disabled:cursor-default"
-    >
-      {{ 'PRODUCT_LIST.BACK' | translate }}
-    </button>
-
-    <span class="font-medium text-gray-400">
-      {{ startItem() }} - {{ endItem() }} <span class="mx-1 text-gray-300">/</span>
-      {{ this.totalItems() }}
-    </span>
-
-    <button
-      (click)="nextPage()"
-      [disabled]="currentPage() >= totalPages"
-      class="flex items-center gap-1 transition-all duration-300 text-gray-600 hover:text-black disabled:opacity-40 disabled:cursor-not-allowed disabled:grayscale disabled:pointer-events-none"
-    >
-      {{ 'PRODUCT_LIST.NEXT' | translate }}
-      <span class="material-icons text-[18px]">chevron_right</span>
-    </button>
-  </div>
 </div>
 
 <div class="fixed inset-0 pointer-events-none">

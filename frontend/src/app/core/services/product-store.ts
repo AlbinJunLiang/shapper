@@ -43,7 +43,6 @@ export class ProductStore {
     }
 
     loadProductsAdmin(page: number = 1, pageSize: number = 10, onlyFeatured: boolean = false) {
-        if (this._loading()) return;
         this._loading.set(true);
         this.productService.getProductsAdmin(page, pageSize, onlyFeatured).subscribe({
             next: (response) => {
@@ -55,11 +54,11 @@ export class ProductStore {
     }
 
 
-    loadFilterProducts(filters: any) {
+    loadFilterProducts(filters: any, page: number = 1, pageSize: number = 8) {
         if (this._loading()) return;
         this._loading.set(true);
 
-        this.productService.filterProducts(filters).subscribe({
+        this.productService.filterProducts(filters, page, pageSize).subscribe({
             next: (response) => {
                 this._apiResponse.set(response);
 
@@ -131,8 +130,10 @@ export class ProductStore {
 
     createProduct(data: ProductRequest) {
         this._loading.set(true);
+
         return this.productService.createProduct(data).pipe(
             tap((response: Product) => {
+                this.loadProductsAdmin(); 
             }),
             finalize(() => this._loading.set(false))
         );
@@ -154,24 +155,24 @@ export class ProductStore {
     }
 
 
- updateProduct(data: ProductRequest, productId: number) {
-  this._loading.set(true);
+    updateProduct(data: ProductRequest, productId: number) {
+        this._loading.set(true);
 
-  return this.productService.updateProduct(data, productId).pipe(
-    tap(() => {
-      this._apiResponse.update(state => ({
-        ...state,
-        data: state.data.map(p =>
-          p.id === productId
-            ? {
-                ...p,        // mantienes Product completo
-                ...data      // aplicas ProductRequest encima
-              }
-            : p
-        )
-      }));
-    }),
-    finalize(() => this._loading.set(false))
-  );
-}
+        return this.productService.updateProduct(data, productId).pipe(
+            tap(() => {
+                this._apiResponse.update(state => ({
+                    ...state,
+                    data: state.data.map(p =>
+                        p.id === productId
+                            ? {
+                                ...p,        // mantienes Product completo
+                                ...data      // aplicas ProductRequest encima
+                            }
+                            : p
+                    )
+                }));
+            }),
+            finalize(() => this._loading.set(false))
+        );
+    }
 }

@@ -40,7 +40,7 @@ export class CategoryViewer {
   navigateToCategory(categoryId: string | number) {
     this.router.navigate(['/products', 'filter'], {
       queryParams: {
-        subcategoryIds: categoryId, pageSize: 8
+        categoryIds: categoryId, pageSize: 8
       },
     });
 

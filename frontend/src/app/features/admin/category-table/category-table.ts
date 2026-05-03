@@ -32,7 +32,7 @@ import { VerifyDialog } from '../../dialog/verify-dialog/verify-dialog';
 export class CategoryTable {
 
   protected displayedColumns: string[] = ['actions', 'id', 'name', 'description', 'imageUrl'];
-  protected pageSize = signal(10);
+  protected pageSize = signal(8);
   protected currentPage = signal(1);
   protected categoryStore = inject(CategoryStore);
   protected isFormOpen = signal(false);
