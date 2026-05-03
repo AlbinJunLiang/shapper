@@ -41,6 +41,7 @@ export class OrderDetailDialog {
   public order = signal<OrderResponse | undefined | null>(undefined);
   protected orderStatus = getStatusTranslationKey;
   private destroyRef = inject(DestroyRef);
+  protected isLoading = signal(false);
 
 
   close(): void {
@@ -58,12 +59,22 @@ export class OrderDetailDialog {
       });
   }
 
-onGeneratePDF() {
-  const result = this.storeService.getLink(LinkType.OTHER, LinkName.STORE_LINK);
-  const link = result?.url ?? 'google.com';
 
-  const currentOrder = this.order();
-  if (!currentOrder) return;
-  generatePDF(currentOrder, link);
-}
+  async onGeneratePDF() {
+    this.isLoading.set(true);
+
+    try {
+      const order = this.order();
+      if (!order) return;
+
+      const result = this.storeService.getLink(LinkType.OTHER, LinkName.STORE_LINK);
+      const link = result?.url ?? 'google.com';
+
+      await generatePDF(order, link); //  aquí se espera el PDF
+    } catch (error) {
+      console.error(error);
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
 }
