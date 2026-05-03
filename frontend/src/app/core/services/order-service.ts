@@ -41,9 +41,7 @@ export class OrderService {
         const params = new HttpParams()
             .set('page', page.toString())
             .set('pageSize', pageSize.toString());
-        return this.http.get<any>(`${this.apiUrl}/Orders`, {
-            params, context: new HttpContext().set(IS_PUBLIC, true)
-        })
+        return this.http.get<any>(`${this.apiUrl}/Orders`)
             .pipe(
                 catchError((err) => {
                     return throwError(() => err);

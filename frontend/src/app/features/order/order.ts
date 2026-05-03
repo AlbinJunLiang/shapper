@@ -102,7 +102,6 @@ export class Order implements OnInit, OnDestroy {
       total: o.total
     }));
 
-    console.log(data)
     this.dataSource.data = orders;
     this.totalItems.set(total);
     this.isLoading.set(false);
