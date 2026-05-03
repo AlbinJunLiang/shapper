@@ -5,16 +5,22 @@ const generatePDF = async (
   order: OrderResponse,
   storeLink: string
 ) => {
+  // 1. Importación dinámica de los módulos
+  const pdfMakeModule = await import('pdfmake/build/pdfmake');
+  const pdfFontsModule = await import('pdfmake/build/vfs_fonts');
 
-  const pdfMakeModule = await import("pdfmake/build/pdfmake");
-  const pdfFontsModule = await import("pdfmake/build/vfs_fonts");
+  // 2. Acceso correcto a los objetos
+  // Dependiendo de la versión, pdfmake puede estar en .default o directamente
+  const pdfMake = pdfMakeModule.default || pdfMakeModule;
+  const vfs = pdfFontsModule.default?.pdfMake?.vfs || pdfFontsModule.pdfMake?.vfs
 
-  const pdfMake = pdfMakeModule.default;
-  const pdfFonts = pdfFontsModule;
+  if (!vfs) {
+    console.error("No se pudo cargar el sistema de archivos virtual (vfs) de pdfMake");
+    return;
+  }
 
-  (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
-  (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
-
+  // 3. Asignación del VFS
+  pdfMake.vfs = vfs;
 
   const orderDetails = order.details;
   const currency = environment.currency;
@@ -151,7 +157,6 @@ const generatePDF = async (
     content,
     styles,
   };
-
 
   pdfMake.createPdf(docDefinition).download(
     `Order-${order.orderReference}.pdf`
