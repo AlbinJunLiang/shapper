@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ProductService } from '../../core/services/product-service';
 import { ProductDialogService } from '../../core/services/product-dialog.service';
 import { CommonModule } from '@angular/common';
@@ -32,6 +32,14 @@ export class ProductList {
   public totalItems = signal(0);
   readonly pageSize = 8;
   protected Status = ProductStatus;
+
+public productsWithTax = computed(() => {
+  return this.productStore.products().map(product => ({
+    ...product,
+    // Calculamos el total una sola vez por producto
+    totalDisplayPrice: product.price * (1 + (product.taxAmount || 0) / 100)
+  }));
+});
 
   get totalPages() {
     return Math.ceil(this.totalItems() / this.pageSize);

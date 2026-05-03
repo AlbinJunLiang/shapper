@@ -90,7 +90,7 @@
         <span class="text-[1.4rem] font-bold">{{ data.newPrice | currency: currency }}</span>
         @if (data.discount > 0) {
           <span class="text-[#94a3b8] line-through text-[0.9rem] ml-[5px]">{{
-            data.price | currency: currency
+            data.price * (1 + (data.taxAmount || 0) / 100) | currency: currency
           }}</span>
         }
       </div>

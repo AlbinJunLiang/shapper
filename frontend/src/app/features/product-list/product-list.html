@@ -8,26 +8,24 @@
     <h3 class="text-3xl font-light text-gray-800">{{ 'PRODUCT_LIST.SUBTITLE' | translate }}</h3>
   </div>
 
-      @if (products().length === 0) {
-      <p class="text-gray-600">
-        {{ 'PRODUCT_LIST.NO_PRODUCTS' | translate }}
-        <a
-          routerLink="/home"
-          class="text-blue-700 hover:text-blue-900 hover:underline transition-colors duration-200 cursor-pointer"
-        >
-          {{ 'PRODUCT_LIST.GO_BACK' | translate }}
-        </a>
-      </p>
-    } @else {
-
-  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10 md:gap-y-14">
-      @for (product of products(); track $index) {
+  @if (products().length === 0) {
+    <p class="text-gray-600">
+      {{ 'PRODUCT_LIST.NO_PRODUCTS' | translate }}
+      <a
+        routerLink="/home"
+        class="text-blue-700 hover:text-blue-900 hover:underline transition-colors duration-200 cursor-pointer"
+      >
+        {{ 'PRODUCT_LIST.GO_BACK' | translate }}
+      </a>
+    </p>
+  } @else {
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10 md:gap-y-14">
+      @for (product of productsWithTax(); track $index) {
         <div class="flex flex-col">
           <div
             class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col h-full"
           >
             <div class="relative aspect-[4/3.5] overflow-hidden bg-gray-50 group">
-      
               @if (product.images && product.images.length > 0) {
                 <img
                   #imgRef
@@ -83,7 +81,7 @@
                     <span
                       class="text-[15px] text-gray-400 line-through truncate block max-w-[100px]"
                     >
-                      {{ product.price | currency: currency }}
+                      {{ product.totalDisplayPrice | currency: currency }}
                     </span>
                   }
                 </div>
@@ -105,8 +103,8 @@
           </div>
         </div>
       }
-  </div>
-}
+    </div>
+  }
 
   <!-- PAGINADOR -->
   <div class="flex items-center justify-center gap-8 mt-10 text-sm text-gray-500">
