@@ -4,6 +4,12 @@
   <img src="https://github.com/AlbinJunLiang/shapper/blob/main/frontend/public/Shapper.png?raw=true" width="800"/>
 </p>
 
+<p align="center">
+  <a href="https://albinjunliang.github.io/shapper/" target="_blank">
+    <img src="https://img.shields.io/badge/Ver%20App-Online-blue?style=for-the-badge">
+  </a>
+</p>
+
 Aplicación web tipo tienda en línea o comercio electrónico, con carrito de compras, filtros y solicitud de pedidos. Desarrallado con la arquitectura de **N-Layers** y el uso del patrón **Strategy** para el manejo de diferentes proveedores de servicio.
 
 - Pasarelas de pagos por diferentes proveedores como Stripe y Paypal.
