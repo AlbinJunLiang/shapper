@@ -23,6 +23,13 @@ El proyecto está realizado con fines prácticos y se encuentra en proceso de ad
 
 ## Configuraciones necesarias para el despliegue.
 
+Project STACK
+
+
+<p align="center">
+  <img src="documentation\Shapper-stack.drawio.svg" alt="stack" width="500">
+</p>
+
 ### Configuraciones de servicios
 
 #### Configuración del proveedor de autenticación
@@ -425,7 +432,7 @@ GET /api/orders/reference/{reference}
 - Aplica para todo el módulo administrador
 
 
-Dependencias
+# Dependencias
 ```json
 "@angular/fire": "^20.0.1",
 "@angular/forms": "^21.0.0",

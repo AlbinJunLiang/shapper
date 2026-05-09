@@ -1,0 +1,201 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Página-1" id="GnQthVJ53H69OYzlkN1r">
+    <mxGraphModel dx="589" dy="326" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-19" parent="1" style="swimlane;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;startSize=20;html=1;" value="Simple order flow" vertex="1">
+          <mxGeometry height="830" width="571" x="150" y="111" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-32" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-19" source="NgH-ecrcDMsy-z5FTWN3-31" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-35" value="no">
+          <mxGeometry relative="1" x="-0.3524" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="110" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-66" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-19" source="NgH-ecrcDMsy-z5FTWN3-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-64">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="70" y="425" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-80" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-19" source="NgH-ecrcDMsy-z5FTWN3-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-79">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-81" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-19" source="NgH-ecrcDMsy-z5FTWN3-79" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-41">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="489" y="444" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-84" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-19" source="NgH-ecrcDMsy-z5FTWN3-83" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-71" value="no">
+          <mxGeometry relative="1" x="-1" as="geometry">
+            <mxPoint x="220" y="589" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-73" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-19" source="NgH-ecrcDMsy-z5FTWN3-72" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="NgH-ecrcDMsy-z5FTWN3-25" value="no">
+          <mxGeometry relative="1" x="-0.968" y="10" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="549" y="649" />
+              <mxPoint x="549" y="49" />
+              <mxPoint x="85" y="49" />
+            </Array>
+            <mxPoint x="549" y="649" as="sourcePoint" />
+            <mxPoint x="179" y="515" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-105" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-19" source="NgH-ecrcDMsy-z5FTWN3-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="NgH-ecrcDMsy-z5FTWN3-98">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="125" y="84" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-20" parent="NgH-ecrcDMsy-z5FTWN3-19" style="swimlane;startSize=20;html=1;" value="Customer" vertex="1">
+          <mxGeometry height="810" width="170" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-106" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-20" source="NgH-ecrcDMsy-z5FTWN3-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="NgH-ecrcDMsy-z5FTWN3-25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-23" parent="NgH-ecrcDMsy-z5FTWN3-20" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="70.5" y="109" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-25" parent="NgH-ecrcDMsy-z5FTWN3-20" style="html=1;whiteSpace=wrap;" value="Pay order" vertex="1">
+          <mxGeometry height="25" width="80" x="45.5" y="51.5" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-35" parent="NgH-ecrcDMsy-z5FTWN3-20" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#ff0000;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="70" y="204" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-45" parent="NgH-ecrcDMsy-z5FTWN3-20" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="END" vertex="1">
+          <mxGeometry height="30" width="60" x="55" y="229" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-86" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-20" source="NgH-ecrcDMsy-z5FTWN3-64" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-83">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-64" parent="NgH-ecrcDMsy-z5FTWN3-20" style="html=1;whiteSpace=wrap;" value="Process the payment" vertex="1">
+          <mxGeometry height="50" width="110" x="30" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-83" parent="NgH-ecrcDMsy-z5FTWN3-20" style="rhombus;whiteSpace=wrap;html=1;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" value="cancel?" vertex="1">
+          <mxGeometry height="40" width="80" x="45" y="549" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-85" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-20" source="NgH-ecrcDMsy-z5FTWN3-83" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=top;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;" value="yes">
+          <mxGeometry relative="1" x="-0.5" y="14" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="85" y="629" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-87" parent="NgH-ecrcDMsy-z5FTWN3-20" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#ff0000;" value="" vertex="1">
+          <mxGeometry height="31" width="30" x="70" y="679" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-89" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-20" source="NgH-ecrcDMsy-z5FTWN3-88" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-87">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-88" parent="NgH-ecrcDMsy-z5FTWN3-20" style="html=1;whiteSpace=wrap;" value="(CANCEL)" vertex="1">
+          <mxGeometry height="29" width="75" x="47.5" y="629" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-116" parent="NgH-ecrcDMsy-z5FTWN3-20" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="END" vertex="1">
+          <mxGeometry height="30" width="60" x="100" y="679" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-21" parent="NgH-ecrcDMsy-z5FTWN3-19" style="swimlane;startSize=20;html=1;" value="Server" vertex="1">
+          <mxGeometry height="810" width="201" x="170" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-34" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-21" source="NgH-ecrcDMsy-z5FTWN3-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-31">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-28" parent="NgH-ecrcDMsy-z5FTWN3-21" style="html=1;whiteSpace=wrap;" value="validate data" vertex="1">
+          <mxGeometry height="40" width="90" x="40" y="139" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-31" parent="NgH-ecrcDMsy-z5FTWN3-21" style="rhombus;whiteSpace=wrap;html=1;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" value="is valid" vertex="1">
+          <mxGeometry height="40" width="80" x="45" y="199" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-33" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-21" source="NgH-ecrcDMsy-z5FTWN3-31" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=top;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-36" value="yes">
+          <mxGeometry relative="1" x="-1" as="geometry">
+            <mxPoint x="85" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-38" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-21" source="NgH-ecrcDMsy-z5FTWN3-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-40">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="85" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-36" parent="NgH-ecrcDMsy-z5FTWN3-21" style="html=1;whiteSpace=wrap;" value="create order&lt;div&gt;(PENDING)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="40" width="110" x="30" y="259" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-40" parent="NgH-ecrcDMsy-z5FTWN3-21" style="html=1;whiteSpace=wrap;" value="Create order details" vertex="1">
+          <mxGeometry height="40" width="110" x="30" y="329" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-41" parent="NgH-ecrcDMsy-z5FTWN3-21" style="html=1;whiteSpace=wrap;" value="Send payment access&lt;br&gt;&lt;div&gt;(&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;IN PROGRESS&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="110" x="30" y="399" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-98" parent="NgH-ecrcDMsy-z5FTWN3-21" style="rhombus;whiteSpace=wrap;html=1;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" value="Exists order?" vertex="1">
+          <mxGeometry height="50" width="95" x="38" y="39" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-99" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-21" source="NgH-ecrcDMsy-z5FTWN3-98" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-28" value="no">
+          <mxGeometry relative="1" x="0.0508" y="14" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="391" y="129" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-111" parent="NgH-ecrcDMsy-z5FTWN3-21" style="html=1;whiteSpace=wrap;" value="Send confirmation EMAIL (PAID)" vertex="1">
+          <mxGeometry height="30" width="110" x="59" y="748" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-29" parent="NgH-ecrcDMsy-z5FTWN3-19" style="swimlane;startSize=20;html=1;" value="Payment Gateway" vertex="1">
+          <mxGeometry height="810" width="200" x="371" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-75" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-29" source="NgH-ecrcDMsy-z5FTWN3-71" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-72">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-71" parent="NgH-ecrcDMsy-z5FTWN3-29" style="html=1;whiteSpace=wrap;" value="Validate payment data (balance, info)" vertex="1">
+          <mxGeometry height="40" width="110" x="44.5" y="549" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-72" parent="NgH-ecrcDMsy-z5FTWN3-29" style="rhombus;whiteSpace=wrap;html=1;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;" value="Is valid" vertex="1">
+          <mxGeometry height="40" width="80" x="60" y="609" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-74" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-29" source="NgH-ecrcDMsy-z5FTWN3-72" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=top;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;" target="NgH-ecrcDMsy-z5FTWN3-90" value="yes">
+          <mxGeometry relative="1" x="1" y="19" as="geometry">
+            <mxPoint x="-15" y="19" as="offset" />
+            <Array as="points">
+              <mxPoint x="138" y="639" />
+              <mxPoint x="98" y="639" />
+              <mxPoint x="98" y="640" />
+              <mxPoint x="100" y="640" />
+            </Array>
+            <mxPoint x="104" y="640" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-79" parent="NgH-ecrcDMsy-z5FTWN3-29" style="html=1;whiteSpace=wrap;" value="Create session and checkout" vertex="1">
+          <mxGeometry height="30" width="110" x="60" y="334" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-94" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-29" source="NgH-ecrcDMsy-z5FTWN3-90" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-92">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-90" parent="NgH-ecrcDMsy-z5FTWN3-29" style="html=1;whiteSpace=wrap;" value="Payment accepted" vertex="1">
+          <mxGeometry height="41" width="101" x="49.5" y="669" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-92" parent="NgH-ecrcDMsy-z5FTWN3-29" style="html=1;whiteSpace=wrap;" value="call WEBHOOK" vertex="1">
+          <mxGeometry height="29" width="90" x="55" y="749" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-100" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-19" source="NgH-ecrcDMsy-z5FTWN3-98" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=top;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-79" value="yes">
+          <mxGeometry relative="1" x="-1" as="geometry">
+            <Array as="points">
+              <mxPoint x="486" y="84" />
+            </Array>
+            <mxPoint x="499" y="319" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-113" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-19" source="NgH-ecrcDMsy-z5FTWN3-92" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-111">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-114" edge="1" parent="NgH-ecrcDMsy-z5FTWN3-19" source="NgH-ecrcDMsy-z5FTWN3-111" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="NgH-ecrcDMsy-z5FTWN3-87">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="110" y="783" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NgH-ecrcDMsy-z5FTWN3-95" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Yes" vertex="1">
+          <mxGeometry height="30" width="60" x="610" y="770" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
