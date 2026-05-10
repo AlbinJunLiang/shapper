@@ -59,7 +59,7 @@ export class Searcher implements OnInit {
 
     if (term) {
       this.hasSearched.set(true);
-      this.productStore.loadSearchProducts(term, 10);
+      this.productStore.loadSearchProducts(term, 8);
     }
   }
 

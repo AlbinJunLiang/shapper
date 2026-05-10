@@ -134,7 +134,8 @@ export class ProductReview {
 
   async toggleReviewFrom() {
     if (!this.authService.isLoggedIn()) {
-      this.notify.show("Inicia sesión para comentar.");
+      this.notify.show("AUTH.AUTH_REQUIRED");
+
       return;
     }
     this.writeReviewEnabled = !this.writeReviewEnabled;

@@ -25,21 +25,14 @@
             {{ 'FLOATING.FILTER.PRICE.TITLE' | translate }}
           </h3>
           <div class="flex items-center gap-2 text-indigo-600 font-mono font-bold">
-            <span class="bg-indigo-50 px-2 py-1 rounded">{{currency}}{{ minPrice() }}</span>
+            <span class="bg-indigo-50 px-2 py-1 rounded">{{ currency }}{{ minPrice() }}</span>
             <span class="text-slate-300">—</span>
-            <span class="bg-indigo-50 px-2 py-1 rounded">{{currency}}{{ maxPrice() }}</span>
+            <span class="bg-indigo-50 px-2 py-1 rounded">{{ currency }}{{ maxPrice() }}</span>
           </div>
         </div>
 
         <div class="slider-container">
-          <mat-slider
-            min="0"
-            max="{{ maxLimit.toString() }}"
-            step="5"
-            discrete
-            showTickMarks
-            class="price-slider"
-          >
+          <mat-slider min="0" [max]="maxLimit" step="100" discrete class="price-slider">
             <input
               value="{{ minPrice().toString() }}"
               matSliderStartThumb

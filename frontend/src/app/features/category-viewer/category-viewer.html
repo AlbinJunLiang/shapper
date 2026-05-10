@@ -41,7 +41,7 @@
 
         <div class="text-center">
           <h3
-            class="text-[11px] font-bold text-gray-600 tracking-[0.3em] uppercase transition-colors group-hover:text-gray-900"
+            class="text-[11px] font-bold text-gray-800 tracking-[0.1em] uppercase transition-colors group-hover:text-gray-900"
           >
             {{ category.name }}
           </h3>
@@ -57,13 +57,13 @@
         class="group relative px-12 py-4 bg-white border border-gray-100 rounded-full shadow-sm hover:shadow-md transition-all duration-300 active:scale-95 cursor-pointer"
       >
         <span
-          class="text-[11px] uppercase tracking-[0.3em] text-gray-600 group-hover:text-gray-900 transition-colors font-medium"
+          class="text-[15px] text-gray-600 group-hover:text-gray-900 transition-colors font-medium"
         >
           {{ 'CATEGORIES.LOAD_MORE' | translate }}
         </span>
       </button>
 
-      <p class="text-[11px] text-gray-800 uppercase tracking-[0.4em] font-light">
+      <p class="text-[12px] text-gray-800   font-light">
         {{
           'CATEGORIES.VIEWED'
             | translate: { current: categories().length, total: categoryStore.totalCategories() }

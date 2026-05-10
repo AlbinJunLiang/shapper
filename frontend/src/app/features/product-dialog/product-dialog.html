@@ -85,18 +85,22 @@
       </button>
     </div>
 
-    <div class="flex justify-between items-center mb-5">
-      <div>
-        <span class="text-[1.4rem] font-bold">{{ data.newPrice | currency: currency }}</span>
+    <div class="flex flex-wrap justify-between items-start gap-3 mb-5">
+      <div class="min-w-0 flex-1">
+        <span class="text-[1.4rem] font-bold break-words">
+          {{ data.newPrice | currency: currency }}
+        </span>
+
         @if (data.discount > 0) {
-          <span class="text-[#94a3b8] line-through text-[0.9rem] ml-[5px]">{{
-            data.price * (1 + (data.taxAmount || 0) / 100) | currency: currency
-          }}</span>
+          <span class="text-[#94a3b8] line-through text-[0.9rem] ml-[5px] break-words">
+            {{ data.price * (1 + (data.taxAmount || 0) / 100) | currency: currency }}
+          </span>
         }
       </div>
+
       <button
         (click)="toggleReviews()"
-        class="group flex items-center gap-1.5 px-3 h-8 bg-white text-slate-700 text-sm rounded-md border border-slate-200 hover:bg-amber-50 hover:text-amber-700 transition-all active:scale-95"
+        class="shrink-0 group flex items-center gap-1.5 px-3 h-8 bg-white text-slate-700 text-sm rounded-md border border-slate-200 hover:bg-amber-50 hover:text-amber-700 transition-all active:scale-95"
       >
         <span>★ {{ 'PRODUCT_MODAL.REVIEWS' | translate }}</span>
       </button>

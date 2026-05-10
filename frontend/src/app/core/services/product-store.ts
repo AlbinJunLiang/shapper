@@ -82,8 +82,13 @@ export class ProductStore {
 
         this.productService.searchProducts(term, count).subscribe({
             next: (response) => {
-                const results = Array.isArray(response) ? response : [response];
-                this.updateLocalProducts(results);
+                this._apiResponse.set({
+                    totalCount: response.length,
+                    totalPages: 1,
+                    page: 1,
+                    pageSize: response.length,
+                    data: response
+                });
             },
             complete: () => this._loading.set(false)
         });
@@ -133,7 +138,7 @@ export class ProductStore {
 
         return this.productService.createProduct(data).pipe(
             tap((response: Product) => {
-                this.loadProductsAdmin(); 
+                this.loadProductsAdmin();
             }),
             finalize(() => this._loading.set(false))
         );

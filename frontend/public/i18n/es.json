@@ -115,7 +115,8 @@
     "FORGOT": "Recuperar contraseña",
     "DEFAULT": "Bienvenido",
     "CONNECTING_GOOGLE": "Conectando con Google...",
-    "CONTINUE_GOOGLE": "Continuar con Google"
+    "CONTINUE_GOOGLE": "Continuar con Google",
+    "AUTH_REQUIRED": "Se requiere autenticación"
   },
   "COMMON": {
     "LOADING": "Cargando...",
