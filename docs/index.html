@@ -3,10 +3,10 @@
   <head>
     <script>
       (function () {
-        const redirect = sessionStorage.getItem("redirect");
+        const redirect = sessionStorage.getItem("redirect_shapper");
 
         if (redirect) {
-          sessionStorage.removeItem("redirect");
+          sessionStorage.removeItem("redirect_shapper");
           history.replaceState(null, "", redirect);
         }
       })();
