@@ -22,15 +22,15 @@ namespace Shapper.Repositories.ProductImages
 
         public async Task<ProductImage?> GetByIdAsync(int id)
         {
-            return await _context.ProductImages
-                .Include(pi => pi.Product)
+            return await _context
+                .ProductImages.Include(pi => pi.Product)
                 .FirstOrDefaultAsync(pi => pi.Id == id);
         }
 
         public async Task<List<ProductImage>> GetByProductIdAsync(int productId)
         {
-            return await _context.ProductImages
-                .Where(pi => pi.ProductId == productId)
+            return await _context
+                .ProductImages.Where(pi => pi.ProductId == productId)
                 .ToListAsync();
         }
 
@@ -49,8 +49,8 @@ namespace Shapper.Repositories.ProductImages
 
         public async Task DeleteByProductIdAsync(int productId)
         {
-            var images = await _context.ProductImages
-                .Where(pi => pi.ProductId == productId)
+            var images = await _context
+                .ProductImages.Where(pi => pi.ProductId == productId)
                 .ToListAsync();
 
             _context.ProductImages.RemoveRange(images);

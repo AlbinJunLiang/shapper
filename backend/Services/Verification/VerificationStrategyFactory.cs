@@ -22,7 +22,6 @@ namespace Shapper.Services.Verifications
 
             return provider switch
             {
-                // Pedimos la instancia al contenedor para que traiga sus dependencias
                 "Firebase" => _serviceProvider.GetRequiredService<FirebaseVerificationStrategy>(),
                 "Supabase" => _serviceProvider.GetRequiredService<SupabaseVerificationStrategy>(),
                 _ => throw new Exception(

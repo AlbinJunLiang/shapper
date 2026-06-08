@@ -14,13 +14,13 @@ namespace Shapper.Controllers
 
         public ProductImagesController(
             IProductImageService productImageService,
-            ILogger<ProductImagesController> logger)
+            ILogger<ProductImagesController> logger
+        )
         {
             _productImageService = productImageService;
             _logger = logger;
         }
 
-   
         [Authorize(Policy = "AdminOnly")]
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateProductImageDto dto)
@@ -28,12 +28,16 @@ namespace Shapper.Controllers
             try
             {
                 var result = await _productImageService.CreateAsync(dto);
-                return CreatedAtAction(nameof(GetById), new { id = result.Id }, new
-                {
-                    success = true,
-                    message = "Product image created successfully.",
-                    data = result
-                });
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { id = result.Id },
+                    new
+                    {
+                        success = true,
+                        message = "Product image created successfully.",
+                        data = result,
+                    }
+                );
             }
             catch (InvalidOperationException ex)
             {
@@ -53,7 +57,6 @@ namespace Shapper.Controllers
         /// <summary>
         /// Obtiene una imagen por ID
         /// </summary>
-
         [Authorize(Policy = "AdminOnly")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -62,7 +65,9 @@ namespace Shapper.Controllers
             {
                 var result = await _productImageService.GetByIdAsync(id);
                 if (result == null)
-                    return NotFound(new { success = false, message = $"ProductImage with ID {id} not found." });
+                    return NotFound(
+                        new { success = false, message = $"ProductImage with ID {id} not found." }
+                    );
 
                 return Ok(new { success = true, data = result });
             }
@@ -76,7 +81,6 @@ namespace Shapper.Controllers
         /// <summary>
         /// Obtiene todas las imágenes de un producto
         /// </summary>
-
         [Authorize(Policy = "AdminOnly")]
         [HttpGet("product/{productId}")]
         public async Task<IActionResult> GetByProductId(int productId)
@@ -84,7 +88,14 @@ namespace Shapper.Controllers
             try
             {
                 var result = await _productImageService.GetByProductIdAsync(productId);
-                return Ok(new { success = true, count = result.Count, data = result });
+                return Ok(
+                    new
+                    {
+                        success = true,
+                        count = result.Count,
+                        data = result,
+                    }
+                );
             }
             catch (Exception ex)
             {
@@ -96,7 +107,7 @@ namespace Shapper.Controllers
         /// <summary>
         /// Actualiza una imagen (subiendo nuevo archivo o nueva URL)
         /// </summary>
-        /// 
+        ///
         [Authorize(Policy = "AdminOnly")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromForm] UpdateProductImageDto dto)
@@ -104,12 +115,14 @@ namespace Shapper.Controllers
             try
             {
                 var result = await _productImageService.UpdateAsync(id, dto);
-                return Ok(new
-                {
-                    success = true,
-                    message = "Product image updated successfully.",
-                    data = result
-                });
+                return Ok(
+                    new
+                    {
+                        success = true,
+                        message = "Product image updated successfully.",
+                        data = result,
+                    }
+                );
             }
             catch (KeyNotFoundException ex)
             {
@@ -124,7 +137,7 @@ namespace Shapper.Controllers
 
         /// <summary>
         /// Elimina una imagen
-        /// 
+        ///
         [Authorize(Policy = "AdminOnly")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id, [FromQuery] string? provider)
@@ -134,7 +147,9 @@ namespace Shapper.Controllers
                 var result = await _productImageService.DeleteAsync(id, provider ?? "local");
 
                 if (!result)
-                    return NotFound(new { success = false, message = $"ProductImage with ID {id} not found." });
+                    return NotFound(
+                        new { success = false, message = $"ProductImage with ID {id} not found." }
+                    );
 
                 return Ok(new { success = true, message = "Product image deleted successfully." });
             }

@@ -16,7 +16,6 @@ namespace Shapper.Controllers
             _emailService = emailService;
         }
 
-
         [Authorize(Policy = "AdminOnly")]
         [HttpPost("send")]
         public async Task<IActionResult> SendEmail(

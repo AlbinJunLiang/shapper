@@ -29,8 +29,6 @@ namespace Shapper.Controllers
                 Request.Body.Position = 0;
             }
 
-            Console.WriteLine(body);
-
             using var doc = JsonDocument.Parse(body);
             var root = doc.RootElement;
 

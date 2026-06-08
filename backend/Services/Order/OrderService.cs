@@ -1,5 +1,4 @@
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using AutoMapper;
 using Shapper.Dtos;
 using Shapper.Dtos.OrderDetails;
@@ -116,7 +115,7 @@ namespace Shapper.Services.Orders
 
                     // Acumulación global para el encabezado de la orden
                     totalSubtotal += lineSubtotal;
-                    totalDiscount += (discountPerUnit * quantityToProcess);
+                    totalDiscount += discountPerUnit * quantityToProcess;
                     totalTax += lineTax;
                     totalOrder += lineFinal;
 

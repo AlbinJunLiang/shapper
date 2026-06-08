@@ -1,4 +1,3 @@
-
 using Shapper.Dtos.StoreFront;
 using Shapper.Services.Categories;
 using Shapper.Services.Products;
@@ -15,7 +14,8 @@ namespace Shapper.Services.StoreFront
         public StoreFrontService(
             IProductService productService,
             ICategoryService categoryService,
-            IStoreService storeService)
+            IStoreService storeService
+        )
         {
             _productService = productService;
             _categoryService = categoryService;
@@ -28,12 +28,20 @@ namespace Shapper.Services.StoreFront
             int productsPageSize = 10,
             bool featured = true,
             int categoriesPage = 1,
-            int categoriesPageSize = 8)
+            int categoriesPageSize = 8
+        )
         {
             // Ejecutar en serie (evita errores de concurrencia)
             var storeInfo = await _storeService.GetByStoreCodeAsync(storeCode);
-            var products = await _productService.GetProductsStoreViewAsync(productsPage, productsPageSize, featured);
-            var categories = await _categoryService.GetPaginatedAsync(categoriesPage, categoriesPageSize);
+            var products = await _productService.GetProductsStoreViewAsync(
+                productsPage,
+                productsPageSize,
+                featured
+            );
+            var categories = await _categoryService.GetPaginatedAsync(
+                categoriesPage,
+                categoriesPageSize
+            );
             var priceRange = await _categoryService.GetCategoriesWithGlobalPriceRangeAsync();
 
             return new StoreHomeDataDto
@@ -42,7 +50,7 @@ namespace Shapper.Services.StoreFront
                 Products = products,
                 Categories = categories,
                 CategoriesWithPriceRange = priceRange,
-                Timestamp = DateTime.UtcNow
+                Timestamp = DateTime.UtcNow,
             };
         }
     }

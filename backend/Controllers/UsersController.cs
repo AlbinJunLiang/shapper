@@ -38,7 +38,6 @@ namespace Shapper.Controllers
             return Ok(result);
         }
 
-
         [Authorize(Policy = "AdminOnly")]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
@@ -48,7 +47,6 @@ namespace Shapper.Controllers
                 return NotFound();
             return Ok(user);
         }
-
 
         [Authorize(Policy = "AdminOnly")]
         [HttpGet("email/{email}")]
@@ -114,7 +112,6 @@ namespace Shapper.Controllers
             }
         }
 
-
         [Authorize]
         [HttpPatch("customer/{email}")]
         public async Task<IActionResult> UpdateUser(
@@ -178,7 +175,6 @@ namespace Shapper.Controllers
         /*To update for any users in the database*/
         /*Only the admin user can use this endpoint*/
 
-
         [Authorize(Policy = "AdminOnly")]
         [HttpPatch("{email}")]
         public async Task<IActionResult> UpdateUser(
@@ -223,7 +219,6 @@ namespace Shapper.Controllers
                 return StatusCode(500, new { Message = "Internal server error." });
             }
         }
-
 
         [Authorize(Policy = "AdminOnly")]
         [HttpDelete("{id}")]

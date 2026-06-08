@@ -6,10 +6,8 @@ using Shapper.Dtos.Orders;
 
 namespace Shapper.Templates
 {
-
     public static class ProductTableTemplate
     {
-
         const string CURRENCY = "$";
 
         public static string GenerateTableHtml(OrderResponseDto order)

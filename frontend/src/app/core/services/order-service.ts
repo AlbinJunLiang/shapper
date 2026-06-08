@@ -35,18 +35,20 @@ export class OrderService {
             );
     }
 
-
+    
     getOrders(page: number = 1, pageSize: number = 10) {
-        // Usar HttpParams es mejor que concatenar strings para evitar errores de formato
         const params = new HttpParams()
             .set('page', page.toString())
             .set('pageSize', pageSize.toString());
-        return this.http.get<any>(`${this.apiUrl}/Orders`)
-            .pipe(
-                catchError((err) => {
-                    return throwError(() => err);
-                })
-            );
+
+        return this.http.get<any>(
+            `${this.apiUrl}/Orders`,
+            { params }
+        ).pipe(
+            catchError((err) => {
+                return throwError(() => err);
+            })
+        );
     }
 
     getOrderByReference(reference: string): Observable<OrderResponse> {

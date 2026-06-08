@@ -1,10 +1,6 @@
-using System.Security.Claims; // <-- necesario para Claim, ClaimTypes, ClaimsIdentity, ClaimsPrincipal
-using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shapper.Dtos;
 using Shapper.Dtos.OrderPayments;
-using Shapper.Models;
 using Shapper.Services.OrderPayments;
 
 namespace Shapper.Controller
@@ -19,9 +15,6 @@ namespace Shapper.Controller
         {
             _orderPaymentService = orderPaymentService;
         }
-
-
-
 
         [Authorize(Policy = "AdminOnly")]
         [HttpPost]
@@ -39,7 +32,6 @@ namespace Shapper.Controller
             }
         }
 
-
         [Authorize(Policy = "AdminOnly")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
@@ -49,7 +41,6 @@ namespace Shapper.Controller
                 return NotFound();
             return Ok(orderPayment);
         }
-
 
         [Authorize(Policy = "AdminOnly")]
         [HttpGet]
@@ -68,7 +59,6 @@ namespace Shapper.Controller
             var result = await _orderPaymentService.GetPaginatedAsync(page, pageSize);
             return Ok(result);
         }
-
 
         [Authorize(Policy = "AdminOnly")]
         [HttpPut("{id}")]
@@ -100,7 +90,6 @@ namespace Shapper.Controller
                 };
             }
         }
-
 
         [Authorize(Policy = "AdminOnly")]
         [HttpDelete("{id}")]

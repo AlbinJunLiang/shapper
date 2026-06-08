@@ -10,6 +10,7 @@ namespace Shapper.Services.StoreFront
             int productsPageSize = 10,
             bool featured = true,
             int categoriesPage = 1,
-            int categoriesPageSize = 8);
+            int categoriesPageSize = 8
+        );
     }
 }

@@ -7,7 +7,10 @@ namespace Shapper.Repositories.FeaturedProducts
         Task<FeaturedProduct?> GetByIdAsync(int id);
         Task<FeaturedProduct?> GetByProductIdAsync(int productId);
         Task<List<FeaturedProduct>> GetAllAsync();
-        Task<(List<FeaturedProduct> FeaturedProducts, int TotalCount)> GetPaginatedAsync(int page, int pageSize);
+        Task<(List<FeaturedProduct> FeaturedProducts, int TotalCount)> GetPaginatedAsync(
+            int page,
+            int pageSize
+        );
         Task<bool> ExistsByProductIdAsync(int productId);
         Task<int> CountAsync();
         Task AddAsync(FeaturedProduct featuredProduct);

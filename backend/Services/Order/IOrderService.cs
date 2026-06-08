@@ -24,7 +24,6 @@ namespace Shapper.Services.Orders
 
         Task<bool> UpdateStatusAsync(int orderId, string status);
 
-
         Task DeleteAsync(int id);
     }
 }

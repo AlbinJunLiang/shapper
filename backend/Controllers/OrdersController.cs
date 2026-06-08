@@ -1,13 +1,8 @@
-using System.ComponentModel.DataAnnotations; // Necesario para [MaxLength]
-using System.Security.Claims; // <-- necesario para Claim, ClaimTypes, ClaimsIdentity, ClaimsPrincipal
-using System.Text.Json;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shapper.Dtos;
-using Shapper.Dtos.OrderDetails;
 using Shapper.Dtos.OrderPayments;
 using Shapper.Dtos.Orders;
-using Shapper.Models;
 using Shapper.Services.Orders;
 using Shapper.Services.PaymentWebhooks;
 
@@ -47,7 +42,6 @@ namespace Shapper.Controller
             }
         }
 
-
         [HttpGet("reference/{reference}")]
         public async Task<ActionResult<OrderResponseDto>> GetByReference(
             [FromRoute]
@@ -56,8 +50,6 @@ namespace Shapper.Controller
         )
         {
             var order = await _orderService.GetByReferenceAsync(reference);
-
-
 
             if (order == null)
             {
@@ -68,7 +60,6 @@ namespace Shapper.Controller
 
             return Ok(order);
         }
-
 
         [Authorize]
         [HttpGet("user/{userId}")] // Es mejor práctica pasar el userId en la ruta
@@ -152,7 +143,6 @@ namespace Shapper.Controller
 
             var status = await _paymentWebhooks.ProcessAsync(dto);
 
-            // 3. Conditional Response
             if (status == "FAILED")
             {
                 return BadRequest(
@@ -171,13 +161,10 @@ namespace Shapper.Controller
                 );
             }
 
-            // 4. Success Response
             return Ok(
                 new { status, message = "Payment processed and order updated successfully." }
             );
         }
-
-
 
         [Authorize(Policy = "AdminOnly")]
         [HttpPatch("status/{id}")]

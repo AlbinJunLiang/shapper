@@ -1,10 +1,5 @@
-using System.Text.Json; // Librería principal
-using System.Text.Json.Serialization; // Solo si necesitas atributos especiales
-using AutoMapper;
 using Shapper.Dtos;
-using Shapper.Dtos.OrderDetails;
 using Shapper.Dtos.OrderPayments;
-using Shapper.Dtos.Orders;
 using Shapper.Enums;
 using Shapper.Services.Emails;
 using Shapper.Services.OrderPayments;
@@ -19,16 +14,12 @@ namespace Shapper.Services.PaymentWebhooks
         private readonly IOrderPaymentService _orderPaymentService;
         private readonly EmailService _emailService;
 
-        private readonly IMapper _mapper;
-
         public PaymentWebhookService(
-            IMapper mapper,
             IOrderService orderService,
             IOrderPaymentService orderPaymentService,
             EmailService emailService
         )
         {
-            _mapper = mapper;
             _orderService = orderService;
             _orderPaymentService = orderPaymentService;
             _emailService = emailService;
@@ -50,11 +41,8 @@ namespace Shapper.Services.PaymentWebhooks
                 }
             );
 
-            if (tag == OrderPaymentStatus.AlreadyPaid.ToString())
+            if (tag == OrderPaymentStatus.Paid.ToString())
             {
-                // 1. Deserializamos el string JSON que viene de la base de datos
-
-                // 2. Generamos el HTML y enviamos el correo
                 var htmlContent = ProductTableTemplate.GenerateTableHtml(orderResponse);
 
                 var emailDto = new EmailDto
@@ -62,7 +50,7 @@ namespace Shapper.Services.PaymentWebhooks
                     To = orderResponse?.ExtraData?.Email ?? "",
                     Subject = "Order Confirmation",
                     HtmlContent = htmlContent,
-                    SenderName = orderResponse?.CompanyName ?? "",
+                    SenderName = "Order Status",
                 };
 
                 await _emailService.SendAsync("brevo", emailDto);

@@ -9,10 +9,7 @@ namespace Shapper.Services.Stores
 
         Task<StoreResponseDto?> GetByStoreCodeAsync(string storeCode);
 
-        Task<PagedResponseDto<StoreResponseDto>> GetPaginatedAsync(
-        int page,
-        int pageSize
-    );
+        Task<PagedResponseDto<StoreResponseDto>> GetPaginatedAsync(int page, int pageSize);
 
         Task<StoreResponseDto?> CreateAsync(StoreDto dto);
 

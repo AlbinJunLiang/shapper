@@ -24,8 +24,8 @@ namespace Shapper.Repositories.Categories
 
         public async Task<Category?> GetByIdAsync(int id)
         {
-            return await _context.Categories
-                .Include(c => c.Subcategories)
+            return await _context
+                .Categories.Include(c => c.Subcategories)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
@@ -36,10 +36,14 @@ namespace Shapper.Repositories.Categories
 
             var processedName = name.Trim().ToLower();
             return await _context.Categories.FirstOrDefaultAsync(c =>
-                c.Name != null && c.Name.ToLower() == processedName);
+                c.Name != null && c.Name.ToLower() == processedName
+            );
         }
 
-        public async Task<(List<Category> Categories, int TotalCount)> GetPaginatedAsync(int page, int pageSize)
+        public async Task<(List<Category> Categories, int TotalCount)> GetPaginatedAsync(
+            int page,
+            int pageSize
+        )
         {
             var query = _context.Categories.AsNoTracking();
             var totalCount = await query.CountAsync();
@@ -59,8 +63,10 @@ namespace Shapper.Repositories.Categories
                 {
                     Id = c.Id,
                     Name = c.Name ?? "",
-                    Subcategories = c.Subcategories
-                        .Where(s => s.Products.Any(p => p.Status == ProductStatus.ACTIVE.ToString()))
+                    Subcategories = c
+                        .Subcategories.Where(s =>
+                            s.Products.Any(p => p.Status == ProductStatus.ACTIVE.ToString())
+                        )
                         .Select(s => new SubcategoryResponse2Dto { Id = s.Id, Name = s.Name })
                         .ToList(),
                 })

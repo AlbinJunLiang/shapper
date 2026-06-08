@@ -5,6 +5,6 @@ namespace Shapper.Enums
         Local,
         Cloudinary,
         Azure,
-        AWS
+        AWS,
     }
 }
