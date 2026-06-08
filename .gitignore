@@ -15,3 +15,8 @@ frontend/.angular
 frontend/.vscode
 
 
+# Visual Studio publish profiles
+*.pubxml.user
+# Publish profiles
+
+**/backend/Properties/PublishProfiles/FTPProfile.pubxml.user
