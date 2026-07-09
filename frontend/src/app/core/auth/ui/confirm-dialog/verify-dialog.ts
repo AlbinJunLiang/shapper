@@ -10,13 +10,13 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-verify-dialog',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatDialogModule, TranslateModule],
+  imports: [TranslateModule, CommonModule, MatIconModule, MatDialogModule, TranslateModule],
   templateUrl: './verify-dialog.html'
 })
-export class VerifyDialog implements OnInit, OnDestroy { 
+export class VerifyDialog implements OnInit, OnDestroy {
 
   step = signal<'initial' | 'sent'>('initial');
-   countdown = signal<string>('10:00');
+  countdown = signal<string>('10:00');
   private authService = inject(AuthService);
   private timerInterval: any;
   private readonly STORAGE_KEY = 'shapper_mail_timeout';
@@ -69,11 +69,12 @@ export class VerifyDialog implements OnInit, OnDestroy {
       },
       error: (err) => {
         if (err === 'USER_ALREADY_VERIFIED') {
-          this.notify.show('El usuario ya se encuentra verificado.');
+          this.notify.show('VERIFY_EMAIL.USER_ALREADY_VERIFIED', 'ACTIONS.CLOSE');
+
           this.dialogRef.close();
         } else {
           console.error('Error en el proceso de verificación:', err);
-          this.notify.show('Ha ocurrido un error, vuélvalo intentar más tarde.')
+          this.notify.show('Error.')
 
         }
       }

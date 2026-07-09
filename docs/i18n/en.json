@@ -74,7 +74,6 @@
     "PHONE": "Phone",
     "PHONE_REQUIRED": "Phone number is required",
     "MY_INFO": "My information",
-
     "ADDRESS": "Address",
     "EMAIL": "Email",
     "TITLE": "Personal Information",
@@ -89,7 +88,6 @@
       "PHONE": "88888888",
       "ADDRESS": "Address"
     },
-
     "SECURITY": "Security",
     "CHANGE_PASSWORD_DESC": "You can change your password",
     "BUTTONS": {
@@ -97,7 +95,6 @@
       "SAVE": "Save changes"
     }
   },
-
   "PAYMENT": {
     "SUCCESS": "Payment successful",
     "VIEW_ORDER": "View order",
@@ -182,11 +179,9 @@
   "REVIEWS": {
     "SUMMARY": "Summary",
     "REVIEWS_COUNT": "{{count}} reviews",
-
     "WRITE_REVIEW": "Write a review",
     "YOUR_RATING": "Your rating",
     "SELECT_RATING": "Select a rating",
-
     "RATING": {
       "1": "Terrible",
       "2": "Bad",
@@ -194,14 +189,11 @@
       "4": "Very good",
       "5": "Excellent!"
     },
-
     "PLACEHOLDER": "Share your experience...",
-
     "VALIDATIONS": {
       "RATING_REQUIRED": "Please select a rating (stars).",
       "COMMENT_LENGTH": "The comment must be between {{min}} and {{max}} characters."
     },
-
     "ACTIONS": {
       "CANCEL": "Cancel",
       "SUBMIT": "Post review",
@@ -209,19 +201,16 @@
       "SHOW_MORE": "Show more reviews",
       "SHOW_LESS": "Show less"
     },
-
     "FILTERS": {
       "MY_REVIEW": "My review",
       "RECENT": "Most recent",
       "TOP_RATED": "Top rated"
     },
-
     "STATES": {
       "NO_REVIEWS": "No reviews found.",
       "LOADING": "Loading reviews...",
       "CHECKING": "Checking history..."
     },
-
     "LABELS": {
       "YOU": "You"
     }
@@ -261,20 +250,16 @@
     "EMAIL": "Email",
     "PHONE": "Phone",
     "ADDRESS": "Address",
-
     "LINKS": {
       "TITLE": "Quick links",
       "HOME": "Home",
       "FAQS": "FAQs",
       "PRODUCTS": "Products"
     },
-
     "FOLLOW_US": "Follow us",
-
     "COPYRIGHT": "All rights reserved.",
     "DEVELOPED_IN": "Website developed in Angular"
   },
-
   "FLOATING": {
     "CART": {
       "ALT": "Shopping cart"
@@ -319,7 +304,6 @@
     "EMAIL_INVALID": "Invalid email format",
     "SEND_BUTTON": "Send password recovery link",
     "BACK_TO_LOGIN": "Back to login",
-
     "TITLE_SENT": "Email sent!",
     "DESCRIPTION_SENT": "Check your inbox to reset your password.",
     "RETRY_TEXT": "You can request another in:",
@@ -330,17 +314,13 @@
     "GOOGLE_CONTINUE": "Continue with Google",
     "CREATE_ACCOUNT": "Create account",
     "DIVIDER": "or",
-
     "EMAIL_REQUIRED": "Email is required.",
     "EMAIL_INVALID": "Invalid email format.",
-
     "PASSWORD_REQUIRED": "Password is required",
     "PASSWORD_MIN": "Must be at least {{min}} characters",
     "PASSWORD_MAX": "Must not exceed {{max}} characters",
-
     "PASSWORD_PLACEHOLDER": "Password",
     "EMAIL_PLACEHOLDER": "Email address",
-
     "FORGOT_PASSWORD": "Forgot your password?",
     "SIGN_IN": "Sign in",
     "NOT_NOW": "Not now, thanks"
@@ -349,47 +329,37 @@
     "DATOS": "Data",
     "CREDENTIALS": "Credentials",
     "VERIFY": "Verify",
-
     "NAME_REQUIRED": "Name is required",
     "NAME_MAX": "Maximum 256 characters",
     "NAME_PLACEHOLDER": "Name",
-
     "FIRST_LASTNAME_REQUIRED": "First last name is required",
     "FIRST_LASTNAME_PLACEHOLDER": "First last name",
-
     "SECOND_LASTNAME_PLACEHOLDER": "Second last name",
-
     "LASTNAME_MAX": "Maximum 256 characters",
-
     "EMAIL_REQUIRED": "Email is required",
     "EMAIL_INVALID": "Invalid email format",
     "EMAIL_PLACEHOLDER": "Email address",
-
     "PASSWORD_REQUIRED": "Password is required",
     "PASSWORD_MIN": "Must be at least {{min}} characters",
     "PASSWORD_PLACEHOLDER": "New password",
-
     "CONFIRM_REQUIRED": "Please confirm your password",
     "PASSWORD_MISMATCH": "Passwords do not match",
     "CONFIRM_PLACEHOLDER": "Confirm your password",
-
     "BACK": "Back",
     "NEXT": "Next",
     "SIGN_UP": "Register",
-
     "VERIFY_MESSAGE": "A verification link has been sent to your email. After verifying, please refresh the page.",
-    "CLOSE": "Close"
+    "CLOSE": "Close",
+    "EMAIL_UNAVAILABLE": "The email is unavailable."
   },
   "VERIFY_EMAIL": {
     "TITLE_VERIFY": "Verify your account",
     "DESCRIPTION_VERIFY": "For a better experience on the site, you must confirm your email address.",
-
     "SEND_BUTTON": "Send link now",
-
     "TITLE_SENT": "Email sent!",
     "DESCRIPTION_SENT": "After confirmation, refresh the page or sign in again.",
     "RESEND_TEXT": "You can request another in:",
-
-    "CONFIRM_BUTTON": "Got it"
+    "CONFIRM_BUTTON": "Got it",
+    "USER_ALREADY_VERIFIED": "The user is already verified."
   }
 }

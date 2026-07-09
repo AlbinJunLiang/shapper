@@ -22,9 +22,9 @@ import { VerifyDialog } from '../../dialog/verify-dialog/verify-dialog';
     MatProgressSpinner,
     MatMenuModule,
     MatIcon,
-    MatButtonModule, // Importante para MatAnchor y MatIconButton
-    MatFormFieldModule, // Provee la estructura del field
-    MatInputModule, // ¡ESTE ES VITAL! Registra cómo se ve el input dentro del field
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
     ReactiveFormsModule, CategoryForm],
   templateUrl: './category-table.html',
   styleUrl: './category-table.css',

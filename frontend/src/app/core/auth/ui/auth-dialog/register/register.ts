@@ -31,7 +31,7 @@ export interface RegisterData {
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule, MatIcon, MatProgressSpinner,
-   TranslateModule],
+    TranslateModule],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
@@ -67,7 +67,7 @@ export class Register {
     { validators: matchValidator });
 
 
-    
+
   goingBackToRegister() {
     this.dialogMode.emit('login');
   }
@@ -121,7 +121,7 @@ export class Register {
           },
           error: (err) => {
             this.isLoading.set(false);
-            this.notificationService.show('El correo ya se encuentra registrado.');
+            this.notificationService.show('REGISTER.EMAIL_UNAVAILABLE', 'ACTIONS.CLOSE');
           }
         });
 
