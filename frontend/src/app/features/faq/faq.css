@@ -1,24 +1,54 @@
 /* Aplicamos estilos a nuestra clase específica */
 .custom-faq-panel {
   background: white !important;
-  border: 1px solid #f3f4f6 !important; /* gray-100 */
+  border: 1px solid #f3f4f6 !important;
   box-shadow: none !important;
   border-radius: 1rem !important;
   transition: border-color 0.3s ease !important;
+  margin-bottom: 1rem; /* Separación entre tarjetas */
 }
 
 .custom-faq-panel:hover {
-  border-color: #dbeafe !important; /* blue-100 */
+  border-color: #dbeafe !important;
 }
 
-/* Evitamos el estilo gris nativo de Material al hacer clic */
+/* --- Ajustes de Angular Material (Core) --- */
+
+/* Forzamos que el header se adapte en móviles */
 ::ng-deep .mat-expansion-panel-header {
   border-radius: 1rem !important;
+  padding: 0 24px !important; /* Ajuste para que no quede pegado */
 }
 
+/* Evitamos que el estilo por defecto tape el contenido */
 ::ng-deep .mat-expansion-panel-header:hover,
 ::ng-deep .mat-expansion-panel-header.cdk-focused {
   background: transparent !important;
+}
+
+/* Ajuste crítico para el Título y el Icono */
+::ng-deep .mat-expansion-panel-header-title {
+  display: flex !important;
+  align-items: center !important;
+  flex: 1 !important;
+  min-height: 5rem; /* Asegura que el alto no se pierda */
+}
+
+/* El icono debe tener tamaño fijo y no encogerse nunca */
+::ng-deep .mat-icon {
+  flex-shrink: 0 !important; 
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ajuste de altura dinámica para responsive */
+@media (max-width: 640px) {
+  ::ng-deep .mat-expansion-panel-header {
+    height: auto !important; /* Permite que el texto largo crezca */
+    min-height: 5rem !important;
+    padding: 12px 16px !important;
+  }
 }
 
 /* Color del título al expandir */
